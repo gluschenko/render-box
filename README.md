@@ -6,9 +6,9 @@ Main aim of this project is implementation of path tracing algorithm in C# (with
 
 Sources:
 
-https://en.wikipedia.org/wiki/Path_tracing (EN)
+* https://en.wikipedia.org/wiki/Path_tracing (EN)
 
-https://ru.wikipedia.org/wiki/Трассировка_пути (RU)
+* https://ru.wikipedia.org/wiki/Трассировка_пути (RU)
 
 ## TODO
 
