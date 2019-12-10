@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Path_Tracer_Sharp.Properties
+namespace PathTracerSharp.Properties
 {
 
 

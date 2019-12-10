@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Path_Tracer_Sharp
+namespace PathTracerSharp
 {
     /// <summary>
     /// Логика взаимодействия для App.xaml

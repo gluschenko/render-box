@@ -1,12 +1,12 @@
-﻿<Window x:Class="Path_Tracer_Sharp.MainWindow"
+﻿<Window x:Class="PathTracerSharp.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Path_Tracer_Sharp"
+        xmlns:local="clr-namespace:PathTracerSharp"
         mc:Ignorable="d"
         Title="Path Tracer" Height="400" Width="400">
-    <Grid>
-        
+    <Grid Background="#00FF00">
+        <Image x:Name="Image"></Image>
     </Grid>
 </Window>
