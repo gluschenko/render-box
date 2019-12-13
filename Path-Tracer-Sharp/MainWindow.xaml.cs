@@ -17,104 +17,6 @@ using System.Diagnostics;
 
 namespace PathTracerSharp
 {
-    public struct Color 
-    {
-        public static Color Black => new Color(0, 0, 0);
-        public static Color White => new Color(1, 1, 1);
-        public static Color Red => new Color(1, 0, 0);
-        public static Color Yellow => new Color(1, 1, 0);
-        public static Color Green => new Color(0, 1, 0);
-        public static Color Cyan => new Color(0, 1, 1);
-        public static Color Blue => new Color(0, 0, 1);
-
-        //
-
-        public float R, G, B;
-
-        public Color(float r, float g, float b)
-        {
-            R = r;
-            G = g;
-            B = b;
-        }
-
-        public int GetRaw() 
-        {
-            return 
-                (byte)(R * 255) << 16 | 
-                (byte)(G * 255) << 8 | 
-                (byte)(B * 255);
-        }
-    }
-
-    public struct Vector 
-    {
-        public static Vector Zero => new Vector(0, 0, 0);
-        public static Vector Up => new Vector(0, 1, 0);
-        public static Vector Down => new Vector(0, -1, 0);
-        public static Vector Right => new Vector(1, 0, 0);
-        public static Vector Left => new Vector(-1, 0, 0);
-        public static Vector Forward => new Vector(0, 0, 1);
-        public static Vector Back => new Vector(0, 0, -1);
-
-        //
-
-        public float x, y, z;
-
-        public Vector(float x, float y, float z)
-        {
-            this.x = x;
-            this.y = y;
-            this.z = z;
-        }
-
-        // public
-        public static Vector operator +(Vector a, Vector b) => new Vector(a.x + b.x, a.y + b.y, a.z + b.z);
-        public static Vector operator -(Vector a, Vector b) => new Vector(a.x - b.x, a.y - b.y, a.z - b.z);
-        public static Vector operator *(Vector a, Vector b) => new Vector(a.x * b.x, a.y * b.y, a.z * b.z);
-        public static Vector operator /(Vector a, Vector b) => new Vector(a.x / b.x, a.y / b.y, a.z / b.z);
-
-        public static Vector operator *(Vector a, float m) => new Vector(a.x * m, a.y * m, a.z * m);
-        public static Vector operator /(Vector a, float d) => new Vector(a.x / d, a.y / d, a.z / d);
-
-        public float Length => (float)Math.Sqrt(x * x + y * y + z * z);
-
-        // static
-        public static float Dot(Vector a, Vector b) => a.x * b.x + a.y * b.y + a.z * b.z;
-        public static float Distance(Vector a, Vector b) => (a - b).Length;
-
-        public static Vector Normalize(Vector a) => a / a.Length;
-    }
-
-    public struct Ray 
-    {
-        public Vector origin;
-        public Vector direction;
-
-        public Ray(Vector origin, Vector direction)
-        {
-            this.origin = origin;
-            this.direction = direction;
-        }
-    }
-
-    public class Sphere 
-    {
-        public Vector Position { get; set; }
-        public float Radius { get; set; }
-
-        public Sphere(Vector position, float radius)
-        {
-            Position = position;
-            Radius = radius;
-        }
-    }
-
-    public class Material 
-    {
-
-    }
-
     public partial class MainWindow : Window
     {
         public WriteableBitmap Bitmap { get; set; }
@@ -170,6 +72,8 @@ namespace PathTracerSharp
             float halfX = width / 2;
             float halfZ = height / 2;
 
+            Vector source = new Vector(0, 0, 4);
+
             for (int x = 0; x < width; x++)
             {
                 float posX = (x - halfX) / scale;
@@ -180,20 +84,25 @@ namespace PathTracerSharp
                         float posZ = (z - halfZ) / scale;
 
                         var pos = new Vector(posX, 0, posZ);
+                        var ray = new Ray(source, new Vector(100, 100, 0));
                         //
                         var color = backColor;
 
                         foreach (var sphere in Spheres)
                         {
-                            if (Vector.Distance(sphere.Position, pos) > sphere.Radius)
+                            //if (Vector.Distance(sphere.position, pos) > sphere.radius)
                             {
-                                color = x ^ z;
+                                var fff = sphere.Intersect(ray, out Hit hit);
+                                if (fff > 0) 
+                                {
+                                    color = new Color(fff, fff, fff).GetRaw();
+                                }
                             }
                         }
 
                         foreach (var sphere in Spheres) 
                         {
-                            if (Vector.Distance(sphere.Position, pos) < sphere.Radius)
+                            if (Vector.Distance(sphere.position, pos) < sphere.radius)
                             {
                                 color = sphereColor;
                             }
