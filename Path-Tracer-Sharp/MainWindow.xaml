@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PathTracerSharp"
         mc:Ignorable="d"
-        Title="Path Tracer" Height="400" Width="400">
+        Title="Path Tracer" Width="640" Height="480">
     <Grid Background="#00FF00">
-        <Image x:Name="Image"></Image>
+        <Image x:Name="Image" HorizontalAlignment="Center" VerticalAlignment="Center"></Image>
     </Grid>
 </Window>
