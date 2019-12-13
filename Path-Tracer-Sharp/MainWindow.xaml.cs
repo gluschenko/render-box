@@ -32,9 +32,25 @@ namespace PathTracerSharp
             MouseMove += MainWindow_MouseMove;
 
             Spheres.AddRange(new Sphere[] {
-                new Sphere(new Vector(-2, 0, 0), 0.5f),
-                new Sphere(new Vector(0, 0, 0), 1f),
-                new Sphere(new Vector(3, 0, 0), 1.5f),
+                new Sphere(new Vector(-4, -2, 0), .5f, Color.Black) { specular = Color.White },
+                new Sphere(new Vector(-2, -2, 0), .6f, Color.Black) { specular = Color.White },
+                new Sphere(new Vector(0, -2, 0), .7f, Color.Black) { specular = Color.White },
+                new Sphere(new Vector(2, -2, 0), .6f, Color.Black) { specular = Color.White },
+                new Sphere(new Vector(4, -2, 0), .5f, Color.Black) { specular = Color.White },
+
+                new Sphere(new Vector(-4, 0, 0), .5f, Color.Red) { specular = Color.White },
+                new Sphere(new Vector(-2, 0, 0), .6f, Color.Yellow) { specular = Color.White },
+                new Sphere(new Vector(0, 0, 0), .7f, Color.Green) { specular = Color.White },
+                new Sphere(new Vector(2, 0, 0), .6f, Color.Blue) { specular = Color.White },
+                new Sphere(new Vector(4, 0, 0), .5f, Color.Red) { specular = Color.White },
+
+                new Sphere(new Vector(-4, 2, 0), .7f, Color.Black) { specular = Color.White },
+                new Sphere(new Vector(-2, 2, 0), .6f, Color.Black) { specular = Color.White },
+                new Sphere(new Vector(0, 2, 0), .5f, Color.Black) { specular = Color.White },
+                new Sphere(new Vector(2, 2, 0), .6f, Color.Black) { specular = Color.White },
+                new Sphere(new Vector(4, 2, 0), .7f, Color.Black) { specular = Color.White },
+
+                new Sphere(new Vector(1, 1, -3), 2f, Color.Black) { specular = Color.White },
             });
         }
 
@@ -64,13 +80,13 @@ namespace PathTracerSharp
 
         public void Proc(int width, int height) 
         {
-            var backColor = new Color(.2f, .2f, .2f).GetRaw();
-            var sphereColor = Color.Green.GetRaw();
+            var backColor = new Color(.2f, .2f, .2f);
+            //var sphereColor = Color.Green.GetRaw();
 
             float scale = 50;
 
             float halfX = width / 2;
-            float halfZ = height / 2;
+            float halfY = height / 2;
 
             Vector source = new Vector(0, 0, 4);
 
@@ -79,24 +95,33 @@ namespace PathTracerSharp
                 float posX = (x - halfX) / scale;
 
                 Dispatcher.Invoke(() => {
-                    for (int z = 0; z < height; z++)
+                    for (int y = 0; y < height; y++)
                     {
-                        float posZ = (z - halfZ) / scale;
+                        float posY = (y - halfY) / scale;
 
-                        var pos = new Vector(posX, 0, posZ);
-                        var ray = new Ray(source, new Vector(100, 100, 0));
+                        var pos = new Vector(posX, posY, 0);
+                        var ray = new Ray(source, pos - source);
                         //
-                        var color = backColor;
+                        var color = TracePath(ray, backColor, 0);
+                        DrawPixel(Bitmap, new Point(x, y), color.GetRaw());
 
-                        foreach (var sphere in Spheres)
+
+
+                        /*var color = backColor;
+
+                        var closestHit = Sphere.FindClosest(Spheres, ray);
+
+                        if (closestHit.IsActive) 
                         {
-                            //if (Vector.Distance(sphere.position, pos) > sphere.radius)
+                            color = closestHit.hitObject.diffuse;
+                        }*/
+
+                        /*foreach (var sphere in Spheres)
+                        {
+                            var fff = sphere.Intersect(ray, out Hit hit);
+                            if (fff != -1)
                             {
-                                var fff = sphere.Intersect(ray, out Hit hit);
-                                if (fff > 0) 
-                                {
-                                    color = new Color(fff, fff, fff).GetRaw();
-                                }
+                                color = new Color(fff, fff, fff);
                             }
                         }
 
@@ -104,15 +129,68 @@ namespace PathTracerSharp
                         {
                             if (Vector.Distance(sphere.position, pos) < sphere.radius)
                             {
-                                color = sphereColor;
+                                color = sphere.diffuse;
                             }
                         }
 
-                        DrawPixel(Bitmap, new Point(x, z), color);
+                        DrawPixel(Bitmap, new Point(x, z), color.GetRaw());*/
                     }
                 });
             }
         }
+
+        Color TracePath(Ray ray, Color back, int depth)
+        {
+            if (depth >= MaxDepth)
+            {
+                return back;  // Bounced enough times
+            }
+
+            //ray.FindNearestObject();
+            var closestHit = Sphere.FindClosest(Spheres, ray);
+
+            if (!closestHit.IsActive)
+            {
+                return back;  // Nothing was hit
+            }
+
+            //Material material = ray.thingHit->material;
+            Color emittance = closestHit.hitObject.diffuse; //material.emittance;
+
+            // Pick a random direction from here and keep going
+            Ray newRay;
+            newRay.origin = closestHit.position;
+
+            var normal = closestHit.hitObject.CalcNormal(closestHit.position);
+            // This is NOT a cosine-weighted distribution!
+            newRay.direction = normal; //RandomUnitVectorInHemisphereOf(ray.normalWhereObjWasHit);
+
+            // Probability of the newRay
+            const float p = 1f / (2f * (float)Math.PI);
+
+            // Compute the BRDF for this ray (assuming Lambertian reflection)
+            float cos_theta = Vector.Dot(newRay.direction, normal);
+            Color BRDF = closestHit.hitObject.specular / (float)Math.PI;
+
+            // Recursively trace reflected light sources.
+            Color incoming = TracePath(newRay, back, depth + 1);
+
+            // Apply the Rendering Equation here.
+            return emittance + (BRDF * incoming/* * cos_theta / p*/);
+        }
+
+        /*void Render(Image finalImage, int numSamples)
+        {
+            foreach (pixel in finalImage)
+            {
+                for (int i = 0; i < numSamples; i++)
+                {
+                    Ray r = camera.generateRay(pixel);
+                    pixel.color += TracePath(r, 0);
+                }
+                pixel.color /= numSamples;  // Average samples
+            }
+        }*/
 
         /// <summary>
         /// https://docs.microsoft.com/en-us/dotnet/api/system.windows.media.imaging.writeablebitmap?redirectedfrom=MSDN&view=netframework-4.8
@@ -165,55 +243,5 @@ namespace PathTracerSharp
                 bitmap.Unlock();
             }
         }
-
-        /*Color TracePath(Ray ray, int depth)
-        {
-            if (depth >= MaxDepth)
-            {
-                return Color.Black;  // Bounced enough times
-            }
-
-            ray.FindNearestObject();
-            if (ray.hitSomething == false)
-            {
-                return Color.Black;  // Nothing was hit
-            }
-
-            Material material = ray.thingHit->material;
-            Color emittance = material.emittance;
-
-            // Pick a random direction from here and keep going
-            Ray newRay;
-            newRay.origin = ray.pointWhereObjWasHit;
-
-            // This is NOT a cosine-weighted distribution!
-            newRay.direction = RandomUnitVectorInHemisphereOf(ray.normalWhereObjWasHit);
-
-            // Probability of the newRay
-            const double p = 1.0 / (2.0 * Math.PI);
-
-            // Compute the BRDF for this ray (assuming Lambertian reflection)
-            float cos_theta = DotProduct(newRay.direction, ray.normalWhereObjWasHit);
-            Color BRDF = material.reflectance / Math.PI;
-
-            // Recursively trace reflected light sources.
-            Color incoming = TracePath(newRay, depth + 1);
-
-            // Apply the Rendering Equation here.
-            return emittance + (BRDF * incoming * cos_theta / p);
-        }
-
-        void Render(Image finalImage, count numSamples)
-        {
-            foreach (pixel in finalImage)
-            {
-                foreach (i in numSamples)
-                {
-                    Ray r = camera.generateRay(pixel);
-                    pixel.color += TracePath(r, 0);
-                }
-                pixel.color /= numSamples;  // Average samples.
-            }
-        }*/
     }
 }

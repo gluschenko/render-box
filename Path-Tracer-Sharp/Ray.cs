@@ -21,5 +21,8 @@ namespace PathTracerSharp
     public struct Hit
     {
         public Vector position;
+        public Sphere hitObject;
+
+        public bool IsActive => hitObject != null;
     }
 }

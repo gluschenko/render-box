@@ -10,11 +10,13 @@ namespace PathTracerSharp
     {
         public Vector position;
         public float radius;
+        public Color ambient, diffuse, specular;
 
-        public Sphere(Vector position, float radius)
+        public Sphere(Vector position, float radius, Color diffuse)
         {
             this.position = position;
             this.radius = radius;
+            this.diffuse = diffuse;
         }
 
         public float Intersect(Ray ray, out Hit hit)
@@ -23,12 +25,9 @@ namespace PathTracerSharp
 
             var delta = ray.origin - position;
 
-            return delta.x / 100f;
-
             var a = Vector.Dot(ray.direction, ray.direction);
             var b = 2 * Vector.Dot(ray.direction, delta);
-            var c = Vector.Dot(delta, delta);
-            c -= radius * radius;
+            var c = Vector.Dot(delta, delta) - radius * radius;
 
             double dt = b * b - 4 * a * c;
 
@@ -38,16 +37,40 @@ namespace PathTracerSharp
             }
             else
             {
-                double t0 = (-b - Math.Sqrt(dt)) / (a * 2);
-                if (t0 < 0)
+                double D = (-b - Math.Sqrt(dt)) / (a * 2);
+                if (D < 0)
                 {
                     return -1;
                 }
 
-                hit.position = ray.origin + ray.direction * (float)t0;
+                hit.position = ray.origin + ray.direction * (float)D;
+                hit.hitObject = this;
 
-                return (hit.position - ray.origin).Length;
+                return Vector.Distance(hit.position, ray.origin);
             }
+        }
+
+        public static Hit FindClosest(List<Sphere> shapes, Ray ray) 
+        {
+            var closest = new Hit();
+
+            float min_dist = float.MaxValue;
+
+            foreach (var shape in shapes) 
+            {
+                float distance = shape.Intersect(ray, out Hit localHit);
+                if (distance != -1 && distance < min_dist)
+                {
+                    min_dist = distance;
+                    closest = localHit;
+                }
+            }
+            return closest;
+        }
+
+        public Vector CalcNormal(Vector pos) 
+        {
+            return Vector.Normalize(pos - position);
         }
     }
 }
