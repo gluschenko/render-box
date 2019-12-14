@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PathTracerSharp
 {
@@ -21,8 +17,8 @@ namespace PathTracerSharp
     public struct Hit
     {
         public Vector position;
-        public Sphere hitObject;
+        public Shape hitObject;
 
-        public bool IsActive => hitObject != null;
+        public bool IsHitting => hitObject != null;
     }
 }

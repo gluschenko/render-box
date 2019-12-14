@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Diagnostics;
+using PathTracerSharp.Shapes;
 
 namespace PathTracerSharp
 {
@@ -23,7 +24,7 @@ namespace PathTracerSharp
 
         public int MaxDepth = 3;
 
-        readonly List<Sphere> Spheres = new List<Sphere>();
+        readonly List<Shape> Shapes = new List<Shape>();
 
         public MainWindow()
         {
@@ -31,7 +32,7 @@ namespace PathTracerSharp
             Loaded += MainWindow_Loaded;
             MouseMove += MainWindow_MouseMove;
 
-            Spheres.AddRange(new Sphere[] {
+            Shapes.AddRange(new Shape[] {
                 new Sphere(new Vector(-4, -2, 0), .5f, Color.Black) { specular = Color.White },
                 new Sphere(new Vector(-2, -2, 0), .6f, Color.Black) { specular = Color.White },
                 new Sphere(new Vector(0, -2, 0), .7f, Color.Black) { specular = Color.White },
@@ -105,8 +106,6 @@ namespace PathTracerSharp
                         var color = TracePath(ray, backColor, 0);
                         DrawPixel(Bitmap, new Point(x, y), color.GetRaw());
 
-
-
                         /*var color = backColor;
 
                         var closestHit = Sphere.FindClosest(Spheres, ray);
@@ -141,15 +140,12 @@ namespace PathTracerSharp
 
         Color TracePath(Ray ray, Color back, int depth)
         {
-            if (depth >= MaxDepth)
-            {
-                return back;  // Bounced enough times
-            }
+            // Bounced enough times
+            if (depth >= MaxDepth) return back; 
 
-            //ray.FindNearestObject();
-            var closestHit = Sphere.FindClosest(Spheres, ray);
+            var closestHit = FindClosest(Shapes, ray);
 
-            if (!closestHit.IsActive)
+            if (!closestHit.IsHitting)
             {
                 return back;  // Nothing was hit
             }
@@ -166,17 +162,17 @@ namespace PathTracerSharp
             newRay.direction = normal; //RandomUnitVectorInHemisphereOf(ray.normalWhereObjWasHit);
 
             // Probability of the newRay
-            const float p = 1f / (2f * (float)Math.PI);
+            //const float p = 1f / (2f * (float)Math.PI);
 
             // Compute the BRDF for this ray (assuming Lambertian reflection)
-            float cos_theta = Vector.Dot(newRay.direction, normal);
+            //float cos_theta = Vector.Dot(newRay.direction, normal);
             Color BRDF = closestHit.hitObject.specular / (float)Math.PI;
 
             // Recursively trace reflected light sources.
             Color incoming = TracePath(newRay, back, depth + 1);
 
             // Apply the Rendering Equation here.
-            return emittance + (BRDF * incoming/* * cos_theta / p*/);
+            return emittance + (BRDF * incoming /* * cos_theta / p*/);
         }
 
         /*void Render(Image finalImage, int numSamples)
@@ -242,6 +238,24 @@ namespace PathTracerSharp
                 // Release the back buffer and make it available for display
                 bitmap.Unlock();
             }
+        }
+
+        Hit FindClosest(List<Shape> shapes, Ray ray)
+        {
+            var closest = new Hit();
+
+            float min_dist = float.MaxValue;
+
+            foreach (var shape in shapes)
+            {
+                float distance = shape.GetIntersection(ray, out Hit localHit);
+                if (distance != -1 && distance < min_dist)
+                {
+                    min_dist = distance;
+                    closest = localHit;
+                }
+            }
+            return closest;
         }
     }
 }

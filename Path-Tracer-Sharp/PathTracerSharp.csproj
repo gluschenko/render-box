@@ -58,9 +58,11 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Color.cs" />
+    <Compile Include="IShape.cs" />
     <Compile Include="Material.cs" />
     <Compile Include="Ray.cs" />
-    <Compile Include="Sphere.cs" />
+    <Compile Include="Shapes\Box.cs" />
+    <Compile Include="Shapes\Sphere.cs" />
     <Compile Include="Vector.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
