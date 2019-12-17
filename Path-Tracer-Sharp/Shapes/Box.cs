@@ -28,10 +28,13 @@ namespace PathTracerSharp.Shapes
             float tymin = (pointA.y - ray.origin.y) / ray.direction.y;
             float tymax = (pointB.y - ray.origin.y) / ray.direction.y;
 
-            if (tymin > tymax) swap(tymin, tymax);
+            if (tymin > tymax)
+            {
+                (tymin, tymax) = (tymax, tymin);
+            }
 
             if ((tmin > tymax) || (tymin > tmax))
-                return false;
+                return -1;
 
             if (tymin > tmin)
                 tmin = tymin;
@@ -39,26 +42,29 @@ namespace PathTracerSharp.Shapes
             if (tymax < tmax)
                 tmax = tymax;
 
-            float tzmin = (min.z - r.orig.z) / r.dir.z;
-            float tzmax = (max.z - r.orig.z) / r.dir.z;
+            float tzmin = (pointB.z - ray.origin.z) / ray.direction.z;
+            float tzmax = (pointB.z - ray.origin.z) / ray.direction.z;
 
-            if (tzmin > tzmax) swap(tzmin, tzmax);
+            if (tzmin > tzmax)
+            {
+                (tzmin, tzmax) = (tzmax, tzmin);
+            }
 
             if ((tmin > tzmax) || (tzmin > tmax))
-                return false;
+                return -1;
 
-            if (tzmin > tmin)
+            /*if (tzmin > tmin)
                 tmin = tzmin;
 
             if (tzmax < tmax)
-                tmax = tzmax;
+                tmax = tzmax;*/
 
-            return true;
+            return 1;
         }
 
         public override Vector CalcNormal(Vector pos)
         {
-            throw new NotImplementedException();
+            return Vector.Normalize(pos - position);
         }
     }
 }

@@ -38,6 +38,14 @@ namespace PathTracerSharp
         public static float Dot(Vector a, Vector b) => a.x * b.x + a.y * b.y + a.z * b.z;
         public static float Distance(Vector a, Vector b) => (a - b).Length;
         public static Vector Lerp(Vector a, Vector b, float r) => a + (b - a) * r;
+        public static Vector Cross(Vector a, Vector b)
+        {
+            return new Vector(
+                a.y * b.z - a.z * b.y,
+                a.z * b.x - a.x * b.z,
+                a.x * b.y - a.y * b.x
+            );
+        }
 
         public static Vector Normalize(Vector a) => a / a.Length;
     }

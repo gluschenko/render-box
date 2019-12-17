@@ -14,17 +14,27 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using PathTracerSharp.Shapes;
 
 namespace PathTracerSharp
 {
+    public enum ShadingType
+    {
+        Diffuse = 0,
+        DiffuseGlossy = 1,
+        Reflection = 2,
+        ReflectionAndRefraction = 3, 
+    }
+
     public partial class MainWindow : Window
     {
-        public WriteableBitmap Bitmap { get; set; }
+        public Paint Paint { get; set; }
 
         public int MaxDepth = 3;
 
         readonly List<Shape> Shapes = new List<Shape>();
+        readonly List<Light> Lights = new List<Light>();
 
         public MainWindow()
         {
@@ -51,7 +61,12 @@ namespace PathTracerSharp
                 new Sphere(new Vector(2, 2, 0), .6f, Color.Black) { specular = Color.White },
                 new Sphere(new Vector(4, 2, 0), .7f, Color.Black) { specular = Color.White },
 
-                new Sphere(new Vector(1, 1, -3), 2f, Color.Black) { specular = Color.White },
+                //new Sphere(new Vector(1, 1, -3), 2f, Color.Black) { specular = Color.White },
+                new Box(new Vector(1, 1, -3), new Vector(2, 2, 2), new Vector(-2, -2, -2), Color.Black) { specular = Color.White },
+            });
+
+            Lights.AddRange(new Light[] {
+                new Light(new Vector(4, 2, 3), 10),
             });
         }
 
@@ -60,16 +75,16 @@ namespace PathTracerSharp
             if (e.LeftButton == MouseButtonState.Pressed) 
             {
                 var pos = e.GetPosition(Image);
-                DrawPixel(Bitmap, pos, Color.Yellow.GetRaw());
+                Paint.SetPixel(pos, Color.Yellow.GetRaw());
             }
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            Bitmap = GetBitmap(Image);
+            Paint = new Paint(Image, ActualWidth, ActualHeight);
+            var w = Paint.Width;
+            var h = Paint.Height;
 
-            var w = Bitmap.PixelWidth;
-            var h = Bitmap.PixelHeight;
             Thread thread = new Thread(() => Proc(w, h)) { IsBackground = true };
             thread.Start();
 
@@ -104,7 +119,7 @@ namespace PathTracerSharp
                         var ray = new Ray(source, pos - source);
                         //
                         var color = TracePath(ray, backColor, 0);
-                        DrawPixel(Bitmap, new Point(x, y), color.GetRaw());
+                        Paint.SetPixel(new Point(x, y), color.GetRaw());
 
                         /*var color = backColor;
 
@@ -187,58 +202,7 @@ namespace PathTracerSharp
                 pixel.color /= numSamples;  // Average samples
             }
         }*/
-
-        /// <summary>
-        /// https://docs.microsoft.com/en-us/dotnet/api/system.windows.media.imaging.writeablebitmap?redirectedfrom=MSDN&view=netframework-4.8
-        /// </summary>
-        /// <param name="img"></param>
-        WriteableBitmap GetBitmap(Image img) 
-        {
-            RenderOptions.SetBitmapScalingMode(img, BitmapScalingMode.NearestNeighbor);
-            RenderOptions.SetEdgeMode(img, EdgeMode.Aliased);
-
-            var bitmap = new WriteableBitmap((int)ActualWidth, (int)ActualHeight, 96, 96, PixelFormats.Bgr32, null);
-
-            img.Source = bitmap;
-            img.Stretch = Stretch.None;
-
-            return bitmap;
-        }
-
-        void DrawPixel(WriteableBitmap bitmap, Point point, int color)
-        {
-            int x = (int)point.X;
-            int y = (int)point.Y;
-
-            if (!(x >= 0 && y >= 0 && x < bitmap.PixelWidth && y < bitmap.PixelHeight)) return;
-
-            try
-            {
-                // Reserve the back buffer for updates
-                bitmap.Lock();
-
-                unsafe
-                {
-                    // Get a pointer to the back buffer
-                    IntPtr pBackBuffer = bitmap.BackBuffer;
-                    
-                    // Find the address of the pixel to draw
-                    pBackBuffer += y * bitmap.BackBufferStride;
-                    pBackBuffer += x * 4;
-
-                    // Assign the color data to the pixel
-                    *(int*)pBackBuffer = color;
-                }
-
-                // Specify the area of the bitmap that changed
-                bitmap.AddDirtyRect(new Int32Rect(x, y, 1, 1));
-            }
-            finally
-            {
-                // Release the back buffer and make it available for display
-                bitmap.Unlock();
-            }
-        }
+        
 
         Hit FindClosest(List<Shape> shapes, Ray ray)
         {
