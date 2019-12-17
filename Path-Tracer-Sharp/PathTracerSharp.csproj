@@ -68,6 +68,7 @@
     <Compile Include="Paint.cs" />
     <Compile Include="Ray.cs" />
     <Compile Include="Shapes\Box.cs" />
+    <Compile Include="Shapes\Mesh.cs" />
     <Compile Include="Shapes\Sphere.cs" />
     <Compile Include="Vector.cs" />
     <Page Include="MainWindow.xaml">

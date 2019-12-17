@@ -31,7 +31,9 @@ namespace PathTracerSharp
     {
         public Paint Paint { get; set; }
 
-        public int MaxDepth = 3;
+        public int maxDepth = 3;
+        public double FOV = 0.5;
+        public Color backgroundColor = new Color(.2f, .2f, .2f);
 
         readonly List<Shape> Shapes = new List<Shape>();
         readonly List<Light> Lights = new List<Light>();
@@ -96,7 +98,6 @@ namespace PathTracerSharp
 
         public void Proc(int width, int height) 
         {
-            var backColor = new Color(.2f, .2f, .2f);
             //var sphereColor = Color.Green.GetRaw();
 
             float scale = 50;
@@ -118,7 +119,7 @@ namespace PathTracerSharp
                         var pos = new Vector(posX, posY, 0);
                         var ray = new Ray(source, pos - source);
                         //
-                        var color = TracePath(ray, backColor, 0);
+                        var color = TracePath(ray, backgroundColor, 0);
                         Paint.SetPixel(new Point(x, y), color.GetRaw());
 
                         /*var color = backColor;
@@ -156,7 +157,7 @@ namespace PathTracerSharp
         Color TracePath(Ray ray, Color back, int depth)
         {
             // Bounced enough times
-            if (depth >= MaxDepth) return back; 
+            if (depth >= maxDepth) return back; 
 
             var closestHit = FindClosest(Shapes, ray);
 
