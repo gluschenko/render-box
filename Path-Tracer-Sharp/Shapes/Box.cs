@@ -1,4 +1,5 @@
 ﻿using System;
+using PathTracerSharp.Rendering;
 
 namespace PathTracerSharp.Shapes
 {
@@ -6,27 +7,30 @@ namespace PathTracerSharp.Shapes
     {
         public Vector pointA, pointB;
 
-        public Box(Vector position, Color diffuse) : base(position, diffuse) { }
-        public Box(Vector position, Vector pointA, Vector pointB, Color diffuse) : base(position, diffuse) 
+        //public Box(Vector position, Color diffuse) : base(position, diffuse) { }
+
+        public Box(Vector position, Vector scale, Color diffuse) : base(position, diffuse) 
         {
-            this.pointA = pointA;
-            this.pointB = pointB;
+            scale /= 2;
+
+            pointA = position + scale;
+            pointB = position - scale;
         }
 
-        public override float GetIntersection(Ray ray, out Hit hit)
+        public override double GetIntersection(Ray ray, out Hit hit)
         {
             hit = new Hit();
 
-            float tmin = (pointA.x - ray.origin.x) / ray.direction.x;
-            float tmax = (pointB.x - ray.origin.x) / ray.direction.x;
+            var tmin = (pointA.x - ray.origin.x) / ray.direction.x;
+            var tmax = (pointB.x - ray.origin.x) / ray.direction.x;
 
             if (tmin > tmax) 
             {
                 (tmin, tmax) = (tmax, tmin);
             }
 
-            float tymin = (pointA.y - ray.origin.y) / ray.direction.y;
-            float tymax = (pointB.y - ray.origin.y) / ray.direction.y;
+            var tymin = (pointA.y - ray.origin.y) / ray.direction.y;
+            var tymax = (pointB.y - ray.origin.y) / ray.direction.y;
 
             if (tymin > tymax)
             {
@@ -42,8 +46,8 @@ namespace PathTracerSharp.Shapes
             if (tymax < tmax)
                 tmax = tymax;
 
-            float tzmin = (pointB.z - ray.origin.z) / ray.direction.z;
-            float tzmax = (pointB.z - ray.origin.z) / ray.direction.z;
+            var tzmin = (pointB.z - ray.origin.z) / ray.direction.z;
+            var tzmax = (pointB.z - ray.origin.z) / ray.direction.z;
 
             if (tzmin > tzmax)
             {

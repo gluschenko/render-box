@@ -1,16 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using PathTracerSharp.Rendering;
 
 namespace PathTracerSharp.Shapes
 {
     public class Mesh : Shape
     {
-        public Mesh(Vector position, Color diffuse) : base(position, diffuse) { }
+        public Vector Vertices { get; private set; }
+        public int VertexIndex { get; private set; }
+        public int TrianglesCount { get; private set; }
 
-        public override float GetIntersection(Ray ray, out Hit hit)
+        //public Mesh(Vector position, Color diffuse) : base(position, diffuse) { }
+
+        public Mesh(Vector position, Color diffuse, int o) : base(position, diffuse)
+        {
+
+        }
+
+        public override double GetIntersection(Ray ray, out Hit hit)
         {
             throw new NotImplementedException();
         }

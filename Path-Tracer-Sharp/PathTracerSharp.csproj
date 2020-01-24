@@ -60,17 +60,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Color.cs" />
-    <Compile Include="IShape.cs" />
-    <Compile Include="Light.cs" />
-    <Compile Include="Material.cs" />
-    <Compile Include="MathHelpres.cs" />
-    <Compile Include="Paint.cs" />
-    <Compile Include="Ray.cs" />
+    <Compile Include="Rendering\Camera.cs" />
+    <Compile Include="Rendering\Color.cs" />
+    <Compile Include="Rendering\Scene.cs" />
+    <Compile Include="Rendering\Shape.cs" />
+    <Compile Include="Rendering\Light.cs" />
+    <Compile Include="Rendering\Material.cs" />
+    <Compile Include="Rendering\MathHelpres.cs" />
+    <Compile Include="Rendering\Paint.cs" />
+    <Compile Include="Rendering\Ray.cs" />
     <Compile Include="Shapes\Box.cs" />
     <Compile Include="Shapes\Mesh.cs" />
     <Compile Include="Shapes\Sphere.cs" />
-    <Compile Include="Vector.cs" />
+    <Compile Include="Rendering\Vector.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

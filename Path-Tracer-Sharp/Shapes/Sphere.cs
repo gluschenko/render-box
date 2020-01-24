@@ -1,4 +1,5 @@
 ﻿using System;
+using PathTracerSharp.Rendering;
 
 namespace PathTracerSharp.Shapes
 {
@@ -6,14 +7,14 @@ namespace PathTracerSharp.Shapes
     {
         public float radius;
 
-        public Sphere(Vector position, Color diffuse) : base(position, diffuse) { }
+        //public Sphere(Vector position, Color diffuse) : base(position, diffuse) { }
 
         public Sphere(Vector position, float radius, Color diffuse) : base(position, diffuse) 
         {
             this.radius = radius;
         }
 
-        public override float GetIntersection(Ray ray, out Hit hit)
+        public override double GetIntersection(Ray ray, out Hit hit)
         {
             hit = new Hit();
 
