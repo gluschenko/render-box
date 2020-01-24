@@ -62,6 +62,7 @@
     </ApplicationDefinition>
     <Compile Include="Rendering\Camera.cs" />
     <Compile Include="Rendering\Color.cs" />
+    <Compile Include="Rendering\Renderer.cs" />
     <Compile Include="Rendering\Scene.cs" />
     <Compile Include="Rendering\Shape.cs" />
     <Compile Include="Rendering\Light.cs" />

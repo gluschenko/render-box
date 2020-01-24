@@ -1,21 +1,24 @@
 ﻿using System;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Runtime.CompilerServices;
+
+/*
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using PathTracerSharp.Shapes;
+*/
 
 namespace PathTracerSharp
 {
@@ -56,13 +59,11 @@ namespace PathTracerSharp
         /// <summary>
         /// https://docs.microsoft.com/en-us/dotnet/api/system.windows.media.imaging.writeablebitmap?redirectedfrom=MSDN&view=netframework-4.8
         /// </summary>
-        /// <param name="point"></param>
-        /// <param name="color"></param>
-        public void SetPixel(Point point, int color)
+        /// <param name="x">X-coord</param>
+        /// <param name="y">Y-coord</param>
+        /// <param name="color">Raw color code</param>
+        public void SetPixel(int x, int y, int color)
         {
-            int x = (int)point.X;
-            int y = (int)point.Y;
-
             if (!(x >= 0 && y >= 0 && x < Bitmap.PixelWidth && y < Bitmap.PixelHeight)) return;
 
             try
@@ -94,6 +95,6 @@ namespace PathTracerSharp
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void SetPixel(Point point, Color color) => SetPixel(point, color.GetRaw());
+        public void SetPixel(int x, int y, Color color) => SetPixel(x, y, color.GetRaw());
     }
 }
