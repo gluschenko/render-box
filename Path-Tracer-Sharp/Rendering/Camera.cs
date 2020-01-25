@@ -8,12 +8,12 @@ namespace PathTracerSharp.Rendering
 {
     public class Camera
     {
-        public Vector Position { get; set; }
-        public Vector Rotation { get; set; }
+        public Vector3 Position { get; set; }
+        public Vector3 Rotation { get; set; }
         public int MaxDepth { get; set; } = 3;
         public double FOV { get; set; } = 0.5;
 
-        public Camera(Vector position, Vector rotation)
+        public Camera(Vector3 position, Vector3 rotation)
         {
             Position = position;
             Rotation = rotation;

@@ -4,10 +4,10 @@ namespace PathTracerSharp.Rendering
 {
     public struct Ray
     {
-        public Vector origin;
-        public Vector direction;
+        public Vector3 origin;
+        public Vector3 direction;
 
-        public Ray(Vector origin, Vector direction)
+        public Ray(Vector3 origin, Vector3 direction)
         {
             this.origin = origin;
             this.direction = direction;
@@ -16,7 +16,7 @@ namespace PathTracerSharp.Rendering
 
     public struct Hit
     {
-        public Vector position;
+        public Vector3 position;
         public Shape hitObject;
 
         public bool IsHitting => hitObject != null;

@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
 using PathTracerSharp.Shapes;
 using PathTracerSharp.Rendering;
-using Vector = PathTracerSharp.Rendering.Vector;
-
+using System.Diagnostics;
 /*
 using System.Linq;
 using System.Text;
@@ -15,7 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using System.Diagnostics;
+
 using System.Runtime.CompilerServices;
 */
 
@@ -28,40 +29,46 @@ namespace PathTracerSharp
         public Camera MainCamera { get; set; }
         public Scene Scene { get; set; }
 
+        private ObservableCollection<string> Log;
+
         public MainWindow()
         {
             InitializeComponent();
             Loaded += MainWindow_Loaded;
             MouseMove += MainWindow_MouseMove;
 
-            MainCamera = new Camera(new Vector(0, 0, 4), Vector.Zero);
+            Log = new ObservableCollection<string>();
+            LogList.Items.Clear();
+            LogList.ItemsSource = Log;
+
+            MainCamera = new Camera(new Vector3(0, 0, 4), Vector3.Zero);
             Scene = new Scene();
 
             Scene.Shapes.AddRange(new Shape[] {
-                new Sphere(new Vector(-4, -2, 0), .5f, Color.Black),
-                new Sphere(new Vector(-2, -2, 0), .6f, Color.Black),
-                new Sphere(new Vector(0, -2, 0), .7f, Color.Black),
-                new Sphere(new Vector(2, -2, 0), .6f, Color.Black),
-                new Sphere(new Vector(4, -2, 0), .5f, Color.Black),
+                new Sphere(new Vector3(-4, -2, 0), .5f, Color.Black),
+                new Sphere(new Vector3(-2, -2, 0), .6f, Color.Black),
+                new Sphere(new Vector3(0, -2, 0), .7f, Color.Black),
+                new Sphere(new Vector3(2, -2, 0), .6f, Color.Black),
+                new Sphere(new Vector3(4, -2, 0), .5f, Color.Black),
 
-                new Sphere(new Vector(-4, 0, 0), .5f, Color.Red),
-                new Sphere(new Vector(-2, 0, 0), .6f, Color.Yellow),
-                new Sphere(new Vector(0, 0, 0), .7f, Color.Green),
-                new Sphere(new Vector(2, 0, 0), .6f, Color.Blue),
-                new Sphere(new Vector(4, 0, 0), .5f, Color.Red),
+                new Sphere(new Vector3(-4, 0, 0), .5f, Color.Red),
+                new Sphere(new Vector3(-2, 0, 0), .6f, Color.Yellow),
+                new Sphere(new Vector3(0, 0, 0), .7f, Color.Green),
+                new Sphere(new Vector3(2, 0, 0), .6f, Color.Blue),
+                new Sphere(new Vector3(4, 0, 0), .5f, Color.Red),
 
-                new Sphere(new Vector(-4, 2, 0), .7f, Color.Black),
-                new Sphere(new Vector(-2, 2, 0), .6f, Color.Black),
-                new Sphere(new Vector(0, 2, 0), .5f, Color.Black),
-                new Sphere(new Vector(2, 2, 0), .6f, Color.Black),
-                new Sphere(new Vector(4, 2, 0), .7f, Color.Black),
+                new Sphere(new Vector3(-4, 2, 0), .7f, Color.Black),
+                new Sphere(new Vector3(-2, 2, 0), .6f, Color.Black),
+                new Sphere(new Vector3(0, 2, 0), .5f, Color.Black),
+                new Sphere(new Vector3(2, 2, 0), .6f, Color.Black),
+                new Sphere(new Vector3(4, 2, 0), .7f, Color.Black),
 
                 //new Sphere(new Vector(1, 1, -3), 2f, Color.Black),
-                new Box(new Vector(1, 1, -3), Vector.One, Color.Black),
+                new Box(new Vector3(1, 1, -3), Vector3.One, Color.Black),
             });
 
             Scene.Lights.AddRange(new Light[] {
-                new Light(new Vector(4, 2, 3), 10),
+                new Light(new Vector3(4, 2, 3), 10),
             });
         }
 
@@ -76,10 +83,16 @@ namespace PathTracerSharp
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            Stopwatch timer = new Stopwatch();
+
             if (Renderer == null) 
             {
                 Paint = new Paint(Image, ActualWidth, ActualHeight);
-                Renderer = new Renderer(Paint);
+                Renderer = new Renderer(Paint)
+                {
+                    RenderStart = () => timer.Restart(),
+                    RenderComplete = () => Log.Add($"Render frame: {timer.ElapsedMilliseconds} ms")
+                };
             }
 
             Renderer.Render(MainCamera, Scene, Dispatcher);
@@ -88,6 +101,12 @@ namespace PathTracerSharp
 
             /*MessageBox.Show($"{timer.ElapsedMilliseconds} ms");
             timer.Restart();*/
+        }
+
+        private void ShowHideButton_Click(object sender, RoutedEventArgs e)
+        {
+            SidePanel.Visibility = 
+                SidePanel.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
         }
     }
 }

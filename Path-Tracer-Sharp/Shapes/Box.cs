@@ -5,11 +5,11 @@ namespace PathTracerSharp.Shapes
 {
     public class Box : Shape
     {
-        public Vector pointA, pointB;
+        public Vector3 pointA, pointB;
 
         //public Box(Vector position, Color diffuse) : base(position, diffuse) { }
 
-        public Box(Vector position, Vector scale, Color diffuse) : base(position, diffuse) 
+        public Box(Vector3 position, Vector3 scale, Color diffuse) : base(position, diffuse) 
         {
             scale /= 2;
 
@@ -66,9 +66,9 @@ namespace PathTracerSharp.Shapes
             return 1;
         }
 
-        public override Vector CalcNormal(Vector pos)
+        public override Vector3 CalcNormal(Vector3 pos)
         {
-            return Vector.Normalize(pos - position);
+            return Vector3.Normalize(pos - position);
         }
     }
 }

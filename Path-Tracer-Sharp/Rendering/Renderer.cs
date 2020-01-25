@@ -8,14 +8,20 @@ using System.Threading.Tasks;
 
 namespace PathTracerSharp.Rendering
 {
+    public delegate void RenderStartHandler();
+    public delegate void RenderCompleteHandler();
+
     public class Renderer
     {
-        public const int ChunkSize = 16;
-
+        // public
+        public int ChunkSize { get; private set; }
         public Paint Paint { get; private set; }
 
+        public RenderStartHandler RenderStart { get; set; }
+        public RenderCompleteHandler RenderComplete { get; set; }
+        // private
         private Thread renderThread;
-
+        //
         private struct RenderContext 
         {
             public int width;
@@ -27,17 +33,20 @@ namespace PathTracerSharp.Rendering
 
         public Renderer(Paint paint)
         {
+            ChunkSize = 32;
             Paint = paint;
         }
 
-        public void Render(Camera camera, Scene scene, Dispatcher dispatcher) 
+        #region PUBLIC_METHODS
+
+        public void Render(Camera camera, Scene scene, Dispatcher dispatcher)
         {
             Stop();
 
             var w = Paint.Width;
             var h = Paint.Height;
 
-            var context = new RenderContext 
+            var context = new RenderContext
             {
                 width = Paint.Width,
                 height = Paint.Height,
@@ -46,11 +55,21 @@ namespace PathTracerSharp.Rendering
                 dispatcher = dispatcher,
             };
 
-            Thread thread = new Thread(() => RenderRoutine(context)) { IsBackground = true };
+            void process() 
+            {
+                // Firing begin event
+                dispatcher.Invoke(() => RenderStart?.Invoke());
+                // Render process
+                RenderRoutine(context);
+                // Firing end event
+                dispatcher.Invoke(() => RenderComplete?.Invoke());
+            }
+
+            Thread thread = new Thread(process) { IsBackground = true };
             thread.Start();
         }
 
-        public void Stop() 
+        public void Stop()
         {
             if (renderThread != null)
             {
@@ -58,9 +77,9 @@ namespace PathTracerSharp.Rendering
                 renderThread = null;
             }
         }
+        #endregion
 
-        //
-
+        #region PRIVATE_METHODS
         private void RenderRoutine(RenderContext context)
         {
             float scale = 50;
@@ -74,7 +93,7 @@ namespace PathTracerSharp.Rendering
             float halfX = width / 2;
             float halfY = height / 2;
 
-            Vector source = camera.Position;
+            Vector3 source = camera.Position;
 
             for (int iy = 0; iy < height; iy += ChunkSize)
             {
@@ -95,7 +114,7 @@ namespace PathTracerSharp.Rendering
                             int globalX = ix + x;
                             float posX = (globalX - halfX) / scale;
                             //
-                            var pos = new Vector(posX, posY, 0);
+                            var pos = new Vector3(posX, posY, 0);
                             var ray = new Ray(source, pos - source);
                             //
                             var color = TracePath(context, ray, scene.BackgroundColor, 0);
@@ -205,5 +224,6 @@ namespace PathTracerSharp.Rendering
             }
             return closest;
         }
+        #endregion
     }
 }

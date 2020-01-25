@@ -9,7 +9,7 @@ namespace PathTracerSharp.Shapes
 
         //public Sphere(Vector position, Color diffuse) : base(position, diffuse) { }
 
-        public Sphere(Vector position, float radius, Color diffuse) : base(position, diffuse) 
+        public Sphere(Vector3 position, float radius, Color diffuse) : base(position, diffuse) 
         {
             this.radius = radius;
         }
@@ -20,9 +20,9 @@ namespace PathTracerSharp.Shapes
 
             var delta = ray.origin - position;
 
-            var a = Vector.Dot(ray.direction, ray.direction);
-            var b = 2 * Vector.Dot(ray.direction, delta);
-            var c = Vector.Dot(delta, delta) - radius * radius;
+            var a = Vector3.Dot(ray.direction, ray.direction);
+            var b = 2 * Vector3.Dot(ray.direction, delta);
+            var c = Vector3.Dot(delta, delta) - radius * radius;
 
             double dt = b * b - 4 * a * c;
 
@@ -41,13 +41,13 @@ namespace PathTracerSharp.Shapes
                 hit.position = ray.origin + ray.direction * (float)D;
                 hit.hitObject = this;
 
-                return Vector.Distance(hit.position, ray.origin);
+                return Vector3.Distance(hit.position, ray.origin);
             }
         }
 
-        public override Vector CalcNormal(Vector pos) 
+        public override Vector3 CalcNormal(Vector3 pos) 
         {
-            return Vector.Normalize(pos - position);
+            return Vector3.Normalize(pos - position);
         }
     }
 }
