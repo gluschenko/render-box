@@ -15,7 +15,7 @@ Sources:
 1. Basic drawing framework
 2. ...
 
-## Draft (pseudocode)
+## Draft (pseudo-code)
 
 	Color TracePath(Ray ray, count depth) {
 		if (depth >= MaxDepth) {
