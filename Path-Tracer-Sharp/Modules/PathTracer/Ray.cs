@@ -1,6 +1,7 @@
 ﻿using System;
+using PathTracerSharp.Core;
 
-namespace PathTracerSharp.Rendering
+namespace PathTracerSharp.Modules.PathTracer
 {
     public struct Ray
     {

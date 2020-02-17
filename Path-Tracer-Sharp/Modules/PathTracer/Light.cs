@@ -1,7 +1,7 @@
 ﻿using System;
-using PathTracerSharp.Rendering;
+using PathTracerSharp.Core;
 
-namespace PathTracerSharp
+namespace PathTracerSharp.Modules.PathTracer
 {
     public class Light
     {

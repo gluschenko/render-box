@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PathTracerSharp.Rendering
+namespace PathTracerSharp.Core
 {
     public struct Vector3
     {

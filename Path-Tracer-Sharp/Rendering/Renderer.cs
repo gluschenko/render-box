@@ -5,6 +5,8 @@ using System.Text;
 using System.Windows.Threading;
 using System.Threading;
 using System.Threading.Tasks;
+using PathTracerSharp.Core;
+using PathTracerSharp.Modules.PathTracer;
 
 namespace PathTracerSharp.Rendering
 {

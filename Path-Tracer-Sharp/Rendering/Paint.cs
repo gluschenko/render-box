@@ -4,6 +4,8 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Runtime.CompilerServices;
+using PathTracerSharp.Core;
+using Color = PathTracerSharp.Core.Color;
 
 /*
 using System.Collections.Generic;
@@ -20,7 +22,7 @@ using System.Diagnostics;
 using PathTracerSharp.Shapes;
 */
 
-namespace PathTracerSharp
+namespace PathTracerSharp.Rendering
 {
     public class Paint
     {

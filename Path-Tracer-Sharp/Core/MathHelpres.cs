@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace PathTracerSharp.Rendering
+namespace PathTracerSharp.Core
 {
     public class MathHelpres
     {

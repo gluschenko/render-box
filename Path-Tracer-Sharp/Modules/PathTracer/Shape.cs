@@ -1,5 +1,6 @@
-﻿
-namespace PathTracerSharp.Rendering
+﻿using PathTracerSharp.Core;
+
+namespace PathTracerSharp.Modules.PathTracer
 {
     public abstract class Shape : IShape
     {

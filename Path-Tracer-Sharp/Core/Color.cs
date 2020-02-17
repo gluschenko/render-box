@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PathTracerSharp
+namespace PathTracerSharp.Core
 {
     public struct Color
     {

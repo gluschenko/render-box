@@ -1,7 +1,7 @@
 ﻿using System;
-using PathTracerSharp.Rendering;
+using PathTracerSharp.Core;
 
-namespace PathTracerSharp.Shapes
+namespace PathTracerSharp.Modules.PathTracer.Shapes
 {
     public class Mesh : Shape
     {

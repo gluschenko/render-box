@@ -60,20 +60,21 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Rendering\Camera.cs" />
-    <Compile Include="Rendering\Color.cs" />
+    <Compile Include="Modules\PathTracer\Camera.cs" />
+    <Compile Include="Core\Color.cs" />
     <Compile Include="Rendering\Renderer.cs" />
-    <Compile Include="Rendering\Scene.cs" />
-    <Compile Include="Rendering\Shape.cs" />
-    <Compile Include="Rendering\Light.cs" />
-    <Compile Include="Rendering\Material.cs" />
-    <Compile Include="Rendering\MathHelpres.cs" />
+    <Compile Include="Modules\PathTracer\Scene.cs" />
+    <Compile Include="Modules\PathTracer\Shape.cs" />
+    <Compile Include="Modules\PathTracer\Light.cs" />
+    <Compile Include="Modules\PathTracer\Material.cs" />
+    <Compile Include="Core\MathHelpres.cs" />
     <Compile Include="Rendering\Paint.cs" />
-    <Compile Include="Rendering\Ray.cs" />
-    <Compile Include="Shapes\Box.cs" />
-    <Compile Include="Shapes\Mesh.cs" />
-    <Compile Include="Shapes\Sphere.cs" />
-    <Compile Include="Rendering\Vector.cs" />
+    <Compile Include="Modules\PathTracer\Ray.cs" />
+    <Compile Include="Modules\Mandelbrot\Mandelbrot.cs" />
+    <Compile Include="Modules\PathTracer\Shapes\Box.cs" />
+    <Compile Include="Modules\PathTracer\Shapes\Mesh.cs" />
+    <Compile Include="Modules\PathTracer\Shapes\Sphere.cs" />
+    <Compile Include="Core\Vector.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -114,5 +115,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
