@@ -6,21 +6,9 @@
         xmlns:local="clr-namespace:PathTracerSharp"
         mc:Ignorable="d"
         Title="Path Tracer" Width="640" Height="480">
-    <Grid Background="#00FF00">
-        <Image x:Name="Image" HorizontalAlignment="Center" VerticalAlignment="Center"></Image>
-        <Grid x:Name="SidePanel" Visibility="Hidden" Width="200" HorizontalAlignment="Right" Background="White">
-            <ScrollViewer>
-                <ListBox x:Name="LogList">
-                    <ListBoxItem>123</ListBoxItem>
-                    <ListBoxItem>123</ListBoxItem>
-                    <ListBoxItem>123</ListBoxItem>
-                    <ListBoxItem>123</ListBoxItem>
-                </ListBox>
-            </ScrollViewer>
-        </Grid>
-        <Button Content="MENU" Width="40" Height="40" Margin="10"  
-                HorizontalAlignment="Right" 
-                VerticalAlignment="Bottom" 
-                Click="ShowHideButton_Click"></Button>
+    <Grid>
+        <TabControl x:Name="Tabs">
+            <TabItem Header="+" MouseLeftButtonUp="TabItem_MouseLeftButtonUp"></TabItem>
+        </TabControl>
     </Grid>
 </Window>

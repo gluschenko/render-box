@@ -7,7 +7,7 @@
     <ProjectGuid>{90B35404-D527-48B2-A12C-0A9A9097672D}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>PathTracerSharp</RootNamespace>
-    <AssemblyName>PathTracerSharp</AssemblyName>
+    <AssemblyName>Path Tracer Sharp</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -59,9 +59,12 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Core\Rand.cs" />
+    <Compile Include="Modules\MendelbrotRenderer.cs" />
+    <Compile Include="Modules\PathRenderer.cs" />
     <Compile Include="Modules\PathTracer\Camera.cs" />
     <Compile Include="Core\Color.cs" />
     <Compile Include="Modules\PerlinNoise\PerlinNoise.cs" />
+    <Compile Include="Modules\PerlinRenderer.cs" />
     <Compile Include="Rendering\Renderer.cs" />
     <Compile Include="Modules\PathTracer\Scene.cs" />
     <Compile Include="Modules\PathTracer\Shape.cs" />
@@ -75,6 +78,9 @@
     <Compile Include="Modules\PathTracer\Shapes\Mesh.cs" />
     <Compile Include="Modules\PathTracer\Shapes\Sphere.cs" />
     <Compile Include="Core\Vector.cs" />
+    <Compile Include="RenderPage.xaml.cs">
+      <DependentUpon>RenderPage.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -87,6 +93,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="RenderPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

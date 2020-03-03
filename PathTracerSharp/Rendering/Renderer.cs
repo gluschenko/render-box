@@ -13,29 +13,19 @@ namespace PathTracerSharp.Rendering
     public delegate void RenderStartHandler();
     public delegate void RenderCompleteHandler();
 
-    public class Renderer
+    public abstract class Renderer
     {
         // public
-        public int ChunkSize { get; private set; }
-        public Paint Paint { get; private set; }
+        public int BatchSize { get; set; } = 32;
+        public Paint Paint { get; set; }
 
-        public RenderStartHandler RenderStart { get; set; }
-        public RenderCompleteHandler RenderComplete { get; set; }
+        public event RenderStartHandler RenderStart;
+        public event RenderCompleteHandler RenderComplete;
         // private
         private Thread renderThread;
         //
-        private struct RenderContext 
-        {
-            public int width;
-            public int height;
-            public Camera camera;
-            public Scene scene;
-            public Dispatcher dispatcher;
-        }
-
         public Renderer(Paint paint)
         {
-            ChunkSize = 32;
             Paint = paint;
         }
 
@@ -62,13 +52,16 @@ namespace PathTracerSharp.Rendering
                 // Firing begin event
                 dispatcher.Invoke(() => RenderStart?.Invoke());
                 // Render process
-                RenderRoutine(context);
+                lock (Paint) 
+                {
+                    RenderRoutine(context);
+                }
                 // Firing end event
                 dispatcher.Invoke(() => RenderComplete?.Invoke());
             }
 
-            Thread thread = new Thread(process) { IsBackground = true };
-            thread.Start();
+            renderThread = new Thread(process) { IsBackground = true };
+            renderThread.Start();
         }
 
         public void Stop()
@@ -97,12 +90,12 @@ namespace PathTracerSharp.Rendering
 
             Vector3 source = camera.Position;
 
-            for (int iy = 0; iy < height; iy += ChunkSize)
+            for (int iy = 0; iy < height; iy += BatchSize)
             {
-                for (int ix = 0; ix < width; ix += ChunkSize)
+                for (int ix = 0; ix < width; ix += BatchSize)
                 {
-                    int sizeX = Math.Min(ChunkSize, width - ix);
-                    int sizeY = Math.Min(ChunkSize, height - iy);
+                    int sizeX = Math.Min(BatchSize, width - ix);
+                    int sizeY = Math.Min(BatchSize, height - iy);
 
                     Color[,] tile = new Color[sizeX, sizeY];
 
@@ -139,24 +132,6 @@ namespace PathTracerSharp.Rendering
                     });
                 }
             }
-
-            /*for (int y = 0; y < height; y++)
-            {
-                float posY = (y - halfY) / scale;
-
-                for (int x = 0; x < width; x++)
-                {
-                    float posX = (x - halfX) / scale;
-
-                    Dispatcher.Invoke(() => {
-                        var pos = new Vector(posX, posY, 0);
-                        var ray = new Ray(source, pos - source);
-                        //
-                        var color = TracePath(ray, backgroundColor, 0);
-                        Paint.SetPixel(new Point(x, y), color);
-                    });
-                }
-            }*/
         }
 
         private Color TracePath(RenderContext context, Ray ray, Color back, int depth)
@@ -180,7 +155,7 @@ namespace PathTracerSharp.Rendering
 
             var normal = closestHit.hitObject.CalcNormal(closestHit.position);
             // This is NOT a cosine-weighted distribution!
-            newRay.direction = normal; //RandomUnitVectorInHemisphereOf(ray.normalWhereObjWasHit);
+            newRay.direction = normal; //RandomUnitVectorInHemisphereOf(normal);
 
             // Probability of the newRay
             //const float p = 1f / (2f * (float)Math.PI);
@@ -227,5 +202,14 @@ namespace PathTracerSharp.Rendering
             return closest;
         }
         #endregion
+    }
+
+    public struct RenderContext
+    {
+        public int width;
+        public int height;
+        public Camera camera;
+        public Scene scene;
+        public Dispatcher dispatcher;
     }
 }

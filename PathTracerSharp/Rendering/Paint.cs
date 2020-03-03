@@ -26,6 +26,8 @@ namespace PathTracerSharp.Rendering
 {
     public class Paint
     {
+        public const int DPI = 96;
+
         public Image Image { get; private set; }
         public WriteableBitmap Bitmap { get; private set; }
         public int Width => Bitmap.PixelWidth;
@@ -33,10 +35,12 @@ namespace PathTracerSharp.Rendering
 
         public Paint(Image img, int width, int height)
         {
+            Image = img;
             Bitmap = GetBitmap(img, width, height);
         }
 
-        public Paint(Image img, double width, double height) : this(img, (int)width, (int)height) { }
+        public Paint(Image img, double width, double height) 
+            : this(img, (int)width, (int)height) { }
 
         /// <summary>
         /// https://docs.microsoft.com/en-us/dotnet/api/system.windows.media.imaging.writeablebitmap?redirectedfrom=MSDN&view=netframework-4.8
@@ -47,14 +51,11 @@ namespace PathTracerSharp.Rendering
         /// <returns></returns>
         private WriteableBitmap GetBitmap(Image img, int width, int height)
         {
-            RenderOptions.SetBitmapScalingMode(img, BitmapScalingMode.NearestNeighbor);
+            RenderOptions.SetBitmapScalingMode(img, BitmapScalingMode.HighQuality);
             RenderOptions.SetEdgeMode(img, EdgeMode.Aliased);
 
-            var bitmap = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgr32, null);
-
+            var bitmap = new WriteableBitmap(width, height, DPI, DPI, PixelFormats.Bgr32, null);
             img.Source = bitmap;
-            img.Stretch = Stretch.None;
-
             return bitmap;
         }
 
@@ -76,14 +77,14 @@ namespace PathTracerSharp.Rendering
                 unsafe
                 {
                     // Get a pointer to the back buffer
-                    IntPtr pBackBuffer = Bitmap.BackBuffer;
+                    IntPtr backBuffer = Bitmap.BackBuffer;
 
                     // Find the address of the pixel to draw
-                    pBackBuffer += y * Bitmap.BackBufferStride;
-                    pBackBuffer += x * 4;
+                    backBuffer += y * Bitmap.BackBufferStride;
+                    backBuffer += x * 4;
 
                     // Assign the color data to the pixel
-                    *(int*)pBackBuffer = color;
+                    *(int*)backBuffer = color;
                 }
 
                 // Specify the area of the bitmap that changed
