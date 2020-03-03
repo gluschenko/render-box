@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29411.108
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PathTracerSharp", "Path-Tracer-Sharp\PathTracerSharp.csproj", "{90B35404-D527-48B2-A12C-0A9A9097672D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PathTracerSharp", "PathTracerSharp\PathTracerSharp.csproj", "{90B35404-D527-48B2-A12C-0A9A9097672D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PathTracerSharp.Android", "PathTracerSharp.Android\PathTracerSharp.Android.csproj", "{1FEFB35E-3494-4ADA-8BB2-FC55A0699A17}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PathTracerSharp.Mobile", "PathTracerSharp.Mobile\PathTracerSharp.Mobile.csproj", "{1FEFB35E-3494-4ADA-8BB2-FC55A0699A17}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
