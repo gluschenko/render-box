@@ -1,9 +1,6 @@
-﻿using PathTracerSharp.Rendering;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+using System.Windows.Threading;
+using PathTracerSharp.Rendering;
 
 namespace PathTracerSharp.Modules
 {
@@ -12,6 +9,16 @@ namespace PathTracerSharp.Modules
         public PerlinRenderer(Paint paint) : base(paint)
         {
 
+        }
+
+        public override RenderContext BuildContext(Dispatcher dispatcher)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void RenderRoutine(RenderContext context)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -34,43 +34,11 @@ namespace PathTracerSharp
             Log = new ObservableCollection<string>();
             LogList.Items.Clear();
             LogList.ItemsSource = Log;
-
-            MainCamera = new Camera(new Vector3(0, 0, 4), Vector3.Zero);
-            Scene = new Scene();
-
-            Scene.Shapes.AddRange(new Shape[]
-            {
-                new Sphere(new Vector3(-4, -2, 0), .5f, Color.Black),
-                new Sphere(new Vector3(-2, -2, 0), .6f, Color.Black),
-                new Sphere(new Vector3(0, -2, 0), .7f, Color.Black),
-                new Sphere(new Vector3(2, -2, 0), .6f, Color.Black),
-                new Sphere(new Vector3(4, -2, 0), .5f, Color.Black),
-
-                new Sphere(new Vector3(-4, 0, 0), .5f, Color.Red),
-                new Sphere(new Vector3(-2, 0, 0), .6f, Color.Yellow),
-                new Sphere(new Vector3(0, 0, 0), .7f, Color.Green),
-                new Sphere(new Vector3(2, 0, 0), .6f, Color.Blue),
-                new Sphere(new Vector3(4, 0, 0), .5f, Color.Red),
-
-                new Sphere(new Vector3(-4, 2, 0), .7f, Color.Black),
-                new Sphere(new Vector3(-2, 2, 0), .6f, Color.Black),
-                new Sphere(new Vector3(0, 2, 0), .5f, Color.Black),
-                new Sphere(new Vector3(2, 2, 0), .6f, Color.Black),
-                new Sphere(new Vector3(4, 2, 0), .7f, Color.Black),
-
-                //new Sphere(new Vector(1, 1, -3), 2f, Color.Black),
-                new Box(new Vector3(1, 1, -3), Vector3.One, Color.Black),
-            });
-
-            Scene.Lights.AddRange(new Light[]
-            {
-                new Light(new Vector3(4, 2, 3), 10),
-            });
         }
 
         private void Render()
         {
-            Renderer.Render(MainCamera, Scene, Dispatcher);
+            Renderer.Render(Dispatcher);
         }
 
         private void Start(Type type)
