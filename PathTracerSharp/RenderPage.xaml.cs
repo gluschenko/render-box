@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -8,6 +9,7 @@ using System.Windows.Controls;
 
 using PathTracerSharp.Core;
 using PathTracerSharp.Rendering;
+using PathTracerSharp.Modules;
 using PathTracerSharp.Modules.PathTracer;
 using PathTracerSharp.Modules.PathTracer.Shapes;
 
@@ -19,9 +21,9 @@ namespace PathTracerSharp
         public Camera MainCamera { get; set; }
         public Scene Scene { get; set; }
 
+        private bool IsStarted = false;
         readonly ObservableCollection<string> Log;
         readonly Stopwatch timer = new Stopwatch();
-        private bool IsStarted = false;
 
         public RenderPage()
         {
@@ -34,6 +36,28 @@ namespace PathTracerSharp
             Log = new ObservableCollection<string>();
             LogList.Items.Clear();
             LogList.ItemsSource = Log;
+
+            //
+
+            var modules = new Type[] { typeof(PathRenderer), typeof(MandelbrotRenderer), typeof(PerlinRenderer) };
+                //GetSubclassesOf(typeof(Renderer<RenderContext>));
+
+            ModulesList.Children.Clear();
+            foreach (var module in modules) 
+            {
+                var button = new Button
+                {
+                    Content = module.Name,
+                    Margin = new Thickness(5)
+                };
+
+                button.Click += (s, e) => {
+                    Start(module);
+                    ModulesListRoot.Visibility = Visibility.Hidden;
+                };
+                
+                ModulesList.Children.Add(button);
+            }
         }
 
         private void Render()
@@ -43,7 +67,7 @@ namespace PathTracerSharp
 
         private void Start(Type type)
         {
-            if (type.IsSubclassOf(typeof(Renderer)))
+            try 
             {
                 if (Renderer == null)
                 {
@@ -55,16 +79,16 @@ namespace PathTracerSharp
                 Render();
 
                 IsStarted = true;
-            }
-            else 
+            } 
+            catch(Exception ex)
             {
-                throw new ArgumentException("Type does not inherit abstract Renderer", nameof(type));
+                MessageBox.Show(ex.ToString());
             }
         }
 
-        private void PageSizeChanged(object sender, SizeChangedEventArgs e)
+        public void Update() 
         {
-            if (IsStarted) 
+            if (IsStarted)
             {
                 if (Renderer != null)
                 {
@@ -74,6 +98,20 @@ namespace PathTracerSharp
 
                 Render();
             }
+        }
+
+        public Type[] GetSubclassesOf(Type type) 
+        {
+            var subs = type
+                .Assembly.GetTypes()
+                .Where(t => t.IsSubclassOf(type));
+
+            return subs.ToArray();
+        }
+
+        private void PageSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            Update();
         }
 
         private void ShowHideButton_Click(object sender, RoutedEventArgs e)

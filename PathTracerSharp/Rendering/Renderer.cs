@@ -13,12 +13,12 @@ namespace PathTracerSharp.Rendering
     public delegate void RenderStartHandler();
     public delegate void RenderCompleteHandler();
 
-    public abstract class Renderer : Renderer<RenderContext>
+    /*public abstract class Renderer : Renderer<RenderContext>
     {
         public Renderer(Paint paint) : base(paint) { }
-    }
+    }*/
 
-    public abstract class Renderer<T> where T : RenderContext
+    public abstract class Renderer //<T> where T : RenderContext
     {
         // public
         public int BatchSize { get; set; } = 32;
@@ -39,7 +39,7 @@ namespace PathTracerSharp.Rendering
             Render(BuildContext(dispatcher));
         }
 
-        public void Render(T context)
+        public void Render(RenderContext context)
         {
             Stop();
 
@@ -71,11 +71,54 @@ namespace PathTracerSharp.Rendering
             }
         }
 
-        public abstract T BuildContext(Dispatcher dispatcher);
-        protected abstract void RenderRoutine(T context);
+        public virtual RenderContext BuildContext(Dispatcher dispatcher)
+        {
+            return new RenderContext
+            {
+                width = Paint.Width,
+                height = Paint.Height,
+                dispatcher = dispatcher,
+            };
+        }
+
+        protected abstract void RenderRoutine(RenderContext context);
+
+        protected void BatchScreen(RenderContext context, OnBatchScreen onBatch) 
+        {
+            int width = context.width;
+            int height = context.height;
+            Dispatcher dispatcher = context.dispatcher;
+            //
+            for (int iy = 0; iy < height; iy += BatchSize)
+            {
+                for (int ix = 0; ix < width; ix += BatchSize)
+                {
+                    int sizeX = Math.Min(BatchSize, width - ix);
+                    int sizeY = Math.Min(BatchSize, height - iy);
+                    //
+                    Color[,] tile = onBatch(ix, iy, sizeX, sizeY);
+                    //
+                    dispatcher.Invoke(() => {
+                        for (int y = 0; y < sizeY; y++)
+                        {
+                            int globalY = iy + y;
+
+                            for (int x = 0; x < sizeX; x++)
+                            {
+                                int globalX = ix + x;
+                                //
+                                Paint.SetPixel(globalX, globalY, tile[x, y]);
+                            }
+                        }
+                    });
+                }
+            }
+        }
+
+        protected delegate Color[,] OnBatchScreen(int ix, int iy, int sizeX, int sizeY);
     }
 
-    public class RenderContext
+    public struct RenderContext
     {
         public int width;
         public int height;

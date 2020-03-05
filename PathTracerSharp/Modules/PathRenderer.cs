@@ -11,7 +11,7 @@ using PathTracerSharp.Rendering;
 
 namespace PathTracerSharp.Modules
 {
-    public class PathRenderer : Renderer<PathTraceContext>
+    public class PathRenderer : Renderer
     {
         public Camera MainCamera { get; set; }
         public Scene Scene { get; set; }
@@ -51,83 +51,63 @@ namespace PathTracerSharp.Modules
             });
         }
 
-        public override PathTraceContext BuildContext(Dispatcher dispatcher)
+        protected override void RenderRoutine(RenderContext context)
         {
-            return new PathTraceContext
-            {
-                width = Paint.Width,
-                height = Paint.Height,
-                camera = MainCamera,
-                scene = Scene,
-                dispatcher = dispatcher,
-            };
-        }
-
-        protected override void RenderRoutine(PathTraceContext context)
-        {
-            float scale = 50;
-
             var width = context.width;
             var height = context.height;
-            var camera = context.camera;
-            var scene = context.scene;
             var dispatcher = context.dispatcher;
+            var camera = MainCamera;
+            var scene = Scene;
+
+            float scale = 50;
+            Vector3 source = camera.Position;
             //
             float halfX = width / 2;
             float halfY = height / 2;
-
-            Vector3 source = camera.Position;
-
-            for (int iy = 0; iy < height; iy += BatchSize)
+            //
+            lock (camera) 
             {
-                for (int ix = 0; ix < width; ix += BatchSize)
+                lock (scene) 
                 {
-                    int sizeX = Math.Min(BatchSize, width - ix);
-                    int sizeY = Math.Min(BatchSize, height - iy);
-
-                    Color[,] tile = new Color[sizeX, sizeY];
-
-                    for (int y = 0; y < sizeY; y++)
+                    Color[,] batch(int ix, int iy, int sizeX, int sizeY)
                     {
-                        int globalY = iy + y;
-                        float posY = (globalY - halfY) / scale;
+                        Color[,] tile = new Color[sizeX, sizeY];
 
-                        for (int x = 0; x < sizeX; x++)
-                        {
-                            int globalX = ix + x;
-                            float posX = (globalX - halfX) / scale;
-                            //
-                            var pos = new Vector3(posX, posY, 0);
-                            var ray = new Ray(source, pos - source);
-                            //
-                            var color = TracePath(context, ray, scene.BackgroundColor, 0);
-                            tile[x, y] = color;
-                        }
-                    }
-
-                    dispatcher.Invoke(() => {
                         for (int y = 0; y < sizeY; y++)
                         {
                             int globalY = iy + y;
+                            float posY = (globalY - halfY) / scale;
 
                             for (int x = 0; x < sizeX; x++)
                             {
                                 int globalX = ix + x;
+                                float posX = (globalX - halfX) / scale;
                                 //
-                                Paint.SetPixel(globalX, globalY, tile[x, y]);
+                                var pos = new Vector3(posX, posY, 0);
+                                var ray = new Ray(source, pos - source);
+                                //
+                                var color = TracePath(context, camera, scene, ray, scene.BackgroundColor, 0);
+                                tile[x, y] = color;
                             }
                         }
-                    });
+
+                        return tile;
+                    }
+
+                    BatchScreen(context, batch);
                 }
             }
         }
 
-        private Color TracePath(PathTraceContext context, Ray ray, Color back, int depth)
+        private Color TracePath(RenderContext context, Camera camera, Scene scene, Ray ray, Color back, int depth)
         {
             // Bounced enough times
-            if (depth >= context.camera.MaxDepth) return back;
+            if (depth >= camera.MaxDepth) 
+            {
+                return back;
+            }
 
-            var closestHit = FindClosest(context.scene.Shapes, ray);
+            var closestHit = FindClosest(scene.Shapes, ray);
 
             if (!closestHit.IsHitting)
             {
@@ -142,6 +122,7 @@ namespace PathTracerSharp.Modules
             newRay.origin = closestHit.position;
 
             var normal = closestHit.hitObject.CalcNormal(closestHit.position);
+
             // This is NOT a cosine-weighted distribution!
             newRay.direction = normal; //RandomUnitVectorInHemisphereOf(normal);
 
@@ -153,7 +134,7 @@ namespace PathTracerSharp.Modules
             Color BRDF = material.specular / (float)Math.PI;
 
             // Recursively trace reflected light sources.
-            Color incoming = TracePath(context, newRay, back, depth + 1);
+            Color incoming = TracePath(context, camera, scene, newRay, back, depth + 1);
 
             // Apply the Rendering Equation here.
             return emittance + (BRDF * incoming /* * cos_theta / p*/);
@@ -189,11 +170,5 @@ namespace PathTracerSharp.Modules
             }
             return closest;
         }
-    }
-
-    public class PathTraceContext : RenderContext 
-    {
-        public Camera camera;
-        public Scene scene;
     }
 }

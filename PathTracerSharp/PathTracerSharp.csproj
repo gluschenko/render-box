@@ -58,8 +58,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Core\ColorHelpers.cs" />
     <Compile Include="Core\Rand.cs" />
-    <Compile Include="Modules\MendelbrotRenderer.cs" />
+    <Compile Include="Modules\MandelbrotRenderer.cs" />
     <Compile Include="Modules\PathRenderer.cs" />
     <Compile Include="Modules\PathTracer\Camera.cs" />
     <Compile Include="Core\Color.cs" />
@@ -73,7 +74,7 @@
     <Compile Include="Core\MathHelpres.cs" />
     <Compile Include="Rendering\Paint.cs" />
     <Compile Include="Modules\PathTracer\Ray.cs" />
-    <Compile Include="Modules\Mandelbrot\Mandelbrot.cs" />
+    <Compile Include="Modules\Mandelbrot\MandelbrotSet.cs" />
     <Compile Include="Modules\PathTracer\Shapes\Box.cs" />
     <Compile Include="Modules\PathTracer\Shapes\Mesh.cs" />
     <Compile Include="Modules\PathTracer\Shapes\Sphere.cs" />
