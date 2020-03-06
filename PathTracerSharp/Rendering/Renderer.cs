@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using PathTracerSharp.Core;
 using PathTracerSharp.Modules.PathTracer;
+using System.Windows.Input;
 
 namespace PathTracerSharp.Rendering
 {
@@ -18,7 +19,7 @@ namespace PathTracerSharp.Rendering
         public Renderer(Paint paint) : base(paint) { }
     }*/
 
-    public abstract class Renderer //<T> where T : RenderContext
+    public abstract class Renderer : IDisposable //<T> where T : RenderContext
     {
         // public
         public int BatchSize { get; set; } = 32;
@@ -33,6 +34,14 @@ namespace PathTracerSharp.Rendering
         {
             Paint = paint;
         }
+
+        public void Dispose()
+        {
+            Stop();
+            Paint.Dispose();
+        }
+
+        public virtual void OnKeyPress(Key key, Action onRender) { }
 
         public void Render(Dispatcher dispatcher) 
         {

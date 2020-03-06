@@ -8,7 +8,7 @@
         Title="Path Tracer" Width="640" Height="480">
     <Grid>
         <TabControl x:Name="Tabs">
-            <TabItem Header="+" MouseLeftButtonUp="TabItem_MouseLeftButtonUp"></TabItem>
+            <TabItem Header="+" MouseLeftButtonUp="OnPlusClick"></TabItem>
         </TabControl>
     </Grid>
 </Window>

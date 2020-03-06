@@ -43,7 +43,7 @@ namespace PathTracerSharp.Rendering
 
         public void Dispose()
         {
-
+            Bitmap = null;
         }
 
         /// <summary>

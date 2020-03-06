@@ -70,3 +70,13 @@ Sources:
 ![](Media/5.jpg)
 ![](Media/6.jpg)
 ![](Media/7.jpg)
+![](Media/8.jpg)
+![](Media/9.jpg)
+![](Media/10.jpg)
+![](Media/11.jpg)
+![](Media/12.jpg)
+
+## Aim
+
+![](Media/aim_1.png)
+![](Media/aim_2.png)

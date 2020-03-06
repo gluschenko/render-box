@@ -15,23 +15,23 @@ using PathTracerSharp.Modules.PathTracer.Shapes;
 
 namespace PathTracerSharp
 {
-    public partial class RenderPage : Page
+    public partial class RenderPage : Page, IDisposable
     {
+        public bool IsActive { get; set; }
+        public bool IsStarted { get; private set; }
+
         public Renderer Renderer { get; set; }
         public Camera MainCamera { get; set; }
         public Scene Scene { get; set; }
 
-        private bool IsStarted = false;
         readonly ObservableCollection<string> Log;
-        readonly Stopwatch timer = new Stopwatch();
+        readonly Stopwatch Timer = new Stopwatch();
 
         public RenderPage()
         {
             InitializeComponent();
 
-            SidePanel.Visibility = Visibility.Hidden;
-
-            SizeChanged += PageSizeChanged;
+            Loaded += OnLoaded;
 
             Log = new ObservableCollection<string>();
             LogList.Items.Clear();
@@ -40,7 +40,6 @@ namespace PathTracerSharp
             //
 
             var modules = GetSubclassesOf(typeof(Renderer));
-            //new Type[] { typeof(PathRenderer), typeof(MandelbrotRenderer), typeof(PerlinRenderer) };
 
             ModulesList.Children.Clear();
             foreach (var module in modules) 
@@ -60,6 +59,21 @@ namespace PathTracerSharp
             }
         }
 
+        public void Dispose()
+        {
+            Renderer.Dispose();
+        }
+
+        private void OnLoaded(object sender, RoutedEventArgs e)
+        {
+            var window = Window.GetWindow(this);
+            window.KeyUp += OnKeyPress;
+            //
+            SidePanel.Visibility = Visibility.Hidden;
+            //
+            SizeChanged += OnSizeChanged;
+        }
+
         private void SetupRender(Type type) 
         {
             int w = (int)(ActualWidth * Resolution.Value);
@@ -68,8 +82,8 @@ namespace PathTracerSharp
             if (Renderer == null)
             {
                 Renderer = (Renderer)Activator.CreateInstance(type, new Paint(Image, w, h));
-                Renderer.RenderStart += () => timer.Restart();
-                Renderer.RenderComplete += () => Log.Add($"Render frame: {timer.ElapsedMilliseconds} ms");
+                Renderer.RenderStart += () => Timer.Restart();
+                Renderer.RenderComplete += () => Log.Add($"Render frame: {Timer.ElapsedMilliseconds} ms");
             }
             else
             {
@@ -117,7 +131,7 @@ namespace PathTracerSharp
             return subs.ToArray();
         }
 
-        private void PageSizeChanged(object sender, SizeChangedEventArgs e)
+        private void OnSizeChanged(object sender, SizeChangedEventArgs e)
         {
             Update();
         }
@@ -144,6 +158,11 @@ namespace PathTracerSharp
             catch 
             {
             }
+        }
+
+        private void OnKeyPress(object sender, KeyEventArgs e)
+        {
+            if(IsActive) Renderer?.OnKeyPress(e.Key, Update);
         }
     }
 }
