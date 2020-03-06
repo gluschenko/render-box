@@ -43,7 +43,7 @@ namespace PathTracerSharp.Core
                 h *= 60;
 
                 if (h < 0.0)
-                    h = h + 360;
+                    h += 360;
             }
             //
             hue = h;

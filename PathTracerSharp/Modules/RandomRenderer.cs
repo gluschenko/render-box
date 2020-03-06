@@ -6,18 +6,15 @@ using PathTracerSharp.Core;
 
 namespace PathTracerSharp.Modules
 {
-    public class PerlinRenderer : Renderer
+    public class RandomRenderer : Renderer
     {
-        public PerlinNoise Perlin { get; private set; }
-
-        public PerlinRenderer(Paint paint) : base(paint)
+        public RandomRenderer(Paint paint) : base(paint)
         {
-            Perlin = new PerlinNoise(Rand.Int(1, 100));
         }
 
         protected override void RenderRoutine(RenderContext context)
         {
-            float zoom = context.width / 800f;
+            double zoom = context.width / 3.0;
             float halfX = context.width / 2;
             float halfY = context.height / 2;
 
@@ -27,15 +24,15 @@ namespace PathTracerSharp.Modules
 
                 for (int y = 0; y < sizeY; y++)
                 {
-                    float posY = (iy + y) * zoom;
+                    int globalY = iy + y;
+                    double posY = (globalY - halfY) / zoom;
 
                     for (int x = 0; x < sizeX; x++)
                     {
-                        float posX = (ix + x) * zoom;
+                        int globalX = ix + x;
+                        double posX = (globalX - halfX) / zoom - 0.5;
                         //
-                        var n = Perlin.FractalNoise2D(posX, posY, 4, 100, 1);
-                        var color = ColorHelpers.FromHSV(120.0, 1, n);
-                        tile[x, y] = color;
+                        tile[x, y] = new Color(Rand.Float(), Rand.Float(), Rand.Float());
                     }
                 }
 

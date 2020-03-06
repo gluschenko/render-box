@@ -24,7 +24,7 @@ using PathTracerSharp.Shapes;
 
 namespace PathTracerSharp.Rendering
 {
-    public class Paint
+    public class Paint : IDisposable
     {
         public const int DPI = 96;
 
@@ -39,8 +39,12 @@ namespace PathTracerSharp.Rendering
             Bitmap = GetBitmap(img, width, height);
         }
 
-        public Paint(Image img, double width, double height) 
-            : this(img, (int)width, (int)height) { }
+        public Paint(Image img, double width, double height) : this(img, (int)width, (int)height) { }
+
+        public void Dispose()
+        {
+
+        }
 
         /// <summary>
         /// https://docs.microsoft.com/en-us/dotnet/api/system.windows.media.imaging.writeablebitmap?redirectedfrom=MSDN&view=netframework-4.8
@@ -67,7 +71,8 @@ namespace PathTracerSharp.Rendering
         /// <param name="color">Raw color code</param>
         public void SetPixel(int x, int y, int color)
         {
-            if (!(x >= 0 && y >= 0 && x < Bitmap.PixelWidth && y < Bitmap.PixelHeight)) return;
+            bool is_valid = x >= 0 && y >= 0 && x < Bitmap.PixelWidth && y < Bitmap.PixelHeight;
+            if (!is_valid) return;
 
             try
             {
@@ -97,7 +102,62 @@ namespace PathTracerSharp.Rendering
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void SetPixel(int x, int y, Color color) => SetPixel(x, y, color.GetRaw());
+        public void SetPixels(int x, int y, Color[,] colors) 
+        {
+            int width = colors.GetLength(0);
+            int height = colors.GetLength(1);
+
+            bool is_valid = x >= 0 && y >= 0 && x + width < Bitmap.PixelWidth && y + height < Bitmap.PixelHeight;
+            if (!is_valid) return;
+
+            try
+            {
+                // Reserve the back buffer for updates
+                Bitmap.Lock();
+
+                unsafe
+                {
+                    for (int localY = 0; localY < height; localY++)
+                    {
+                        // Get a pointer to the back buffer
+                        IntPtr backBuffer = Bitmap.BackBuffer;
+                        // Find the address of the pixel to draw
+                        backBuffer += (y + localY) * Bitmap.BackBufferStride;
+                        backBuffer += x * 4;
+
+                        for (int localX = 0; localX < width; localX++)
+                        {
+                            backBuffer += 4;
+
+                            // Assign the color data to the pixel
+                            *(int*)backBuffer = (int)colors[localX, localY];
+                        }
+                    }
+
+                    /*for (int localY = 0; localY < height; localY++)
+                    {
+                        for (int localX = 0; localX < width; localX++)
+                        {
+                            // Get a pointer to the back buffer
+                            IntPtr backBuffer = Bitmap.BackBuffer;
+                            // Find the address of the pixel to draw
+                            backBuffer += (y + localY) * Bitmap.BackBufferStride;
+                            backBuffer += (x + localX) * 4;
+
+                            // Assign the color data to the pixel
+                            *(int*)backBuffer = (int)colors[localX, localY];
+                        }
+                    }*/
+                }
+
+                // Specify the area of the bitmap that changed
+                Bitmap.AddDirtyRect(new Int32Rect(x, y, width, height));
+            }
+            finally
+            {
+                // Release the back buffer and make it available for display
+                Bitmap.Unlock();
+            }
+        }
     }
 }

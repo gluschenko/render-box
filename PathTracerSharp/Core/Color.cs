@@ -45,5 +45,7 @@ namespace PathTracerSharp.Core
 
         public static Color operator *(Color a, float m) => new Color(a.r * m, a.g * m, a.b * m);
         public static Color operator /(Color a, float d) => new Color(a.r / d, a.g / d, a.b / d);
+
+        public static explicit operator int(Color a) => a.GetRaw();
     }
 }

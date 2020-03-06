@@ -39,8 +39,8 @@ namespace PathTracerSharp
 
             //
 
-            var modules = new Type[] { typeof(PathRenderer), typeof(MandelbrotRenderer), typeof(PerlinRenderer) };
-                //GetSubclassesOf(typeof(Renderer<RenderContext>));
+            var modules = GetSubclassesOf(typeof(Renderer));
+            //new Type[] { typeof(PathRenderer), typeof(MandelbrotRenderer), typeof(PerlinRenderer) };
 
             ModulesList.Children.Clear();
             foreach (var module in modules) 
@@ -60,6 +60,29 @@ namespace PathTracerSharp
             }
         }
 
+        private void SetupRender(Type type) 
+        {
+            int w = (int)(ActualWidth * Resolution.Value);
+            int h = (int)(ActualHeight * Resolution.Value);
+
+            if (Renderer == null)
+            {
+                Renderer = (Renderer)Activator.CreateInstance(type, new Paint(Image, w, h));
+                Renderer.RenderStart += () => timer.Restart();
+                Renderer.RenderComplete += () => Log.Add($"Render frame: {timer.ElapsedMilliseconds} ms");
+            }
+            else
+            {
+                Renderer.Stop();
+                Renderer.Paint = new Paint(Image, w, h);
+
+                /*if (Renderer.Paint.Width != w || Renderer.Paint.Height != h) 
+                {
+                    Renderer.Paint = new Paint(Image, w, h);
+                }*/
+            }
+        }
+
         private void Render()
         {
             Renderer.Render(Dispatcher);
@@ -67,22 +90,12 @@ namespace PathTracerSharp
 
         private void Start(Type type)
         {
-            try 
+            if (!IsStarted) 
             {
-                if (Renderer == null)
-                {
-                    Renderer = (Renderer)Activator.CreateInstance(type, new Paint(Image, ActualWidth, ActualHeight));
-                    Renderer.RenderStart += () => timer.Restart();
-                    Renderer.RenderComplete += () => Log.Add($"Render frame: {timer.ElapsedMilliseconds} ms");
-                }
-
+                SetupRender(type);
                 Render();
 
                 IsStarted = true;
-            } 
-            catch(Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
             }
         }
 
@@ -90,12 +103,7 @@ namespace PathTracerSharp
         {
             if (IsStarted)
             {
-                if (Renderer != null)
-                {
-                    Renderer.Stop();
-                    Renderer.Paint = new Paint(Image, ActualWidth, ActualHeight);
-                }
-
+                SetupRender(null);
                 Render();
             }
         }
@@ -124,7 +132,18 @@ namespace PathTracerSharp
 
         private void RenderButton_Click(object sender, RoutedEventArgs e)
         {
-            Render();
+            Update();
+        }
+
+        private void Resolution_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            try 
+            {
+                ResolutionText.Content = Math.Round(Resolution.Value, 1).ToString();
+            }
+            catch 
+            {
+            }
         }
     }
 }

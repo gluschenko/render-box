@@ -1,7 +1,7 @@
 using System;
 using PathTracerSharp.Core;
 
-namespace PathTracerSharp.Modules.PerlinNoise
+namespace PathTracerSharp.Modules.Perlin
 {
     public class PerlinNoise
     {

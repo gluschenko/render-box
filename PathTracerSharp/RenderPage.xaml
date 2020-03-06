@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:PathTracerSharp"
       mc:Ignorable="d" 
-      d:DesignHeight="400" d:DesignWidth="400"
+      d:DesignHeight="300" d:DesignWidth="450"
       Title="RenderPage"
       Background="White">
 
@@ -32,6 +32,14 @@
                     HorizontalAlignment="Left" 
                     VerticalAlignment="Bottom" 
                     Click="RenderButton_Click"></Button>
+
+                <Slider x:Name="Resolution" Width="100" 
+                        ValueChanged="Resolution_ValueChanged"
+                        VerticalAlignment="Center" 
+                        Minimum="0.1"
+                        Maximum="5" 
+                        Value="1" ></Slider>
+                <Label x:Name="ResolutionText" Content="1" Foreground="White"></Label>
             </StackPanel>
         </Grid>
 

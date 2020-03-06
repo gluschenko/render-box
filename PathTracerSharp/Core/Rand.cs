@@ -18,6 +18,8 @@ namespace PathTracerSharp.Core
         public static double Double(double min, double max) => MathHelpres.Lerp(min, max, Double());
         public static double Double() => random.NextDouble();
 
+        public static float Float() => random.NextFloat();
+
         public static long Long(long min, long max) => MathHelpres.Lerp(min, max, Double());
         public static long Long() => Long(long.MinValue, long.MaxValue);
 
@@ -29,6 +31,11 @@ namespace PathTracerSharp.Core
         /// Сброс состояния
         /// </summary>
         public static void Reset() => random = new Random(RandomizeSeed());
+    }
+
+    public static class RandomExtensions 
+    {
+        public static float NextFloat(this Random random) => (float)random.NextDouble();
     }
 }
 

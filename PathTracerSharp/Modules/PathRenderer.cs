@@ -59,7 +59,7 @@ namespace PathTracerSharp.Modules
             var camera = MainCamera;
             var scene = Scene;
 
-            float scale = 50;
+            float scale = width / 20;
             Vector3 source = camera.Position;
             //
             float halfX = width / 2;

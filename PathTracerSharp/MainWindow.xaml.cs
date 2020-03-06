@@ -46,7 +46,8 @@ namespace PathTracerSharp
                 Header = $"Render #{++TabCounter}",
                 Content = new Frame() 
                 { 
-                    Content = new RenderPage() 
+                    Content = new RenderPage(),
+                    BorderThickness = new Thickness(0)
                 }
             };
 

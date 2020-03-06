@@ -89,28 +89,30 @@ namespace PathTracerSharp.Rendering
             int height = context.height;
             Dispatcher dispatcher = context.dispatcher;
             //
-            for (int iy = 0; iy < height; iy += BatchSize)
+            for (int y = 0; y < height; y += BatchSize)
             {
-                for (int ix = 0; ix < width; ix += BatchSize)
+                for (int x = 0; x < width; x += BatchSize)
                 {
-                    int sizeX = Math.Min(BatchSize, width - ix);
-                    int sizeY = Math.Min(BatchSize, height - iy);
+                    int sizeX = Math.Min(BatchSize, width - x - 1);
+                    int sizeY = Math.Min(BatchSize, height - y - 1);
                     //
-                    Color[,] tile = onBatch(ix, iy, sizeX, sizeY);
+                    Color[,] tile = onBatch(x, y, sizeX, sizeY);
                     //
-                    dispatcher.Invoke(() => {
-                        for (int y = 0; y < sizeY; y++)
-                        {
-                            int globalY = iy + y;
+                    dispatcher.Invoke(() => Paint.SetPixels(x, y, tile));
 
-                            for (int x = 0; x < sizeX; x++)
+                    /*dispatcher.Invoke(() => {
+                        for (int localY = 0; localY < sizeY; localY++)
+                        {
+                            int globalY = y + localY;
+
+                            for (int localX = 0; localX < sizeX; localX++)
                             {
-                                int globalX = ix + x;
+                                int globalX = x + localX;
                                 //
-                                Paint.SetPixel(globalX, globalY, tile[x, y]);
+                                Paint.SetPixel(globalX, globalY, (int)tile[localX, localY]);
                             }
                         }
-                    });
+                    });*/
                 }
             }
         }

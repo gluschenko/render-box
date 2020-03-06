@@ -64,7 +64,8 @@
     <Compile Include="Modules\PathRenderer.cs" />
     <Compile Include="Modules\PathTracer\Camera.cs" />
     <Compile Include="Core\Color.cs" />
-    <Compile Include="Modules\PerlinNoise\PerlinNoise.cs" />
+    <Compile Include="Modules\RandomRenderer.cs" />
+    <Compile Include="Modules\Perlin\PerlinNoise.cs" />
     <Compile Include="Modules\PerlinRenderer.cs" />
     <Compile Include="Rendering\Renderer.cs" />
     <Compile Include="Modules\PathTracer\Scene.cs" />
