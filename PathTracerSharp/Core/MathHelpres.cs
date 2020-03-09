@@ -21,6 +21,12 @@ namespace PathTracerSharp.Core
         public static double Clamp(double val) => Math.Max(0, Math.Min(1, val));
         /**/
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Clamp(float val, float low, float high) => Math.Max(low, Math.Min(high, val));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Clamp(float val) => Math.Max(0, Math.Min(1, val));
+        /**/
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Clamp(int val, int low, int high) => Math.Max(low, Math.Min(high, val));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

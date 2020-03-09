@@ -1,74 +1,35 @@
 ﻿using System;
+using System.Collections.Generic;
 using PathTracerSharp.Core;
 
 namespace PathTracerSharp.Modules.PathTracer.Shapes
 {
-    public class Box : Shape
+    public class Box : Mesh
     {
-        public Vector3 pointA, pointB;
-
-        //public Box(Vector position, Color diffuse) : base(position, diffuse) { }
-
-        public Box(Vector3 position, Vector3 scale, Color diffuse) : base(position, diffuse) 
+        public Box(Vector3 position, Color diffuse) : base(position, diffuse) 
         {
-            scale /= 2;
+            double 
+                A = 0.5, 
+                B = -A;
 
-            pointA = position + scale;
-            pointB = position - scale;
-        }
-
-        public override double GetIntersection(Ray ray, out Hit hit)
-        {
-            hit = new Hit();
-
-            var tmin = (pointA.x - ray.origin.x) / ray.direction.x;
-            var tmax = (pointB.x - ray.origin.x) / ray.direction.x;
-
-            if (tmin > tmax) 
+            var verts = new List<Vector3>()
             {
-                (tmin, tmax) = (tmax, tmin);
-            }
+                new Vector3(B, B, B), // 0
+                new Vector3(A, B, B), // 1
+                new Vector3(B, B, A), // 2
+                new Vector3(A, B, A), // 3
+                new Vector3(B, A, B), // 4
+                new Vector3(A, A, B), // 5
+                new Vector3(B, A, A), // 6
+                new Vector3(A, A, A), // 7
+            };
 
-            var tymin = (pointA.y - ray.origin.y) / ray.direction.y;
-            var tymax = (pointB.y - ray.origin.y) / ray.direction.y;
-
-            if (tymin > tymax)
+            var indices = new List<int>()
             {
-                (tymin, tymax) = (tymax, tymin);
-            }
 
-            if ((tmin > tymax) || (tymin > tmax))
-                return -1;
+            };
 
-            if (tymin > tmin)
-                tmin = tymin;
-
-            if (tymax < tmax)
-                tmax = tymax;
-
-            var tzmin = (pointB.z - ray.origin.z) / ray.direction.z;
-            var tzmax = (pointB.z - ray.origin.z) / ray.direction.z;
-
-            if (tzmin > tzmax)
-            {
-                (tzmin, tzmax) = (tzmax, tzmin);
-            }
-
-            if ((tmin > tzmax) || (tzmin > tmax))
-                return -1;
-
-            /*if (tzmin > tmin)
-                tmin = tzmin;
-
-            if (tzmax < tmax)
-                tmax = tzmax;*/
-
-            return 1;
-        }
-
-        public override Vector3 CalcNormal(Vector3 pos)
-        {
-            return Vector3.Normalize(pos - position);
+            SetData(verts, indices);
         }
     }
 }

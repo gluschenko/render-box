@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using System.Windows.Threading;
 using PathTracerSharp.Core;
 using PathTracerSharp.Modules.PathTracer;
@@ -23,11 +24,11 @@ namespace PathTracerSharp.Modules
 
             Scene.Shapes.AddRange(new Shape[]
             {
-                new Sphere(new Vector3(-4, -2, 0), .5f, Color.Black),
+                new Sphere(new Vector3(-4, -2, 0), .6f, Color.Black),
                 new Sphere(new Vector3(-2, -2, 0), .6f, Color.Black),
-                new Sphere(new Vector3(0, -2, 0), .7f, Color.Black),
+                new Sphere(new Vector3(0, -2, 0), .6f, Color.Black),
                 new Sphere(new Vector3(2, -2, 0), .6f, Color.Black),
-                new Sphere(new Vector3(4, -2, 0), .5f, Color.Black),
+                new Sphere(new Vector3(4, -2, 0), .6f, Color.Black),
 
                 new Sphere(new Vector3(-4, 0, 0), .5f, Color.Red),
                 new Sphere(new Vector3(-2, 0, 0), .6f, Color.Yellow),
@@ -35,11 +36,11 @@ namespace PathTracerSharp.Modules
                 new Sphere(new Vector3(2, 0, 0), .6f, Color.Blue),
                 new Sphere(new Vector3(4, 0, 0), .5f, Color.Red),
 
-                new Sphere(new Vector3(-4, 2, 0), .7f, Color.Black),
+                new Sphere(new Vector3(-4, 2, 0), .6f, Color.Black),
                 new Sphere(new Vector3(-2, 2, 0), .6f, Color.Black),
-                new Sphere(new Vector3(0, 2, 0), .5f, Color.Black),
+                new Sphere(new Vector3(0, 2, 0), .6f, Color.Black),
                 new Sphere(new Vector3(2, 2, 0), .6f, Color.Black),
-                new Sphere(new Vector3(4, 2, 0), .7f, Color.Black),
+                new Sphere(new Vector3(4, 2, 0), .6f, Color.Black),
 
                 //new Sphere(new Vector(1, 1, -3), 2f, Color.Black),
                 new Box(new Vector3(1, 1, -3), Vector3.One, Color.Black),
@@ -59,8 +60,10 @@ namespace PathTracerSharp.Modules
             var camera = MainCamera;
             var scene = Scene;
 
-            float scale = width / 20;
-            Vector3 source = camera.Position;
+            float scale = (float)Math.Tan(MathHelpres.DegToRad(camera.FOV * 0.5)); //width / 20;
+            float aspectRatio = (float)width / height;
+
+            Vector3 orig = camera.Position;
             //
             float halfX = width / 2;
             float halfY = height / 2;
@@ -73,21 +76,24 @@ namespace PathTracerSharp.Modules
                     {
                         Color[,] tile = new Color[sizeX, sizeY];
 
-                        for (int y = 0; y < sizeY; y++)
+                        for (int localY = 0; localY < sizeY; localY++)
                         {
-                            int globalY = iy + y;
-                            float posY = (globalY - halfY) / scale;
+                            int y = iy + localY;
 
-                            for (int x = 0; x < sizeX; x++)
+                            for (int localX = 0; localX < sizeX; localX++)
                             {
-                                int globalX = ix + x;
-                                float posX = (globalX - halfX) / scale;
+                                int x = ix + localX;
+                                /*float posX = (globalX - halfX) / scale;
+                                float posY = (globalY - halfY) / scale;*/
+
+                                float posX = (2 * (x + 0.5f) / width - 1) * aspectRatio * scale;
+                                float posY = (1 - 2 * (y + 0.5f) / height) * scale;
                                 //
-                                var pos = new Vector3(posX, posY, 0);
-                                var ray = new Ray(source, pos - source);
+                                var dir = Vector3.Normalize(new Vector3(posX, posY, -1));
+                                var ray = new Ray(orig, dir);
                                 //
                                 var color = TracePath(context, camera, scene, ray, scene.BackgroundColor, 0);
-                                tile[x, y] = color;
+                                tile[localX, localY] = color;
                             }
                         }
 
@@ -130,14 +136,14 @@ namespace PathTracerSharp.Modules
             //const float p = 1f / (2f * (float)Math.PI);
 
             // Compute the BRDF for this ray (assuming Lambertian reflection)
-            //float cos_theta = Vector.Dot(newRay.direction, normal);
+            //float cos_theta = (float)Vector3.Dot(newRay.direction, normal);
             Color BRDF = material.specular / (float)Math.PI;
 
             // Recursively trace reflected light sources.
             Color incoming = TracePath(context, camera, scene, newRay, back, depth + 1);
 
             // Apply the Rendering Equation here.
-            return emittance + (BRDF * incoming /* * cos_theta / p*/);
+            return emittance + (BRDF * incoming /** cos_theta / p*/);
         }
 
         /*void Render(Image finalImage, int numSamples)
@@ -169,6 +175,23 @@ namespace PathTracerSharp.Modules
                 }
             }
             return closest;
+        }
+
+        public override void OnKeyPress(Key key, Action onRender)
+        {
+            var origPos = MainCamera.Position;
+
+            if (key == Key.E) MainCamera.Position += Vector3.Back * 0.5f;
+            if (key == Key.Q) MainCamera.Position += Vector3.Forward * 0.5f;
+            if (key == Key.A) MainCamera.Position += Vector3.Left * 0.5f;
+            if (key == Key.D) MainCamera.Position += Vector3.Right * 0.5f;
+            if (key == Key.W) MainCamera.Position += Vector3.Up * 0.5f;
+            if (key == Key.S) MainCamera.Position += Vector3.Down * 0.5f;
+
+            if (origPos != MainCamera.Position)
+            {
+                onRender();
+            }
         }
     }
 }

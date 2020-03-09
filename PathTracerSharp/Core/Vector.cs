@@ -48,7 +48,24 @@ namespace PathTracerSharp.Core
         public static Vector3 operator /(Vector3 a, double d) => new Vector3(a.x / d, a.y / d, a.z / d);
         public static Vector3 operator /(double d, Vector3 a) => a / d;
 
+        public static bool operator ==(Vector3 a, Vector3 b) => a.x == b.x && a.y == b.y && a.z == b.z;
+        public static bool operator !=(Vector3 a, Vector3 b) => !(a == b);
+
         public double Length => Math.Sqrt(x * x + y * y + z * z);
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Vector3 vector) 
+            {
+                return this == vector;
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return (int)(x + y * 100 * z + 10000);
+        }
 
         // static
         public static double Dot(Vector3 a, Vector3 b) => a.x * b.x + a.y * b.y + a.z * b.z;
@@ -134,7 +151,24 @@ namespace PathTracerSharp.Core
         public static Vector2 operator /(Vector2 a, double d) => new Vector2(a.x / d, a.y / d);
         public static Vector2 operator /(double d, Vector2 a) => a / d;
 
+        public static bool operator ==(Vector2 a, Vector2 b) => a.x == b.x && a.y == b.y;
+        public static bool operator !=(Vector2 a, Vector2 b) => !(a == b);
+
         public double Length => Math.Sqrt(x * x + y * y);
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Vector2 vector)
+            {
+                return this == vector;
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return (int)(x + y * 100);
+        }
 
         // static
         public static double Dot(Vector2 a, Vector2 b) => a.x * b.x + a.y * b.y;
