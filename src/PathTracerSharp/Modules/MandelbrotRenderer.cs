@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Threading;
-using PathTracerSharp.Rendering;
+﻿using PathTracerSharp.Core;
 using PathTracerSharp.Modules.Mandelbrot;
-using PathTracerSharp.Core;
+using PathTracerSharp.Rendering;
+using System;
 using System.Windows.Input;
 
 namespace PathTracerSharp.Modules

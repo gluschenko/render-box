@@ -82,28 +82,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Core\ColorHelpers.cs" />
-    <Compile Include="Core\Rand.cs" />
     <Compile Include="Modules\MandelbrotRenderer.cs" />
     <Compile Include="Modules\PathRenderer.cs" />
-    <Compile Include="Modules\PathTracer\Camera.cs" />
-    <Compile Include="Core\Color.cs" />
     <Compile Include="Modules\RandomRenderer.cs" />
-    <Compile Include="Modules\Perlin\PerlinNoise.cs" />
     <Compile Include="Modules\PerlinRenderer.cs" />
     <Compile Include="Rendering\Renderer.cs" />
-    <Compile Include="Modules\PathTracer\Scene.cs" />
-    <Compile Include="Modules\PathTracer\Shape.cs" />
-    <Compile Include="Modules\PathTracer\Light.cs" />
-    <Compile Include="Modules\PathTracer\Material.cs" />
-    <Compile Include="Core\MathHelpres.cs" />
     <Compile Include="Rendering\Paint.cs" />
-    <Compile Include="Modules\PathTracer\Ray.cs" />
-    <Compile Include="Modules\Mandelbrot\MandelbrotSet.cs" />
-    <Compile Include="Modules\PathTracer\Shapes\Box.cs" />
-    <Compile Include="Modules\PathTracer\Shapes\Mesh.cs" />
-    <Compile Include="Modules\PathTracer\Shapes\Sphere.cs" />
-    <Compile Include="Core\Vector.cs" />
     <Compile Include="RenderPage.xaml.cs">
       <DependentUpon>RenderPage.xaml</DependentUpon>
     </Compile>
@@ -150,6 +134,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\PathTracerSharp.Shared\PathTracerSharp.Shared.csproj">
+      <Project>{65A6033E-9AA6-452E-A161-8370A2B19ED7}</Project>
+      <Name>PathTracerSharp.Shared</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

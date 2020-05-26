@@ -21,6 +21,8 @@ namespace PathTracerSharp.Modules.PathTracer.Shapes
         {
             bool intersect = false;
 
+            hit = new Hit();
+
             for (int k = 0; k < TrianglesCount; ++k)
             {
                 var v0 = Vertices[Indices[k * 3]];
@@ -36,7 +38,7 @@ namespace PathTracerSharp.Modules.PathTracer.Shapes
                 }
             }
 
-            return intersect;
+            return intersect ? 1.0 : 0.0;
         }
 
         public override Vector3 CalcNormal(Vector3 pos)

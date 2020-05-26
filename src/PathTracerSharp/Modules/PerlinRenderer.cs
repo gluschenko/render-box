@@ -1,8 +1,6 @@
-﻿using System;
-using System.Windows.Threading;
-using PathTracerSharp.Rendering;
+﻿using PathTracerSharp.Core;
 using PathTracerSharp.Modules.Perlin;
-using PathTracerSharp.Core;
+using PathTracerSharp.Rendering;
 
 namespace PathTracerSharp.Modules
 {

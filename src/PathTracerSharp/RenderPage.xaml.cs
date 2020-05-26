@@ -153,9 +153,10 @@ namespace PathTracerSharp
         {
             try 
             {
-                ResolutionText.Content = Math.Round(Resolution.Value, 1).ToString();
+                if(ResolutionText != null)
+                    ResolutionText.Content = Math.Round(Resolution.Value, 1).ToString();
             }
-            catch 
+            catch(Exception)
             {
             }
         }

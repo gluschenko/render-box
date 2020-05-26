@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using System.Windows.Threading;
-using PathTracerSharp.Core;
+﻿using PathTracerSharp.Core;
 using PathTracerSharp.Modules.PathTracer;
 using PathTracerSharp.Modules.PathTracer.Shapes;
 using PathTracerSharp.Rendering;
+using System;
+using System.Collections.Generic;
+using System.Windows.Input;
 
 namespace PathTracerSharp.Modules
 {
@@ -43,7 +39,7 @@ namespace PathTracerSharp.Modules
                 new Sphere(new Vector3(4, 2, 0), .6f, Color.Black),
 
                 //new Sphere(new Vector(1, 1, -3), 2f, Color.Black),
-                new Box(new Vector3(1, 1, -3), Vector3.One, Color.Black),
+                new Box(new Vector3(1, 1, -3), Color.Black),
             });
 
             Scene.Lights.AddRange(new Light[]
