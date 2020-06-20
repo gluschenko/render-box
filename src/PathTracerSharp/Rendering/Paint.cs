@@ -47,8 +47,8 @@ namespace PathTracerSharp.Rendering
         /// </summary>
         public void SetPixel(int x, int y, int color)
         {
-            bool is_valid = x >= 0 && y >= 0 && x < Bitmap.PixelWidth && y < Bitmap.PixelHeight;
-            if (!is_valid) return;
+            bool isValid = x >= 0 && y >= 0 && x < Bitmap.PixelWidth && y < Bitmap.PixelHeight;
+            if (!isValid) return;
 
 
             // Reserve the back buffer for updates
@@ -79,38 +79,38 @@ namespace PathTracerSharp.Rendering
             int width = colors.GetLength(0);
             int height = colors.GetLength(1);
 
-            bool is_valid = x >= 0 && y >= 0 && x + width < Bitmap.PixelWidth && y + height < Bitmap.PixelHeight;
-            if (!is_valid) return;
+            bool isValid = x >= 0 && y >= 0 && x + width < Bitmap.PixelWidth && y + height < Bitmap.PixelHeight;
+            if (!isValid) return;
 
 
-            // Reserve the back buffer for updates
             Bitmap.Lock();
 
             unsafe
             {
+                IntPtr backBuffer = Bitmap.BackBuffer;
+
+                int pixel = sizeof(int);
+
+                backBuffer += y * (Bitmap.PixelWidth * pixel);
+                backBuffer += x * pixel;
+
+                int newLineOffset = (Bitmap.PixelWidth * pixel) - (width * pixel);
+
+                //;
                 for (int localY = 0; localY < height; localY++)
                 {
-                    // Get a pointer to the back buffer
-                    IntPtr backBuffer = Bitmap.BackBuffer;
-
-                    // Find the address of the pixel to draw
-                    backBuffer += (y + localY) * Bitmap.BackBufferStride;
-                    backBuffer += x * 4;
-
                     for (int localX = 0; localX < width; localX++)
                     {
-                        backBuffer += 4;
-
-                        // Assign the color data to the pixel
+                        backBuffer += pixel;
                         *(int*)backBuffer = (int)colors[localX, localY];
                     }
+
+                    backBuffer += newLineOffset;
                 }
             }
 
             // Specify the area of the bitmap that changed
             Bitmap.AddDirtyRect(new Int32Rect(x, y, width, height));
-
-            // Release the back buffer and make it available for display
             Bitmap.Unlock();
         }
     }

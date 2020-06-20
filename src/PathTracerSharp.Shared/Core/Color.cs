@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace PathTracerSharp.Core
 {
@@ -35,14 +36,13 @@ namespace PathTracerSharp.Core
             A = MathHelpres.Clamp(A);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int GetRaw()
         {
-            return
-                GetChannel(R) << 16 |
-                GetChannel(G) << 8 |
-                GetChannel(B);
+            return GetChannel(R) << 16 | GetChannel(G) << 8 | GetChannel(B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private byte GetChannel(float n) 
         {
             if (n < 0) return 0;
@@ -61,6 +61,7 @@ namespace PathTracerSharp.Core
         public static Color operator *(Color a, float m) => new Color(a.R * m, a.G * m, a.B * m, a.A * m);
         public static Color operator /(Color a, float d) => new Color(a.R / d, a.G / d, a.B / d, a.A / d);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator int(Color a) => a.GetRaw();
 
         public override int GetHashCode() => GetRaw();

@@ -79,9 +79,7 @@ namespace PathTracerSharp.Modules
                             for (int localX = 0; localX < sizeX; localX++)
                             {
                                 int x = ix + localX;
-                                /*float posX = (globalX - halfX) / scale;
-                                float posY = (globalY - halfY) / scale;*/
-
+                                //
                                 float posX = (2 * (x + 0.5f) / width - 1) * aspectRatio * scale;
                                 float posY = (1 - 2 * (y + 0.5f) / height) * scale;
                                 //
