@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using PathTracerSharp.Core;
 
-namespace PathTracerSharp.Modules.PathTracer
+namespace PathTracerSharp.Shared.Modules.PathTracer
 {
     public class Scene
     {

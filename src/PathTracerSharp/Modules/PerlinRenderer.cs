@@ -1,6 +1,6 @@
 ﻿using PathTracerSharp.Core;
-using PathTracerSharp.Modules.Perlin;
 using PathTracerSharp.Rendering;
+using PathTracerSharp.Shared.Modules.Perlin;
 
 namespace PathTracerSharp.Modules
 {

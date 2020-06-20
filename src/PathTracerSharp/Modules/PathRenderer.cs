@@ -1,10 +1,10 @@
-﻿using PathTracerSharp.Core;
-using PathTracerSharp.Modules.PathTracer;
-using PathTracerSharp.Modules.PathTracer.Shapes;
-using PathTracerSharp.Rendering;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Windows.Input;
+using PathTracerSharp.Core;
+using PathTracerSharp.Rendering;
+using PathTracerSharp.Shared.Modules.PathTracer;
+using PathTracerSharp.Shared.Modules.PathTracer.Shapes;
 
 namespace PathTracerSharp.Modules
 {

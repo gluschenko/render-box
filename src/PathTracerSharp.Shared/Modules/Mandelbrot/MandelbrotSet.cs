@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace PathTracerSharp.Modules.Mandelbrot
+namespace PathTracerSharp.Shared.Modules.Mandelbrot
 {
     public class MandelbrotSet
     {

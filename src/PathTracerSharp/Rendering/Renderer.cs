@@ -1,25 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Threading;
 using System.Threading;
-using System.Threading.Tasks;
-using PathTracerSharp.Core;
-using PathTracerSharp.Modules.PathTracer;
 using System.Windows.Input;
+using System.Windows.Threading;
+using PathTracerSharp.Core;
 
 namespace PathTracerSharp.Rendering
 {
     public delegate void RenderStartHandler();
     public delegate void RenderCompleteHandler();
 
-    /*public abstract class Renderer : Renderer<RenderContext>
-    {
-        public Renderer(Paint paint) : base(paint) { }
-    }*/
-
-    public abstract class Renderer : IDisposable //<T> where T : RenderContext
+    public abstract class Renderer : IDisposable
     {
         // public
         public int BatchSize { get; set; } = 32;
@@ -34,14 +24,6 @@ namespace PathTracerSharp.Rendering
         {
             Paint = paint;
         }
-
-        public void Dispose()
-        {
-            Stop();
-            Paint.Dispose();
-        }
-
-        public virtual void OnKeyPress(Key key, Action onRender) { }
 
         public void Render(Dispatcher dispatcher) 
         {
@@ -80,6 +62,16 @@ namespace PathTracerSharp.Rendering
             }
         }
 
+        public void Dispose()
+        {
+            Stop();
+            Paint?.Dispose();
+        }
+
+        public virtual void OnKeyPress(Key key, Action onRender)
+        {
+        }
+
         public virtual RenderContext BuildContext(Dispatcher dispatcher)
         {
             return new RenderContext
@@ -108,20 +100,6 @@ namespace PathTracerSharp.Rendering
                     Color[,] tile = onBatch(x, y, sizeX, sizeY);
                     //
                     dispatcher.Invoke(() => Paint.SetPixels(x, y, tile));
-
-                    /*dispatcher.Invoke(() => {
-                        for (int localY = 0; localY < sizeY; localY++)
-                        {
-                            int globalY = y + localY;
-
-                            for (int localX = 0; localX < sizeX; localX++)
-                            {
-                                int globalX = x + localX;
-                                //
-                                Paint.SetPixel(globalX, globalY, (int)tile[localX, localY]);
-                            }
-                        }
-                    });*/
                 }
             }
         }

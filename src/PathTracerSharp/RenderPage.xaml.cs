@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Linq;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Windows;
-using System.Windows.Input;
 using System.Diagnostics;
+using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
-
-using PathTracerSharp.Core;
+using System.Windows.Input;
 using PathTracerSharp.Rendering;
-using PathTracerSharp.Modules;
-using PathTracerSharp.Modules.PathTracer;
-using PathTracerSharp.Modules.PathTracer.Shapes;
+using PathTracerSharp.Shared.Modules.PathTracer;
 
 namespace PathTracerSharp
 {
@@ -61,7 +56,7 @@ namespace PathTracerSharp
 
         public void Dispose()
         {
-            Renderer.Dispose();
+            Renderer?.Dispose();
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)

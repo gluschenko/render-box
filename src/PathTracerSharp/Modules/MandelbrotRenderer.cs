@@ -1,8 +1,8 @@
-﻿using PathTracerSharp.Core;
-using PathTracerSharp.Modules.Mandelbrot;
-using PathTracerSharp.Rendering;
-using System;
+﻿using System;
 using System.Windows.Input;
+using PathTracerSharp.Core;
+using PathTracerSharp.Rendering;
+using PathTracerSharp.Shared.Modules.Mandelbrot;
 
 namespace PathTracerSharp.Modules
 {
@@ -41,7 +41,6 @@ namespace PathTracerSharp.Modules
                     {
                         int globalX = ix + localX;
                         double posX = (globalX - halfX) / zoom - 0.5;
-
                         //
                         var n = (float)Mandelbrot.Calc(new ComplexNumber(posX, posY), 1);
                         tile[localX, localY] = new Color(n, n, n); //ColorHelpers.FromHSV(120.0, 1, n);
@@ -55,7 +54,7 @@ namespace PathTracerSharp.Modules
                 => renderBatch(ix, iy, sizeX, sizeY, 1);
 
             Color[,] batchPreview(int ix, int iy, int sizeX, int sizeY) 
-                => renderBatch(ix, iy, sizeX, sizeY, 4);
+                => renderBatch(ix, iy, sizeX, sizeY, 8);
 
             BatchScreen(context, batchPreview);
 

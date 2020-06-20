@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using PathTracerSharp.Core;
 
-namespace PathTracerSharp.Modules.PathTracer.Shapes
+namespace PathTracerSharp.Shared.Modules.PathTracer.Shapes
 {
     public class Box : Mesh
     {
