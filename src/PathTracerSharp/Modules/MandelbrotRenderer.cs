@@ -34,8 +34,8 @@ namespace PathTracerSharp.Modules
             double halfX = (context.width / 2) + (OffsetX * zoom);
             double halfY = (context.height / 2) + (OffsetY * zoom);
 
-            var palette = new Color[Iterations];
-            for (int i = 0; i < Iterations; i++) 
+            var palette = new Color[Iterations + 1];
+            for (int i = 0; i < palette.Length; i++) 
             {
                 var n = (float)i / Iterations;
                 palette[i] = new Color(n, n, n);
@@ -55,8 +55,8 @@ namespace PathTracerSharp.Modules
                         int globalX = ix + localX;
                         double posX = (globalX - halfX) / zoom - 0.5;
                         //
-                        var n = (float)Mandelbrot.Calc(new ComplexNumber(posX, posY), 1);
-                        tile[localX, localY] = new Color(n, n, n); //ColorHelpers.FromHSV(120.0, 1, n);
+                        var n = Mandelbrot.GetInterationsCount(new ComplexNumber(posX, posY));
+                        tile[localX, localY] = palette[n];
                     }
                 }
 

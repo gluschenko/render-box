@@ -25,7 +25,8 @@ namespace PathTracerSharp.Shared.Modules.Mandelbrot
             MaxNorm = MaxValueExtent * MaxValueExtent;
         }
 
-        public double Calc(ComplexNumber c, double defaultValue = 1)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int GetInterationsCount(ComplexNumber c) 
         {
             int i = 0;
             ComplexNumber z = new ComplexNumber();
@@ -34,6 +35,14 @@ namespace PathTracerSharp.Shared.Modules.Mandelbrot
                 z = z * z + c;
                 i++;
             }
+
+            return i;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public double Calc(ComplexNumber c, double defaultValue = 1)
+        {
+            int i = GetInterationsCount(c);
 
             if (i < MaxIterations)
             {
