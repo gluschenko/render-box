@@ -86,6 +86,11 @@
     <Compile Include="Modules\PathRenderer.cs" />
     <Compile Include="Modules\RandomRenderer.cs" />
     <Compile Include="Modules\PerlinRenderer.cs" />
+    <Compile Include="Options\IOptionsPage.cs" />
+    <Compile Include="Pages\MandelbrotPage.xaml.cs">
+      <DependentUpon>MandelbrotPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Options\OptionsPageAttribute.cs" />
     <Compile Include="Rendering\Renderer.cs" />
     <Compile Include="Rendering\Paint.cs" />
     <Compile Include="RenderPage.xaml.cs">
@@ -103,6 +108,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Pages\MandelbrotPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="RenderPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

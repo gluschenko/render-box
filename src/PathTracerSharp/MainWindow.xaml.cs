@@ -3,23 +3,26 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Controls;
+using System.Linq;
 
 namespace PathTracerSharp
 {
     public partial class MainWindow : Window
     {
-        private int TabCounter;
-        private Dictionary<TabItem, RenderPage> Pages;
+        private int _tabCounter;
+        private readonly Dictionary<TabItem, RenderPage> _pages;
 
         public MainWindow()
         {
             InitializeComponent();
 
-            Pages = new Dictionary<TabItem, RenderPage>();
+            _pages = new Dictionary<TabItem, RenderPage>();
 
             Tabs.SelectionChanged += OnTabsSelectionChanged;
 
             AddTab();
+
+            Closing += OnClosing;
         }
 
         private void AddTab() 
@@ -30,13 +33,13 @@ namespace PathTracerSharp
             Tabs.SelectedIndex = idx - 1;
             var item = new TabItem()
             {
-                Header = $"Render #{++TabCounter}",
+                Header = $"Render #{++_tabCounter}",
                 Content = new Frame() { Content = page }
             };
 
             item.MouseRightButtonUp += onItemClick;
 
-            Pages.Add(item, page);
+            _pages.Add(item, page);
             Tabs.Items.Insert(idx - 1, item);
             Tabs.SelectedIndex = Tabs.Items.Count - 2;
 
@@ -44,8 +47,8 @@ namespace PathTracerSharp
             {
                 if (Tabs.Items.Count > 2)
                 {
-                    Pages[item].Dispose();
-                    Pages.Remove(item);
+                    _pages[item].Dispose();
+                    _pages.Remove(item);
                     Tabs.Items.Remove(item);
                     Tabs.SelectedIndex = Tabs.Items.Count - 2;
                 }
@@ -60,9 +63,19 @@ namespace PathTracerSharp
 
         private void OnTabsSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            foreach (var pair in Pages)
+            foreach (var pair in _pages)
             {
                 pair.Value.IsActive = pair.Key.IsSelected;
+            }
+        }
+
+        private void OnClosing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            var renderers = _pages.Select(x => x.Value).Select(x => x.Renderer).ToArray();
+
+            foreach (var renderer in renderers) 
+            {
+                renderer?.Dispose();
             }
         }
     }

@@ -1,29 +1,35 @@
 ﻿using System;
 using System.Windows.Input;
 using PathTracerSharp.Core;
+using PathTracerSharp.Options;
+using PathTracerSharp.Pages;
 using PathTracerSharp.Rendering;
 using PathTracerSharp.Shared.Modules.Mandelbrot;
 
 namespace PathTracerSharp.Modules
 {
+    [OptionsPage(typeof(MandelbrotPage))]
     public class MandelbrotRenderer : Renderer
     {
         public MandelbrotSet Mandelbrot { get; private set; }
 
-        public double Zoom = 1;
-        public float OffsetX = 0;
-        public float OffsetY = 0;
+        public double Zoom { get; set; } = 1;
+        public float OffsetX { get; set; } = 0;
+        public float OffsetY { get; set; } = 0;
 
-        public int Iterations = 100;
-        public double Extent = 2;
+        public int Iterations { get; set; } = 100;
+        public double Extent { get; set; } = 2;
 
         public MandelbrotRenderer(Paint paint) : base(paint)
         {
-            Mandelbrot = new MandelbrotSet(Iterations, Extent);
+            Mandelbrot = new MandelbrotSet();
         }
 
         protected override void RenderRoutine(RenderContext context)
         {
+            Mandelbrot.SetIterations(Iterations);
+            Mandelbrot.SetExtent(Extent);
+
             double zoom = (context.width / 3.0) * (1.0 / Zoom);
             double halfX = (context.width / 2) + (OffsetX * zoom);
             double halfY = (context.height / 2) + (OffsetY * zoom);

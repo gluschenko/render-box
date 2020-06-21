@@ -13,13 +13,13 @@ namespace PathTracerSharp.Rendering
 
         public Image Image { get; private set; }
         public WriteableBitmap Bitmap { get; private set; }
-        public int Width => Bitmap.PixelWidth;
-        public int Height => Bitmap.PixelHeight;
+        public int Width => Bitmap?.PixelWidth ?? 0;
+        public int Height => Bitmap?.PixelHeight ?? 0;
 
         public Paint(Image img, int width, int height)
         {
             Image = img;
-            Bitmap = CreateBitmap(img, width, height);
+            CreateBitmap(img, width, height);
         }
 
         public Paint(Image img, double width, double height) : this(img, (int)width, (int)height) { }
@@ -32,14 +32,18 @@ namespace PathTracerSharp.Rendering
         /// <summary>
         /// https://docs.microsoft.com/en-us/dotnet/api/system.windows.media.imaging.writeablebitmap?redirectedfrom=MSDN&view=netframework-4.8
         /// </summary>
-        private WriteableBitmap CreateBitmap(Image img, int width, int height)
+        private void CreateBitmap(Image img, int width, int height)
         {
+            if (width <= 0 || height <= 0) return;
+
             RenderOptions.SetBitmapScalingMode(img, BitmapScalingMode.HighQuality);
             RenderOptions.SetEdgeMode(img, EdgeMode.Aliased);
 
             var bitmap = new WriteableBitmap(width, height, DPI, DPI, PixelFormats.Bgr32, null);
             img.Source = bitmap;
-            return bitmap;
+            
+            Bitmap = null;
+            Bitmap = bitmap;
         }
 
         /// <summary>
@@ -47,35 +51,32 @@ namespace PathTracerSharp.Rendering
         /// </summary>
         public void SetPixel(int x, int y, int color)
         {
+            if (Bitmap == null) return;
+
             bool isValid = x >= 0 && y >= 0 && x < Bitmap.PixelWidth && y < Bitmap.PixelHeight;
             if (!isValid) return;
 
 
-            // Reserve the back buffer for updates
             Bitmap.Lock();
 
             unsafe
             {
-                // Get a pointer to the back buffer
                 IntPtr backBuffer = Bitmap.BackBuffer;
 
-                // Find the address of the pixel to draw
                 backBuffer += y * Bitmap.BackBufferStride;
                 backBuffer += x * 4;
 
-                // Assign the color data to the pixel
                 *(int*)backBuffer = color;
             }
 
-            // Specify the area of the bitmap that changed
             Bitmap.AddDirtyRect(new Int32Rect(x, y, 1, 1));
-
-            // Release the back buffer and make it available for display
             Bitmap.Unlock();
         }
 
         public void SetPixels(int x, int y, Color[,] colors) 
         {
+            if (Bitmap == null) return;
+
             int width = colors.GetLength(0);
             int height = colors.GetLength(1);
 
@@ -94,7 +95,7 @@ namespace PathTracerSharp.Rendering
                 backBuffer += y * (Bitmap.PixelWidth * pixel);
                 backBuffer += x * pixel;
 
-                int newLineOffset = (Bitmap.PixelWidth * pixel) - (width * pixel);
+                int newLineOffset = (Bitmap.PixelWidth - width) * pixel;
 
                 //;
                 for (int localY = 0; localY < height; localY++)
@@ -109,7 +110,6 @@ namespace PathTracerSharp.Rendering
                 }
             }
 
-            // Specify the area of the bitmap that changed
             Bitmap.AddDirtyRect(new Int32Rect(x, y, width, height));
             Bitmap.Unlock();
         }

@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:PathTracerSharp"
       mc:Ignorable="d" 
-      d:DesignHeight="300" d:DesignWidth="450"
+      d:DesignHeight="400" d:DesignWidth="450"
       Title="RenderPage"
       Background="White">
 
@@ -13,13 +13,20 @@
         <Grid>
             <Image x:Name="Image" Stretch="Fill" HorizontalAlignment="Center" VerticalAlignment="Center"></Image>
             <Grid x:Name="SidePanel" Width="200" HorizontalAlignment="Right" Background="White">
-                <ScrollViewer>
-                    <ListBox x:Name="LogList">
-                        <ListBoxItem>123</ListBoxItem>
-                        <ListBoxItem>456</ListBoxItem>
-                        <ListBoxItem>789</ListBoxItem>
-                    </ListBox>
-                </ScrollViewer>
+                <TabControl>
+                    <TabItem Header="Options">
+                        <Frame x:Name="OptionsFrame"></Frame>
+                    </TabItem>
+                    <TabItem Header="Log" IsSelected="True">
+                        <ScrollViewer>
+                            <ListBox x:Name="LogList">
+                                <ListBoxItem>123</ListBoxItem>
+                                <ListBoxItem>456</ListBoxItem>
+                                <ListBoxItem>789</ListBoxItem>
+                            </ListBox>
+                        </ScrollViewer>
+                    </TabItem>
+                </TabControl>
             </Grid>
 
             <StackPanel Background="#2FFF" Height="30" Orientation="Horizontal" VerticalAlignment="Bottom">

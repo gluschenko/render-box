@@ -1,10 +1,14 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using PathTracerSharp.Options;
+using PathTracerSharp.Pages;
 using PathTracerSharp.Rendering;
 using PathTracerSharp.Shared.Modules.PathTracer;
 
@@ -19,8 +23,8 @@ namespace PathTracerSharp
         public Camera MainCamera { get; set; }
         public Scene Scene { get; set; }
 
-        readonly ObservableCollection<string> Log;
-        readonly Stopwatch Timer = new Stopwatch();
+        private readonly ObservableCollection<string> _log;
+        private readonly Stopwatch _timer = new Stopwatch();
 
         public RenderPage()
         {
@@ -28,9 +32,9 @@ namespace PathTracerSharp
 
             Loaded += OnLoaded;
 
-            Log = new ObservableCollection<string>();
+            _log = new ObservableCollection<string>();
             LogList.Items.Clear();
-            LogList.ItemsSource = Log;
+            LogList.ItemsSource = _log;
 
             //
 
@@ -45,7 +49,8 @@ namespace PathTracerSharp
                     Margin = new Thickness(5)
                 };
 
-                button.Click += (s, e) => {
+                button.Click += (s, e) => 
+                {
                     Start(module);
                     ModulesListRoot.Visibility = Visibility.Hidden;
                 };
@@ -77,18 +82,27 @@ namespace PathTracerSharp
             if (Renderer == null)
             {
                 Renderer = (Renderer)Activator.CreateInstance(type, new Paint(Image, w, h));
-                Renderer.RenderStart += () => Timer.Restart();
-                Renderer.RenderComplete += () => Log.Add($"Render frame: {Timer.ElapsedMilliseconds} ms");
+                Renderer.RenderStart += () => _timer.Restart();
+                Renderer.RenderComplete += () => _log.Add($"Render frame: {_timer.ElapsedMilliseconds} ms");
+
+                var attributes = Renderer.GetType().GetCustomAttributes();
+                foreach (var attribute in attributes) 
+                {
+                    if (attribute is OptionsPageAttribute optionsPageAttribute) 
+                    {
+                        var page = Activator.CreateInstance(optionsPageAttribute.OptionsPageType);
+                        if (page is IOptionsPage optionsPage) 
+                        {
+                            optionsPage.UseSource(Renderer);
+                        }
+                        OptionsFrame.Navigate(page);
+                    }
+                }
             }
             else
             {
                 Renderer.Stop();
                 Renderer.Paint = new Paint(Image, w, h);
-
-                /*if (Renderer.Paint.Width != w || Renderer.Paint.Height != h) 
-                {
-                    Renderer.Paint = new Paint(Image, w, h);
-                }*/
             }
         }
 

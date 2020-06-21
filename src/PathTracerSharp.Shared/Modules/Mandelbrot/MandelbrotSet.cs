@@ -4,14 +4,24 @@ namespace PathTracerSharp.Shared.Modules.Mandelbrot
 {
     public class MandelbrotSet
     {
-        public double MaxValueExtent { get; set; }
-        public int MaxIterations { get; set; }
-        public double MaxNorm { get; }
+        public double MaxValueExtent { get; private set; }
+        public int MaxIterations { get; private set; }
+        public double MaxNorm { get; private set; }
 
         public MandelbrotSet(int maxIterations = 100, double maxValueExtent = 2.0)
         {
-            MaxValueExtent = maxValueExtent;
+            SetIterations(maxIterations);
+            SetExtent(maxValueExtent);
+        }
+
+        public void SetIterations(int maxIterations) 
+        {
             MaxIterations = maxIterations;
+        }
+
+        public void SetExtent(double maxValueExtent) 
+        {
+            MaxValueExtent = maxValueExtent;
             MaxNorm = MaxValueExtent * MaxValueExtent;
         }
 
