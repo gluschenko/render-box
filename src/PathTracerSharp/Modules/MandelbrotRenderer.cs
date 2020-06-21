@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Input;
-using System.Windows.Threading;
 using PathTracerSharp.Core;
 using PathTracerSharp.Options;
 using PathTracerSharp.Pages;
@@ -64,11 +63,15 @@ namespace PathTracerSharp.Modules
                 return tile;
             }
 
-            Color[,] batch(int ix, int iy, int sizeX, int sizeY) 
-                => renderBatch(ix, iy, sizeX, sizeY, 1);
+            Color[,] batch(int ix, int iy, int sizeX, int sizeY)
+            {
+                return renderBatch(ix, iy, sizeX, sizeY, 1);
+            }
 
-            Color[,] batchPreview(int ix, int iy, int sizeX, int sizeY) 
-                => renderBatch(ix, iy, sizeX, sizeY, 8);
+            Color[,] batchPreview(int ix, int iy, int sizeX, int sizeY)
+            {
+                return renderBatch(ix, iy, sizeX, sizeY, 8);
+            }
 
             BatchScreen(context, batchPreview);
 

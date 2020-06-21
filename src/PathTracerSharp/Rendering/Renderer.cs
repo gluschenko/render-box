@@ -41,14 +41,20 @@ namespace PathTracerSharp.Rendering
 
             void process()
             {
-                context.dispatcher.Invoke(() => RenderStart?.Invoke());
-
-                lock (Paint)
+                try
                 {
-                    RenderRoutine(context);
-                }
+                    context.dispatcher.Invoke(() => RenderStart?.Invoke());
 
-                context.dispatcher.Invoke(() => RenderComplete?.Invoke());
+                    lock (Paint)
+                    {
+                        RenderRoutine(context);
+                    }
+
+                    context.dispatcher.Invoke(() => RenderComplete?.Invoke());
+                }
+                catch (ThreadInterruptedException) 
+                {
+                }
             }
         }
 
@@ -56,7 +62,8 @@ namespace PathTracerSharp.Rendering
         {
             if (renderThread != null)
             {
-                renderThread.Abort();
+                //renderThread.Abort();
+                renderThread.Interrupt();
                 renderThread = null;
             }
         }

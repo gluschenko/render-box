@@ -12,9 +12,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{B6DE6916-D
 		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PathTracerSharp.Web", "PathTracerSharp.Web\PathTracerSharp.Web.csproj", "{228FAC62-8079-4C1C-9028-AA010B759DAB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PathTracerSharp.Web", "PathTracerSharp.Web\PathTracerSharp.Web.csproj", "{228FAC62-8079-4C1C-9028-AA010B759DAB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PathTracerSharp.Shared", "PathTracerSharp.Shared\PathTracerSharp.Shared.csproj", "{65A6033E-9AA6-452E-A161-8370A2B19ED7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PathTracerSharp.Shared", "PathTracerSharp.Shared\PathTracerSharp.Shared.csproj", "{65A6033E-9AA6-452E-A161-8370A2B19ED7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,12 +26,12 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{90B35404-D527-48B2-A12C-0A9A9097672D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{90B35404-D527-48B2-A12C-0A9A9097672D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{90B35404-D527-48B2-A12C-0A9A9097672D}.Debug|x64.ActiveCfg = Debug|x64
-		{90B35404-D527-48B2-A12C-0A9A9097672D}.Debug|x64.Build.0 = Debug|x64
+		{90B35404-D527-48B2-A12C-0A9A9097672D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{90B35404-D527-48B2-A12C-0A9A9097672D}.Debug|x64.Build.0 = Debug|Any CPU
 		{90B35404-D527-48B2-A12C-0A9A9097672D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{90B35404-D527-48B2-A12C-0A9A9097672D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{90B35404-D527-48B2-A12C-0A9A9097672D}.Release|x64.ActiveCfg = Release|x64
-		{90B35404-D527-48B2-A12C-0A9A9097672D}.Release|x64.Build.0 = Release|x64
+		{90B35404-D527-48B2-A12C-0A9A9097672D}.Release|x64.ActiveCfg = Release|Any CPU
+		{90B35404-D527-48B2-A12C-0A9A9097672D}.Release|x64.Build.0 = Release|Any CPU
 		{1FEFB35E-3494-4ADA-8BB2-FC55A0699A17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1FEFB35E-3494-4ADA-8BB2-FC55A0699A17}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1FEFB35E-3494-4ADA-8BB2-FC55A0699A17}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
