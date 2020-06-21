@@ -91,6 +91,7 @@
       <DependentUpon>MandelbrotPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Options\OptionsPageAttribute.cs" />
+    <Compile Include="Rendering\PaintExtensions.cs" />
     <Compile Include="Rendering\Renderer.cs" />
     <Compile Include="Rendering\Paint.cs" />
     <Compile Include="RenderPage.xaml.cs">

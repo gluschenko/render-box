@@ -19,6 +19,7 @@ namespace PathTracerSharp.Pages
         {
             Source.Iterations = int.TryParse(Iterations.Text, out int a) ? a : 0;
             Source.Extent = double.TryParse(Extent.Text, out double b) ? b : 0;
+            Source.BatchSize = int.TryParse(BatchSize.Text, out int c) ? c : 0;
 
             Source.Render(Dispatcher);
         }
@@ -29,6 +30,7 @@ namespace PathTracerSharp.Pages
 
             Iterations.Text = Source.Iterations.ToString();
             Extent.Text = Source.Extent.ToString();
+            BatchSize.Text = Source.BatchSize.ToString();
         }
     }
 }

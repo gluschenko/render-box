@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Input;
+using System.Windows.Threading;
 using PathTracerSharp.Core;
 using PathTracerSharp.Options;
 using PathTracerSharp.Pages;
@@ -34,6 +35,13 @@ namespace PathTracerSharp.Modules
             double halfX = (context.width / 2) + (OffsetX * zoom);
             double halfY = (context.height / 2) + (OffsetY * zoom);
 
+            var palette = new Color[Iterations];
+            for (int i = 0; i < Iterations; i++) 
+            {
+                var n = (float)i / Iterations;
+                palette[i] = new Color(n, n, n);
+            }
+
             Color[,] renderBatch(int ix, int iy, int sizeX, int sizeY, int step)
             {
                 Color[,] tile = new Color[sizeX, sizeY];
@@ -65,6 +73,8 @@ namespace PathTracerSharp.Modules
             BatchScreen(context, batchPreview);
 
             BatchScreen(context, batch);
+
+            //context.dispatcher.Invoke(() => Paint.FillRect(10, 10, 80, 40, Color.Green));
         }
 
         public override void OnKeyPress(Key key, Action onRender)

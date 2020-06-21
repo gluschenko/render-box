@@ -41,14 +41,13 @@ namespace PathTracerSharp.Rendering
 
             void process()
             {
-                // Firing begin event
                 context.dispatcher.Invoke(() => RenderStart?.Invoke());
-                // Render process
+
                 lock (Paint)
                 {
                     RenderRoutine(context);
                 }
-                // Firing end event
+
                 context.dispatcher.Invoke(() => RenderComplete?.Invoke());
             }
         }

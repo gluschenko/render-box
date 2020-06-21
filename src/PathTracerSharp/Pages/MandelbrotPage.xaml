@@ -17,6 +17,9 @@
             <Label Content="Extent:"></Label>
             <TextBox x:Name="Extent"></TextBox>
 
+            <Label Content="Batch size:"></Label>
+            <TextBox x:Name="BatchSize"></TextBox>
+
             <Button 
                 x:Name="ApplyButton" 
                 Content="Apply" 

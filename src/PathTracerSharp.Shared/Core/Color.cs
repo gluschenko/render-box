@@ -20,6 +20,7 @@ namespace PathTracerSharp.Core
         public float B { get; set; }
         public float A { get; set; }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Color(float r, float g, float b, float a = 1)
         {
             R = r;
@@ -28,6 +29,7 @@ namespace PathTracerSharp.Core
             A = a;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clamp() 
         {
             R = MathHelpres.Clamp(R);
@@ -64,8 +66,10 @@ namespace PathTracerSharp.Core
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator int(Color a) => a.GetRaw();
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override int GetHashCode() => GetRaw();
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override bool Equals(object obj)
         {
             if (obj is Color color)
