@@ -41,6 +41,14 @@ namespace PathTracerSharp.Modules
                 palette[i] = new Color(n, n, n);
             }
 
+            BatchScreen(context, batchPreview);
+
+            BatchScreen(context, batch);
+
+            //context.dispatcher.Invoke(() => Paint.FillRect(10, 10, 80, 40, Color.Green));
+
+            //
+
             Color[,] renderBatch(int ix, int iy, int sizeX, int sizeY, int step)
             {
                 Color[,] tile = new Color[sizeX, sizeY];
@@ -72,12 +80,6 @@ namespace PathTracerSharp.Modules
             {
                 return renderBatch(ix, iy, sizeX, sizeY, 8);
             }
-
-            BatchScreen(context, batchPreview);
-
-            BatchScreen(context, batch);
-
-            //context.dispatcher.Invoke(() => Paint.FillRect(10, 10, 80, 40, Color.Green));
         }
 
         public override void OnKeyPress(Key key, Action onRender)

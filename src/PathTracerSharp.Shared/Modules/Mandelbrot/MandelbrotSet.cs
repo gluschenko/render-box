@@ -26,7 +26,7 @@ namespace PathTracerSharp.Shared.Modules.Mandelbrot
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int GetInterationsCount(ComplexNumber c) 
+        public virtual int GetInterationsCount(ComplexNumber c) 
         {
             int i = 0;
             ComplexNumber z = new ComplexNumber();
@@ -40,7 +40,7 @@ namespace PathTracerSharp.Shared.Modules.Mandelbrot
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public double Calc(ComplexNumber c, double defaultValue = 1)
+        public virtual double Calc(ComplexNumber c, double defaultValue = 1)
         {
             int i = GetInterationsCount(c);
 
@@ -58,6 +58,8 @@ namespace PathTracerSharp.Shared.Modules.Mandelbrot
     public struct ComplexNumber
     {
         public double Re, Im;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ComplexNumber(double re, double im) { Re = re; Im = im; }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
