@@ -14,8 +14,8 @@ namespace PathTracerSharp.Modules
         public MandelbrotSet Mandelbrot { get; private set; }
 
         public double Zoom { get; set; } = 1;
-        public float OffsetX { get; set; } = 0;
-        public float OffsetY { get; set; } = 0;
+        public double OffsetX { get; set; } = 0;
+        public double OffsetY { get; set; } = 0;
 
         public int Iterations { get; set; } = 100;
         public double Extent { get; set; } = 2;
@@ -35,7 +35,7 @@ namespace PathTracerSharp.Modules
             double halfY = (context.height / 2) + (OffsetY * zoom);
 
             var palette = new Color[Iterations + 1];
-            for (int i = 0; i < palette.Length; i++) 
+            for (int i = 0; i < palette.Length; i++)
             {
                 var n = (float)i / Iterations;
                 palette[i] = new Color(n, n, n);
@@ -53,17 +53,34 @@ namespace PathTracerSharp.Modules
             {
                 Color[,] tile = new Color[sizeX, sizeY];
 
+                double cellPerPixel = 1 / zoom;
+
+                var posX = ix - halfX;
+                var posY = iy - halfY;
+
+                posX *= cellPerPixel;
+                posY *= cellPerPixel;
+
+                posX -= 0.5;
+                cellPerPixel *= step;
+
                 for (int localY = 0; localY < sizeY; localY += step)
                 {
-                    int globalY = iy + localY;
-                    double posY = (globalY - halfY) / zoom;
+                    var localPosX = posX;
+
+                    posY += cellPerPixel;
+
+                    //int globalY = iy + localY;
+                    //double posY = (globalY - halfY) / zoom;
 
                     for (int localX = 0; localX < sizeX; localX += step)
                     {
-                        int globalX = ix + localX;
-                        double posX = (globalX - halfX) / zoom - 0.5;
+                        localPosX += cellPerPixel;
+
+                        //int globalX = ix + localX;
+                        //double posX = (globalX - halfX) / zoom - 0.5;
                         //
-                        var n = Mandelbrot.GetInterationsCount(new ComplexNumber(posX, posY));
+                        var n = Mandelbrot.GetInterationsCount(new ComplexNumber(localPosX, posY));
                         tile[localX, localY] = palette[n];
                     }
                 }
@@ -86,19 +103,19 @@ namespace PathTracerSharp.Modules
         {
             bool wasd = key == Key.W || key == Key.A || key == Key.S || key == Key.D;
 
-            if (key == Key.W) OffsetY += (float)(Zoom / 20);
-            if (key == Key.S) OffsetY -= (float)(Zoom / 20);
-            if (key == Key.A) OffsetX += (float)(Zoom / 20);
-            if (key == Key.D) OffsetX -= (float)(Zoom / 20);
+            if (key == Key.W) OffsetY += Zoom / 20;
+            if (key == Key.S) OffsetY -= Zoom / 20;
+            if (key == Key.A) OffsetX += Zoom / 20;
+            if (key == Key.D) OffsetX -= Zoom / 20;
 
-            if (wasd) 
+            if (wasd)
             {
                 onRender();
             }
 
             bool zoom = key == Key.Q || key == Key.E;
 
-            if (zoom) 
+            if (zoom)
             {
                 if (key == Key.Q) ZoomOut();
                 if (key == Key.E) ZoomIn();
