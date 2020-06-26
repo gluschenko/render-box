@@ -63,21 +63,22 @@ Sources:
 	
 ## Work in progress
 
-![](Media/1.jpg)
-![](Media/2.jpg)
-![](Media/3.jpg)
-![](Media/4.jpg)
-![](Media/5.jpg)
-![](Media/6.jpg)
-![](Media/7.jpg)
-![](Media/8.jpg)
-![](Media/9.jpg)
-![](Media/10.jpg)
-![](Media/11.jpg)
-![](Media/12.jpg)
-![](Media/13.png)
+![](.media/1.jpg)
+![](.media/2.jpg)
+![](.media/3.jpg)
+![](.media/4.jpg)
+![](.media/5.jpg)
+![](.media/6.jpg)
+![](.media/7.jpg)
+![](.media/8.jpg)
+![](.media/9.jpg)
+![](.media/10.jpg)
+![](.media/11.jpg)
+![](.media/12.jpg)
+![](.media/13.png)
+![](.media/14.png)
 
 ## Aim
 
-![](Media/aim_1.png)
-![](Media/aim_2.png)
+![](.media/aim_1.png)
+![](.media/aim_2.png)
