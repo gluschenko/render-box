@@ -1,6 +1,8 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.Windows.Controls;
 using PathTracerSharp.Modules;
 using PathTracerSharp.Options;
+using PathTracerSharp.Shared.Modules.Mandelbrot.Filters;
 
 namespace PathTracerSharp.Pages
 {
@@ -13,6 +15,42 @@ namespace PathTracerSharp.Pages
             InitializeComponent();
 
             ApplyButton.Click += ApplyButton_Click;
+
+            var filters = typeof(IPaletteFilter).GetSubclasses();
+
+            EffectsPanel.Children.Clear();
+
+            var _button = new Button
+            {
+                Content = "No filter",
+                Height = 20
+            };
+
+            _button.Click += (s, e) =>
+            {
+                Source.Filter = null;
+            };
+
+            EffectsPanel.Children.Add(_button);
+
+            foreach (var filter in filters) 
+            {
+                var instance = Activator.CreateInstance(filter);
+
+                var button = new Button
+                {
+                    Content = filter.Name,
+                    Height = 20
+                };
+
+                button.Click += (s, e) =>
+                {
+                    Source.Filter = (IPaletteFilter)instance;
+                    Source.Render(Dispatcher);
+                };
+
+                EffectsPanel.Children.Add(button);
+            }
         }
 
         private void ApplyButton_Click(object sender, System.Windows.RoutedEventArgs e)

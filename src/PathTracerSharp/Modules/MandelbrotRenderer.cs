@@ -5,6 +5,7 @@ using PathTracerSharp.Options;
 using PathTracerSharp.Pages;
 using PathTracerSharp.Rendering;
 using PathTracerSharp.Shared.Modules.Mandelbrot;
+using PathTracerSharp.Shared.Modules.Mandelbrot.Filters;
 
 namespace PathTracerSharp.Modules
 {
@@ -19,6 +20,8 @@ namespace PathTracerSharp.Modules
 
         public int Iterations { get; set; } = 100;
         public double Extent { get; set; } = 2;
+
+        public IPaletteFilter Filter { get; set; }
 
         public MandelbrotRenderer(Paint paint) : base(paint)
         {
@@ -37,15 +40,20 @@ namespace PathTracerSharp.Modules
             var palette = new Color[Iterations + 1];
             for (int i = 0; i < palette.Length; i++)
             {
-                var n = (float)i / Iterations;
-                palette[i] = new Color(n, n, n);
+                var n = (double) i / Iterations;
+                if (Filter == null)
+                {
+                    palette[i] = new Color((float)n, (float)n, (float)n);
+                }
+                else 
+                {
+                    palette[i] = Filter.GetColor(n, Zoom);
+                }
             }
 
             BatchScreen(context, batchPreview);
 
             BatchScreen(context, batch);
-
-            //context.dispatcher.Invoke(() => Paint.FillRect(10, 10, 80, 40, Color.Green));
 
             //
 
@@ -61,7 +69,7 @@ namespace PathTracerSharp.Modules
                 posX *= cellPerPixel;
                 posY *= cellPerPixel;
 
-                posX -= 0.5;
+                posX -= 0.7;
                 cellPerPixel *= step;
 
                 for (int localY = 0; localY < sizeY; localY += step)

@@ -20,6 +20,14 @@
             <Label Content="Batch size:"></Label>
             <TextBox x:Name="BatchSize"></TextBox>
 
+            <Label Content="Effects:"></Label>
+            <StackPanel x:Name="EffectsPanel">
+                <Button Content="1" Height="20"></Button>
+                <Button Content="2" Height="20"></Button>
+                <Button Content="3" Height="20"></Button>
+                <Button Content="4" Height="20"></Button>
+            </StackPanel>
+
             <Button 
                 x:Name="ApplyButton" 
                 Content="Apply" 

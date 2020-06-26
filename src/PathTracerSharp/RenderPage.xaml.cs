@@ -38,7 +38,7 @@ namespace PathTracerSharp
 
             //
 
-            var modules = GetSubclassesOf(typeof(Renderer));
+            var modules = typeof(Renderer).GetSubclasses();
 
             ModulesList.Children.Clear();
             foreach (var module in modules) 
@@ -131,14 +131,14 @@ namespace PathTracerSharp
             }
         }
 
-        public Type[] GetSubclassesOf(Type type) 
+        /*public Type[] GetSubclassesOf(Type type) 
         {
             var subs = type
                 .Assembly.GetTypes()
                 .Where(t => t.IsSubclassOf(type));
 
             return subs.ToArray();
-        }
+        }*/
 
         private void OnSizeChanged(object sender, SizeChangedEventArgs e)
         {
@@ -173,6 +173,27 @@ namespace PathTracerSharp
         private void OnKeyPress(object sender, KeyEventArgs e)
         {
             if(IsActive) Renderer?.OnKeyPress(e.Key, Update);
+        }
+    }
+
+    public static class Extensions 
+    {
+        public static Type[] GetSubclasses(this Type type)
+        {
+            var subs = type
+                .Assembly.GetTypes()
+                .Where(t => t.IsSubclassOf(type));
+
+            return subs.ToArray();
+        }
+
+        public static Type[] GetImplementations(this Type type)
+        {
+            var subs = type
+                .Assembly.GetTypes()
+                .Where(t => t.IsAssignableFrom(type));
+
+            return subs.ToArray();
         }
     }
 }
