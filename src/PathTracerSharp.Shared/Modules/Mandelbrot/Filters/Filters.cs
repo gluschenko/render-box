@@ -82,4 +82,12 @@ namespace PathTracerSharp.Shared.Modules.Mandelbrot.Filters
             return new Color((float)r, (float)g, (float)b);
         }
     }
+
+    public class Filter6 : IPaletteFilter
+    {
+        public override Color GetColor(double rate, double zoom)
+        {
+            return ColorHelpers.FromHSV(240, 1.0 - rate, 1);
+        }
+    }
 }
