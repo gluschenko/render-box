@@ -191,7 +191,7 @@ namespace PathTracerSharp
         {
             var subs = type
                 .Assembly.GetTypes()
-                .Where(t => t.IsAssignableFrom(type));
+                .Where(t => type.IsAssignableFrom(t));
 
             return subs.ToArray();
         }
