@@ -78,15 +78,9 @@ namespace PathTracerSharp.Modules
 
                     posY += cellPerPixel;
 
-                    //int globalY = iy + localY;
-                    //double posY = (globalY - halfY) / zoom;
-
                     for (int localX = 0; localX < sizeX; localX += step)
                     {
                         localPosX += cellPerPixel;
-
-                        //int globalX = ix + localX;
-                        //double posX = (globalX - halfX) / zoom - 0.5;
                         //
                         var n = Mandelbrot.GetInterationsCount(new ComplexNumber(localPosX, posY));
                         tile[localX, localY] = palette[n];
