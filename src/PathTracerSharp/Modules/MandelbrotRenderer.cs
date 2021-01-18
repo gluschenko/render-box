@@ -28,7 +28,7 @@ namespace PathTracerSharp.Modules
             Mandelbrot = new MandelbrotSet();
         }
 
-        protected override void RenderRoutine(RenderContext context)
+        protected override void RenderScreen(RenderContext context)
         {
             Mandelbrot.SetIterations(Iterations);
             Mandelbrot.SetExtent(Extent);

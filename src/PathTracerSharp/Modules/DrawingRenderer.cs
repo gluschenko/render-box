@@ -10,7 +10,7 @@ namespace PathTracerSharp.Modules
 
         }
 
-        protected override void RenderRoutine(RenderContext context)
+        protected override void RenderScreen(RenderContext context)
         {
             context.dispatcher.Invoke(() => 
             {

@@ -9,7 +9,7 @@ namespace PathTracerSharp.Modules
         {
         }
 
-        protected override void RenderRoutine(RenderContext context)
+        protected override void RenderScreen(RenderContext context)
         {
             double zoom = context.width / 3.0;
             float halfX = context.width / 2;

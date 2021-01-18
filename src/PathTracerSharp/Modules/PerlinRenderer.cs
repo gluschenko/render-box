@@ -13,7 +13,7 @@ namespace PathTracerSharp.Modules
             Perlin = new PerlinNoise(Rand.Int(1, 100));
         }
 
-        protected override void RenderRoutine(RenderContext context)
+        protected override void RenderScreen(RenderContext context)
         {
             float zoom = context.width / 800f;
             float halfX = context.width / 2;
