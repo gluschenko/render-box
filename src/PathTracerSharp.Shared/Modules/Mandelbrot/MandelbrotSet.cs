@@ -60,17 +60,22 @@ namespace PathTracerSharp.Shared.Modules.Mandelbrot
         public double Re, Im;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ComplexNumber(double re, double im) { Re = re; Im = im; }
+        public ComplexNumber(double re, double im) 
+        { 
+            Re = re; 
+            Im = im;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public double Norm() => Re * Re + Im * Im;
+        public double Norm() 
+            => Re * Re + Im * Im;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ComplexNumber operator +(ComplexNumber x, ComplexNumber y) =>
-            new ComplexNumber(x.Re + y.Re, x.Im + y.Im);
+        public static ComplexNumber operator +(ComplexNumber x, ComplexNumber y) 
+            => new ComplexNumber(x.Re + y.Re, x.Im + y.Im);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ComplexNumber operator *(ComplexNumber x, ComplexNumber y) =>
-            new ComplexNumber(x.Re * y.Re - x.Im * y.Im, x.Re * y.Im + x.Im * y.Re);
+        public static ComplexNumber operator *(ComplexNumber x, ComplexNumber y) 
+            => new ComplexNumber(x.Re * y.Re - x.Im * y.Im, x.Re * y.Im + x.Im * y.Re);
     }
 }

@@ -51,13 +51,13 @@ namespace PathTracerSharp.Modules
                 }
             }
 
-            BatchScreen(context, batchPreview);
+            BatchScreen(context, BatchPreview);
 
-            BatchScreen(context, batch);
+            BatchScreen(context, Batch);
 
             //
 
-            Color[,] renderBatch(int ix, int iy, int sizeX, int sizeY, int step)
+            Color[,] RenderBatch(int ix, int iy, int sizeX, int sizeY, int step)
             {
                 Color[,] tile = new Color[sizeX, sizeY];
 
@@ -90,14 +90,14 @@ namespace PathTracerSharp.Modules
                 return tile;
             }
 
-            Color[,] batch(int ix, int iy, int sizeX, int sizeY)
+            Color[,] Batch(int ix, int iy, int sizeX, int sizeY)
             {
-                return renderBatch(ix, iy, sizeX, sizeY, 1);
+                return RenderBatch(ix, iy, sizeX, sizeY, 1);
             }
 
-            Color[,] batchPreview(int ix, int iy, int sizeX, int sizeY)
+            Color[,] BatchPreview(int ix, int iy, int sizeX, int sizeY)
             {
-                return renderBatch(ix, iy, sizeX, sizeY, 8);
+                return RenderBatch(ix, iy, sizeX, sizeY, 8);
             }
         }
 
