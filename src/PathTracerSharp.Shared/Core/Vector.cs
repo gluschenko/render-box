@@ -177,4 +177,20 @@ namespace PathTracerSharp.Core
 
         public static Vector2 Normalize(Vector2 a) => a / a.Length;
     }
+
+    public struct Point2 
+    {
+        public int x, y;
+
+        public Point2(int x, int y)
+        {
+            this.x = x;
+            this.y = y;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(x, y);
+        }
+    }
 }

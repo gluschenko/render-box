@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Windows.Input;
 using PathTracerSharp.Core;
 using PathTracerSharp.Options;
@@ -34,34 +36,47 @@ namespace PathTracerSharp.Modules
             Mandelbrot.SetExtent(Extent);
 
             double zoom = (context.width / 3.0) * (1.0 / Zoom);
-            double halfX = (context.width / 2) + (OffsetX * zoom);
-            double halfY = (context.height / 2) + (OffsetY * zoom);
+            double halfX = (context.width / 2.0) + (OffsetX * zoom);
+            double halfY = (context.height / 2.0) + (OffsetY * zoom);
 
+            var rates = new ConcurrentDictionary<Point2, int>();
             var palette = new Color[Iterations + 1];
+
             for (int i = 0; i < palette.Length; i++)
             {
                 var n = (double) i / Iterations;
-                if (Filter == null)
-                {
-                    palette[i] = new Color((float)n, (float)n, (float)n);
-                }
-                else 
-                {
-                    palette[i] = Filter.GetColor(n, Zoom);
-                }
+                palette[i] = Filter is not null 
+                    ? Filter.GetColor(n, Zoom) 
+                    : new Color((float)n, (float)n, (float)n);
             }
 
             BatchScreen(context, BatchPreview);
 
-            BatchScreen(context, Batch);
+            BatchScreen(context, Batch, GetRenderPriority);
 
             //
 
-            Color[,] RenderBatch(int ix, int iy, int sizeX, int sizeY, int step)
+            Color[,] BatchPreview(int ix, int iy, int sizeX, int sizeY)
             {
-                Color[,] tile = new Color[sizeX, sizeY];
+                var tile = RenderBatch(ix, iy, sizeX, sizeY, 8);
+                rates[new Point2(ix, iy)] = CalcRate(tile);
+                return Colorize(tile);
+            }
 
-                double cellPerPixel = 1 / zoom;
+            Color[,] Batch(int ix, int iy, int sizeX, int sizeY)
+            {
+                var tile = RenderBatch(ix, iy, sizeX, sizeY, 1);
+                return Colorize(tile);
+            }
+
+            int GetRenderPriority(int x, int y) 
+                => rates.TryGetValue(new Point2(x, y), out var rate) ? rate : 0;
+
+            int[,] RenderBatch(int ix, int iy, int sizeX, int sizeY, int step)
+            {
+                var tile = new int[sizeX, sizeY];
+
+                var cellPerPixel = 1.0 / zoom;
 
                 var posX = ix - halfX;
                 var posY = iy - halfY;
@@ -82,22 +97,46 @@ namespace PathTracerSharp.Modules
                     {
                         localPosX += cellPerPixel;
                         //
-                        var n = Mandelbrot.GetInterationsCount(new ComplexNumber(localPosX, posY));
-                        tile[localX, localY] = palette[n];
+                        var c = new ComplexNumber(localPosX, posY);
+                        tile[localX, localY] = Mandelbrot.GetInterationsCount(c);
                     }
                 }
 
                 return tile;
             }
 
-            Color[,] Batch(int ix, int iy, int sizeX, int sizeY)
+            Color[,] Colorize(int[,] tile) 
             {
-                return RenderBatch(ix, iy, sizeX, sizeY, 1);
+                var width = tile.GetLength(0);
+                var height = tile.GetLength(1);
+                var colors = new Color[width, height];
+
+                for (var x = 0; x < width; x++) 
+                {
+                    for (var y = 0; y < height; y++)
+                    {
+                        colors[x, y] = palette[tile[x, y]];
+                    }
+                }
+
+                return colors;
             }
 
-            Color[,] BatchPreview(int ix, int iy, int sizeX, int sizeY)
+            int CalcRate(int[,] tile)
             {
-                return RenderBatch(ix, iy, sizeX, sizeY, 8);
+                var width = tile.GetLength(0);
+                var height = tile.GetLength(1);
+                var sum = 0;
+
+                for (var x = 0; x < width; x++)
+                {
+                    for (var y = 0; y < height; y++)
+                    {
+                        sum += tile[x, y];
+                    }
+                }
+
+                return sum;
             }
         }
 

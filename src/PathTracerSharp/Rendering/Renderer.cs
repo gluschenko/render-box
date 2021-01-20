@@ -89,7 +89,9 @@ namespace PathTracerSharp.Rendering
 
         protected abstract void RenderScreen(RenderContext context);
 
-        protected void BatchScreen(RenderContext context, OnBatchScreen onBatch) 
+        protected virtual void BatchScreen(RenderContext context, 
+                                           RenderScreenBatch renderScreenBatch, 
+                                           GetRenderPriority getRenderPriority = null) 
         {
             using var _threadManager = new ThreadManager();
 
@@ -101,16 +103,19 @@ namespace PathTracerSharp.Rendering
             {
                 for (var x = 0; x < width; x += BatchSize)
                 {
-                    var localX = x;
-                    var localY = y;
-                    var sizeX = Math.Min(BatchSize, width - localX - 1);
-                    var sizeY = Math.Min(BatchSize, height - localY - 1);
+                    // to prevent on-stack closure
+                    var ix = x;
+                    var iy = y;
+                    var sizeX = Math.Min(BatchSize, width - ix - 1);
+                    var sizeY = Math.Min(BatchSize, height - iy - 1);
                     //
+                    var priority = getRenderPriority?.Invoke(ix, iy) ?? 0;
+
                     _threadManager.Push(() =>
                     {
-                        var tile = onBatch(localX, localY, sizeX, sizeY);
-                        dispatcher.Invoke(() => Paint.SetPixels(localX, localY, tile));
-                    });
+                        var tile = renderScreenBatch(ix, iy, sizeX, sizeY);
+                        dispatcher.Invoke(() => Paint.SetPixels(ix, iy, tile));
+                    }, priority);
                 }
             }
 
@@ -120,7 +125,8 @@ namespace PathTracerSharp.Rendering
             locker.Reset();
         }
 
-        protected delegate Color[,] OnBatchScreen(int ix, int iy, int sizeX, int sizeY);
+        protected delegate Color[,] RenderScreenBatch(int ix, int iy, int sizeX, int sizeY);
+        protected delegate int GetRenderPriority(int ix, int iy);
         
     }
 

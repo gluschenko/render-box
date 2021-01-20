@@ -7,12 +7,30 @@ namespace PathTracerSharp.Rendering
 {
     public class ThreadManager : IDisposable
     {
-        private readonly ConcurrentQueue<Action> _queue = new ConcurrentQueue<Action>();
+        public ThreadManagerState State { get; private set; } = ThreadManagerState.Created;
+
+        private ConcurrentQueue<Routine> _queue = new ConcurrentQueue<Routine>();
         private Thread[] _pool;
         private Action _onDone;
 
+        private struct Routine
+        {
+            public Action Action { get; set; }
+            public int Priority { get; set; }
+
+            public Routine(Action action, int priority)
+            {
+                Action = action;
+                Priority = priority;
+            }
+        }
+
         public void Start(int count, Action onDone) 
         {
+            State = ThreadManagerState.Started;
+
+            SortQueue();
+
             _onDone = onDone;
             _pool = Enumerable.Range(0, count)
                 .Select(x => new Thread(ThreadProcess) { IsBackground = true })
@@ -27,9 +45,22 @@ namespace PathTracerSharp.Rendering
             }
         }
 
-        public void Push(Action action)
+        public void Push(Action action, int priority = 0)
         {
-            _queue.Enqueue(action);
+            if (State != ThreadManagerState.Created) 
+                throw new InvalidOperationException($"This method can be called only when State = {ThreadManagerState.Created}");
+
+            _queue.Enqueue(new Routine(action, priority));
+        }
+
+        private void SortQueue() 
+        {
+            var sortedQueue = new ConcurrentQueue<Routine>();
+            foreach (var item in _queue.OrderBy(x => x.Priority))
+            {
+                sortedQueue.Enqueue(item);
+            }
+            _queue = sortedQueue;
         }
 
         private void Kill() 
@@ -57,9 +88,9 @@ namespace PathTracerSharp.Rendering
                 {
                     if (_queue.Count > 0)
                     {
-                        if (_queue.TryDequeue(out var action)) 
+                        if (_queue.TryDequeue(out var routine)) 
                         {
-                            action?.Invoke();
+                            routine.Action?.Invoke();
 
                             if (_queue.Count == 0) 
                             {
@@ -84,5 +115,12 @@ namespace PathTracerSharp.Rendering
             GC.SuppressFinalize(this);
             GC.ReRegisterForFinalize(this);
         }
+    }
+
+    public enum ThreadManagerState 
+    {
+        Created = 0,
+        Started = 1,
+        Stopped = 2,
     }
 }
