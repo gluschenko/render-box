@@ -12,6 +12,7 @@ namespace PathTracerSharp.Rendering
         private ConcurrentQueue<Routine> _queue = new ConcurrentQueue<Routine>();
         private Thread[] _pool;
         private Action _onDone;
+        private int _endedThreads = 0;
 
         private struct Routine
         {
@@ -43,6 +44,13 @@ namespace PathTracerSharp.Rendering
                     _pool[i].Start();
                 }
             }
+        }
+
+        private void Stop() 
+        {
+            _onDone?.Invoke();
+            _onDone = null;
+            State = ThreadManagerState.Stopped;
         }
 
         public void Push(Action action, int priority = 0)
@@ -91,17 +99,29 @@ namespace PathTracerSharp.Rendering
                         if (_queue.TryDequeue(out var routine)) 
                         {
                             routine.Action?.Invoke();
+                        }
 
-                            if (_queue.Count == 0) 
-                            {
-                                _onDone?.Invoke();
-                            }
+                        if (_queue.Count == 0)
+                        {
+                            break;
                         }
                     }
                     else
                     {
                         Thread.Sleep(1);
                     }
+
+                    if (_queue.Count == 0)
+                    {
+                        break;
+                    }
+                }
+
+                Interlocked.Increment(ref _endedThreads);
+
+                if (_endedThreads == _pool.Length) 
+                {
+                    Stop();
                 }
             }
             catch (ThreadInterruptedException)

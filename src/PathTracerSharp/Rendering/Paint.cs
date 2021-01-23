@@ -93,7 +93,7 @@ namespace PathTracerSharp.Rendering
                 const int pixel = sizeof(int);
 
                 backBuffer += y * (Bitmap.PixelWidth * pixel);
-                backBuffer += x * pixel;
+                backBuffer += x * pixel - pixel;
 
                 int newLineOffset = (Bitmap.PixelWidth - width) * pixel;
 
