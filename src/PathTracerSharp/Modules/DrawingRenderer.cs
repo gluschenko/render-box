@@ -12,7 +12,7 @@ namespace PathTracerSharp.Modules
 
         protected override void RenderScreen(RenderContext context)
         {
-            context.dispatcher.Invoke(() => 
+            context.Dispatcher.Invoke(() => 
             {
                 Paint.FillRect(10, 10, 80, 40, Color.Green);
                 Paint.FillRect(10, 60, 80, 40, Color.Yellow);

@@ -50,9 +50,9 @@ namespace PathTracerSharp.Modules
 
         protected override void RenderScreen(RenderContext context)
         {
-            var width = context.width;
-            var height = context.height;
-            var dispatcher = context.dispatcher;
+            var width = context.Width;
+            var height = context.Height;
+            var dispatcher = context.Dispatcher;
             var camera = MainCamera;
             var scene = Scene;
 

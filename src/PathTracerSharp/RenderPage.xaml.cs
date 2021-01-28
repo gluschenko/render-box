@@ -76,12 +76,13 @@ namespace PathTracerSharp
 
         private void SetupRender(Type type) 
         {
-            int w = (int)(ActualWidth * Resolution.Value);
-            int h = (int)(ActualHeight * Resolution.Value);
+            var scale = Resolution.Value;
+            int w = (int)(ActualWidth * scale);
+            int h = (int)(ActualHeight * scale);
 
             if (Renderer == null)
             {
-                Renderer = (Renderer)Activator.CreateInstance(type, new Paint(Image, w, h));
+                Renderer = (Renderer)Activator.CreateInstance(type, new Paint(Image, w, h, scale));
                 Renderer.RenderStart += () => _timer.Restart();
                 Renderer.RenderComplete += () => _log.Add($"Render frame: {_timer.ElapsedMilliseconds} ms");
 
@@ -102,7 +103,7 @@ namespace PathTracerSharp
             else
             {
                 Renderer.Stop();
-                Renderer.Paint = new Paint(Image, w, h);
+                Renderer.Paint = new Paint(Image, w, h, scale);
             }
         }
 

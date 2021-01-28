@@ -42,14 +42,14 @@ namespace PathTracerSharp.Rendering
             {
                 try
                 {
-                    context.dispatcher.Invoke(() => RenderStart?.Invoke());
+                    context.Dispatcher.Invoke(() => RenderStart?.Invoke());
 
                     lock (Paint)
                     {
                         RenderScreen(context);
                     }
 
-                    context.dispatcher.Invoke(() => RenderComplete?.Invoke());
+                    context.Dispatcher.Invoke(() => RenderComplete?.Invoke());
                 }
                 catch (ThreadInterruptedException) 
                 {
@@ -81,9 +81,10 @@ namespace PathTracerSharp.Rendering
         {
             return new RenderContext
             {
-                width = Paint.Width,
-                height = Paint.Height,
-                dispatcher = dispatcher,
+                Width = Paint.Width,
+                Height = Paint.Height,
+                Scale = Paint.Scale,
+                Dispatcher = dispatcher,
             };
         }
 
@@ -95,9 +96,9 @@ namespace PathTracerSharp.Rendering
         {
             using var _threadManager = new ThreadManager();
 
-            var width = context.width;
-            var height = context.height;
-            var dispatcher = context.dispatcher;
+            var width = context.Width;
+            var height = context.Height;
+            var dispatcher = context.Dispatcher;
             //
             for (var y = 0; y < height; y += BatchSize)
             {
@@ -132,8 +133,9 @@ namespace PathTracerSharp.Rendering
 
     public struct RenderContext
     {
-        public int width;
-        public int height;
-        public Dispatcher dispatcher;
+        public int Width;
+        public int Height;
+        public double Scale;
+        public Dispatcher Dispatcher;
     }
 }

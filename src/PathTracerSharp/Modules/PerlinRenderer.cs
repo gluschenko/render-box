@@ -15,9 +15,9 @@ namespace PathTracerSharp.Modules
 
         protected override void RenderScreen(RenderContext context)
         {
-            float zoom = context.width / 800f;
-            float halfX = context.width / 2;
-            float halfY = context.height / 2;
+            float zoom = context.Width / 800f;
+            float halfX = context.Width / 2;
+            float halfY = context.Height / 2;
 
             Color[,] batch(int ix, int iy, int sizeX, int sizeY)
             {

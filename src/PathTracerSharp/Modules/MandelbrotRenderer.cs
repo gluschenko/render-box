@@ -35,9 +35,10 @@ namespace PathTracerSharp.Modules
             Mandelbrot.SetIterations(Iterations);
             Mandelbrot.SetExtent(Extent);
 
-            double zoom = (context.width / 3.0) * (1.0 / Zoom);
-            double halfX = (context.width / 2.0) + (OffsetX * zoom);
-            double halfY = (context.height / 2.0) + (OffsetY * zoom);
+            double scale = context.Scale;
+            double zoom = (context.Width / 3.0) * (1.0 / Zoom);
+            double halfX = (context.Width / 2.0) + (OffsetX * zoom);
+            double halfY = (context.Height / 2.0) + (OffsetY * zoom);
 
             var rates = new ConcurrentDictionary<Point2, int>();
             var palette = new Color[Iterations + 1];
@@ -58,7 +59,7 @@ namespace PathTracerSharp.Modules
 
             Color[,] BatchPreview(int ix, int iy, int sizeX, int sizeY)
             {
-                var tile = RenderBatch(ix, iy, sizeX, sizeY, 8);
+                var tile = RenderBatch(ix, iy, sizeX, sizeY, (int)(8 * scale));
                 rates[new Point2(ix, iy)] = CalcRate(tile);
                 return Colorize(tile);
             }
@@ -99,6 +100,25 @@ namespace PathTracerSharp.Modules
                         //
                         var c = new ComplexNumber(localPosX, posY);
                         tile[localX, localY] = Mandelbrot.GetInterationsCount(c);
+                    }
+                }
+
+                if (step > 1)
+                {
+                    for (int localY = 0; localY < sizeY; localY += step)
+                    {
+                        for (int localX = 0; localX < sizeX; localX += step)
+                        {
+                            var template = tile[localX, localY];
+
+                            for (var y = localY; y < localY + step && y < sizeY; y++)
+                            {
+                                for (var x = localX; x < localX + step && x < sizeX; x++)
+                                {
+                                    tile[x, y] = template;
+                                }
+                            }
+                        }
                     }
                 }
 

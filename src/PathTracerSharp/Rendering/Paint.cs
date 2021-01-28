@@ -15,14 +15,17 @@ namespace PathTracerSharp.Rendering
         public WriteableBitmap Bitmap { get; private set; }
         public int Width => Bitmap?.PixelWidth ?? 0;
         public int Height => Bitmap?.PixelHeight ?? 0;
+        public double Scale { get; private set; }
 
-        public Paint(Image img, int width, int height)
+        public Paint(Image img, int width, int height, double scale)
         {
             Image = img;
+            Scale = scale;
             CreateBitmap(img, width, height);
         }
 
-        public Paint(Image img, double width, double height) : this(img, (int)width, (int)height) { }
+        public Paint(Image img, double width, double height, double scale) 
+            : this(img, (int)width, (int)height, scale) { }
 
         public void Dispose()
         {
