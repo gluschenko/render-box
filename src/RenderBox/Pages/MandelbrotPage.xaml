@@ -1,0 +1,38 @@
+﻿<Page x:Class="RenderBox.Pages.MandelbrotPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:RenderBox.Pages"
+      mc:Ignorable="d" 
+      d:DesignHeight="400" d:DesignWidth="400"
+      Title="MandelbrotPage">
+
+    <Grid Background="White">
+        <StackPanel Margin="10">
+            
+            <Label Content="Iterations:"></Label>
+            <TextBox x:Name="Iterations"></TextBox>
+
+            <Label Content="Extent:"></Label>
+            <TextBox x:Name="Extent"></TextBox>
+
+            <Label Content="Batch size:"></Label>
+            <TextBox x:Name="BatchSize"></TextBox>
+
+            <Label Content="Effects:"></Label>
+            <StackPanel x:Name="EffectsPanel">
+                <Button Content="1" Height="20"></Button>
+                <Button Content="2" Height="20"></Button>
+                <Button Content="3" Height="20"></Button>
+                <Button Content="4" Height="20"></Button>
+            </StackPanel>
+
+            <Button 
+                x:Name="ApplyButton" 
+                Content="Apply" 
+                Margin="30"></Button>
+            
+        </StackPanel>
+    </Grid>
+</Page>

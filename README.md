@@ -1,4 +1,4 @@
-# Path-Tracer-Sharp
+# RenderBox (ex Path Tracer Sharp)
 
 ## Introduction
 
