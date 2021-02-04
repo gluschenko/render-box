@@ -20,18 +20,19 @@ namespace RenderBox.Pages
 
             EffectsPanel.Children.Clear();
 
-            var _button = new Button
+            var noFilterButton = new Button
             {
                 Content = "No filter",
                 Height = 20
             };
 
-            _button.Click += (s, e) =>
+            noFilterButton.Click += (s, e) =>
             {
                 Source.Filter = null;
+                Source.Render(Dispatcher);
             };
 
-            EffectsPanel.Children.Add(_button);
+            EffectsPanel.Children.Add(noFilterButton);
 
             foreach (var filter in filters) 
             {
