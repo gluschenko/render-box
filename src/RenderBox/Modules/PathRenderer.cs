@@ -5,6 +5,7 @@ using RenderBox.Shared.Modules.PathTracer.Shapes;
 using System;
 using System.Collections.Generic;
 using System.Windows.Input;
+using static RenderBox.Core.VectorMath;
 
 namespace RenderBox.Modules
 {
@@ -83,7 +84,7 @@ namespace RenderBox.Modules
                                 float posX = (2 * (x + 0.5f) / width - 1) * aspectRatio * scale;
                                 float posY = (1 - 2 * (y + 0.5f) / height) * scale;
                                 //
-                                var dir = Vector3.Normalize(new Vector3(posX, posY, -1));
+                                var dir = Normalize(new Vector3(posX, posY, -1));
                                 var ray = new Ray(orig, dir);
                                 //
                                 var color = TracePath(context, camera, scene, ray, scene.BackgroundColor, 0);

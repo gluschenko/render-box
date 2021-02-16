@@ -55,58 +55,16 @@ namespace RenderBox.Core
 
         public override bool Equals(object obj)
         {
-            if (obj is Vector3 vector)
-            {
-                return this == vector;
-            }
-            return false;
+            return EqualsInternal(obj as Vector3?);
         }
 
-        public override int GetHashCode()
+        private bool EqualsInternal(Vector3? vector)
         {
-            return (int)(x + y * 100 * z + 10000);
+            return vector.HasValue && vector.Value == this;
         }
 
-        // static
-        public static double Dot(Vector3 a, Vector3 b) => a.x * b.x + a.y * b.y + a.z * b.z;
-        public static double Distance(Vector3 a, Vector3 b) => (a - b).Length;
-        public static Vector3 Lerp(Vector3 a, Vector3 b, float r) => a + (b - a) * r;
-        public static Vector3 Cross(Vector3 a, Vector3 b)
-        {
-            return new Vector3(
-                a.y * b.z - a.z * b.y,
-                a.z * b.x - a.x * b.z,
-                a.x * b.y - a.y * b.x
-            );
-        }
+        public override int GetHashCode() => HashCode.Combine(x, y, z);
 
-        public static Vector3 Normalize(Vector3 a) => a / a.Length;
-
-        // Vector interactions
-        public static Vector3 Reflect(Vector3 I, Vector3 N)
-        {
-            return I - 2 * Dot(I, N) * N;
-        }
-
-        public static Vector3 Refract(Vector3 I, Vector3 N, float ior)
-        {
-            double cosi = MathHelpres.Clamp(Dot(I, N), -1.0, 1.0);
-            float etai = 1, etat = ior;
-            var n = N;
-            if (cosi < 0)
-            {
-                cosi = -cosi;
-            }
-            else
-            {
-                (etat, etai) = (etai, etat);
-                n = -N;
-            }
-
-            double eta = etai / etat;
-            double k = 1 - eta * eta * (1 - cosi * cosi);
-            return k < 0 ? Zero : eta * I + (eta * cosi - Math.Sqrt(k)) * n;
-        }
     }
 
     public struct Vector2
@@ -158,24 +116,16 @@ namespace RenderBox.Core
 
         public override bool Equals(object obj)
         {
-            if (obj is Vector2 vector)
-            {
-                return this == vector;
-            }
-            return false;
+            return EqualsInternal(obj as Vector2?);
         }
 
-        public override int GetHashCode()
+        private bool EqualsInternal(Vector2? vector)
         {
-            return (int)(x + y * 100);
+            return vector.HasValue && vector.Value == this;
         }
 
-        // static
-        public static double Dot(Vector2 a, Vector2 b) => a.x * b.x + a.y * b.y;
-        public static double Distance(Vector2 a, Vector2 b) => (a - b).Length;
-        public static Vector2 Lerp(Vector2 a, Vector2 b, float r) => a + (b - a) * r;
+        public override int GetHashCode() => HashCode.Combine(x, y);
 
-        public static Vector2 Normalize(Vector2 a) => a / a.Length;
     }
 
     public struct Point2
@@ -188,9 +138,62 @@ namespace RenderBox.Core
             this.y = y;
         }
 
-        public override int GetHashCode()
+        public override int GetHashCode() => HashCode.Combine(x, y);
+    }
+
+    public static class VectorMath 
+    {
+        #region Vector2
+
+        public static double Dot(Vector2 a, Vector2 b) => a.x * b.x + a.y * b.y;
+        public static double Distance(Vector2 a, Vector2 b) => (a - b).Length;
+        public static Vector2 Lerp(Vector2 a, Vector2 b, float r) => a + (b - a) * r;
+        public static Vector2 Normalize(Vector2 a) => a / a.Length;
+
+        #endregion
+
+        #region Vector3
+
+        public static double Dot(Vector3 a, Vector3 b) => a.x * b.x + a.y * b.y + a.z * b.z;
+        public static double Distance(Vector3 a, Vector3 b) => (a - b).Length;
+        public static Vector3 Lerp(Vector3 a, Vector3 b, float r) => a + (b - a) * r;
+        public static Vector3 Cross(Vector3 a, Vector3 b)
         {
-            return HashCode.Combine(x, y);
+            return new Vector3(
+                a.y * b.z - a.z * b.y,
+                a.z * b.x - a.x * b.z,
+                a.x * b.y - a.y * b.x
+            );
         }
+
+        public static Vector3 Normalize(Vector3 a) => a / a.Length;
+
+        // Vector interactions
+        public static Vector3 Reflect(Vector3 I, Vector3 N)
+        {
+            return I - 2 * Dot(I, N) * N;
+        }
+
+        public static Vector3 Refract(Vector3 I, Vector3 N, float ior)
+        {
+            double cosi = MathHelpres.Clamp(Dot(I, N), -1.0, 1.0);
+            float etai = 1, etat = ior;
+            var n = N;
+            if (cosi < 0)
+            {
+                cosi = -cosi;
+            }
+            else
+            {
+                (etat, etai) = (etai, etat);
+                n = -N;
+            }
+
+            double eta = etai / etat;
+            double k = 1 - eta * eta * (1 - cosi * cosi);
+            return k < 0 ? Vector3.Zero : eta * I + (eta * cosi - Math.Sqrt(k)) * n;
+        }
+
+        #endregion
     }
 }
