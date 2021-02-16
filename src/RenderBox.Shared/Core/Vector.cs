@@ -55,7 +55,7 @@ namespace RenderBox.Core
 
         public override bool Equals(object obj)
         {
-            if (obj is Vector3 vector) 
+            if (obj is Vector3 vector)
             {
                 return this == vector;
             }
@@ -83,30 +83,30 @@ namespace RenderBox.Core
         public static Vector3 Normalize(Vector3 a) => a / a.Length;
 
         // Vector interactions
-        public static Vector3 Reflect(Vector3 I, Vector3 N) 
-        { 
-            return I - 2 * Dot(I, N) * N; 
+        public static Vector3 Reflect(Vector3 I, Vector3 N)
+        {
+            return I - 2 * Dot(I, N) * N;
         }
 
-        public static Vector3 Refract(Vector3 I, Vector3 N, float ior) 
-        { 
+        public static Vector3 Refract(Vector3 I, Vector3 N, float ior)
+        {
             double cosi = MathHelpres.Clamp(Dot(I, N), -1.0, 1.0);
             float etai = 1, etat = ior;
-            var n = N; 
-            if (cosi < 0) 
-            { 
-                cosi = -cosi;
-            } 
-            else 
+            var n = N;
+            if (cosi < 0)
             {
-                (etat, etai) = (etai, etat); 
-                n= -N; 
+                cosi = -cosi;
+            }
+            else
+            {
+                (etat, etai) = (etai, etat);
+                n = -N;
             }
 
             double eta = etai / etat;
-            double k = 1 - eta * eta * (1 - cosi * cosi); 
-            return k < 0 ? Zero : eta * I + (eta * cosi - Math.Sqrt(k)) * n; 
-        } 
+            double k = 1 - eta * eta * (1 - cosi * cosi);
+            return k < 0 ? Zero : eta * I + (eta * cosi - Math.Sqrt(k)) * n;
+        }
     }
 
     public struct Vector2
@@ -178,7 +178,7 @@ namespace RenderBox.Core
         public static Vector2 Normalize(Vector2 a) => a / a.Length;
     }
 
-    public struct Point2 
+    public struct Point2
     {
         public int x, y;
 

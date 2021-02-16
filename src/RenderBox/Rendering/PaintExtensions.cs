@@ -1,7 +1,6 @@
-﻿using System;
+﻿using RenderBox.Core;
+using System;
 using System.Runtime.CompilerServices;
-using System.Security.Cryptography.X509Certificates;
-using RenderBox.Core;
 
 namespace RenderBox.Rendering
 {
@@ -47,9 +46,9 @@ namespace RenderBox.Rendering
             paint.SetPixels(startX, startY, colors);
         }
 
-        public static void FillColors(this Color[,] colors, Color color) 
+        public static void FillColors(this Color[,] colors, Color color)
         {
-            for (int x = 0; x < colors.GetLength(0); x++) 
+            for (int x = 0; x < colors.GetLength(0); x++)
             {
                 for (int y = 0; y < colors.GetLength(1); y++)
                 {

@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Windows.Input;
-using RenderBox.Core;
+﻿using RenderBox.Core;
 using RenderBox.Options;
 using RenderBox.Pages;
 using RenderBox.Rendering;
 using RenderBox.Shared.Modules.Mandelbrot;
 using RenderBox.Shared.Modules.Mandelbrot.Filters;
+using System;
+using System.Collections.Concurrent;
+using System.Windows.Input;
 
 namespace RenderBox.Modules
 {
@@ -45,9 +44,9 @@ namespace RenderBox.Modules
 
             for (int i = 0; i < palette.Length; i++)
             {
-                var n = (double) i / Iterations;
-                palette[i] = Filter is not null 
-                    ? Filter.GetColor(n, Zoom) 
+                var n = (double)i / Iterations;
+                palette[i] = Filter is not null
+                    ? Filter.GetColor(n, Zoom)
                     : new Color((float)n, (float)n, (float)n);
             }
 
@@ -70,7 +69,7 @@ namespace RenderBox.Modules
                 return Colorize(tile);
             }
 
-            int GetRenderPriority(int x, int y) 
+            int GetRenderPriority(int x, int y)
                 => rates.TryGetValue(new Point2(x, y), out var rate) ? rate : 0;
 
             int[,] RenderBatch(int ix, int iy, int sizeX, int sizeY, int step)
@@ -125,13 +124,13 @@ namespace RenderBox.Modules
                 return tile;
             }
 
-            Color[,] Colorize(int[,] tile) 
+            Color[,] Colorize(int[,] tile)
             {
                 var width = tile.GetLength(0);
                 var height = tile.GetLength(1);
                 var colors = new Color[width, height];
 
-                for (var x = 0; x < width; x++) 
+                for (var x = 0; x < width; x++)
                 {
                     for (var y = 0; y < height; y++)
                     {

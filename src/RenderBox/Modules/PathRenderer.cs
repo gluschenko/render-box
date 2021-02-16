@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows.Input;
-using RenderBox.Core;
+﻿using RenderBox.Core;
 using RenderBox.Rendering;
 using RenderBox.Shared.Modules.PathTracer;
 using RenderBox.Shared.Modules.PathTracer.Shapes;
+using System;
+using System.Collections.Generic;
+using System.Windows.Input;
 
 namespace RenderBox.Modules
 {
@@ -64,9 +64,9 @@ namespace RenderBox.Modules
             float halfX = width / 2;
             float halfY = height / 2;
             //
-            lock (camera) 
+            lock (camera)
             {
-                lock (scene) 
+                lock (scene)
                 {
                     Color[,] batch(int ix, int iy, int sizeX, int sizeY)
                     {
@@ -102,7 +102,7 @@ namespace RenderBox.Modules
         private Color TracePath(RenderContext context, Camera camera, Scene scene, Ray ray, Color back, int depth)
         {
             // Bounced enough times
-            if (depth >= camera.MaxDepth) 
+            if (depth >= camera.MaxDepth)
             {
                 return back;
             }

@@ -1,5 +1,5 @@
-using System;
 using RenderBox.Core;
+using System;
 
 namespace RenderBox.Shared.Modules.Perlin
 {

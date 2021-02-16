@@ -24,7 +24,7 @@ namespace RenderBox.Rendering
             CreateBitmap(img, width, height);
         }
 
-        public Paint(Image img, double width, double height, double scale) 
+        public Paint(Image img, double width, double height, double scale)
             : this(img, (int)width, (int)height, scale) { }
 
         public void Dispose()
@@ -44,7 +44,7 @@ namespace RenderBox.Rendering
 
             var bitmap = new WriteableBitmap(width, height, DPI, DPI, PixelFormats.Bgr32, null);
             img.Source = bitmap;
-            
+
             Bitmap = null;
             Bitmap = bitmap;
         }
@@ -76,7 +76,7 @@ namespace RenderBox.Rendering
             Bitmap.Unlock();
         }
 
-        public void SetPixels(int x, int y, Color[,] colors) 
+        public void SetPixels(int x, int y, Color[,] colors)
         {
             if (Bitmap == null) return;
 

@@ -1,5 +1,7 @@
-﻿using System;
-using System.CodeDom;
+﻿using RenderBox.Options;
+using RenderBox.Rendering;
+using RenderBox.Shared.Modules.PathTracer;
+using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
@@ -7,10 +9,6 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using RenderBox.Options;
-using RenderBox.Pages;
-using RenderBox.Rendering;
-using RenderBox.Shared.Modules.PathTracer;
 
 namespace RenderBox
 {
@@ -41,7 +39,7 @@ namespace RenderBox
             var modules = typeof(Renderer).GetSubclasses();
 
             ModulesList.Children.Clear();
-            foreach (var module in modules) 
+            foreach (var module in modules)
             {
                 var button = new Button
                 {
@@ -49,12 +47,12 @@ namespace RenderBox
                     Margin = new Thickness(5)
                 };
 
-                button.Click += (s, e) => 
+                button.Click += (s, e) =>
                 {
                     Start(module);
                     ModulesListRoot.Visibility = Visibility.Hidden;
                 };
-                
+
                 ModulesList.Children.Add(button);
             }
         }
@@ -74,7 +72,7 @@ namespace RenderBox
             SizeChanged += OnSizeChanged;
         }
 
-        private void SetupRender(Type type) 
+        private void SetupRender(Type type)
         {
             var scale = Resolution.Value;
             int w = (int)(ActualWidth * scale);
@@ -87,12 +85,12 @@ namespace RenderBox
                 Renderer.RenderComplete += () => _log.Add($"Render frame: {_timer.ElapsedMilliseconds} ms");
 
                 var attributes = Renderer.GetType().GetCustomAttributes();
-                foreach (var attribute in attributes) 
+                foreach (var attribute in attributes)
                 {
-                    if (attribute is OptionsPageAttribute optionsPageAttribute) 
+                    if (attribute is OptionsPageAttribute optionsPageAttribute)
                     {
                         var page = Activator.CreateInstance(optionsPageAttribute.OptionsPageType);
-                        if (page is IOptionsPage optionsPage) 
+                        if (page is IOptionsPage optionsPage)
                         {
                             optionsPage.UseSource(Renderer);
                         }
@@ -114,7 +112,7 @@ namespace RenderBox
 
         private void Start(Type type)
         {
-            if (!IsStarted) 
+            if (!IsStarted)
             {
                 SetupRender(type);
                 Render();
@@ -123,7 +121,7 @@ namespace RenderBox
             }
         }
 
-        public void Update() 
+        public void Update()
         {
             if (IsStarted)
             {
@@ -149,8 +147,8 @@ namespace RenderBox
         private void ShowHideButton_Click(object sender, RoutedEventArgs e)
         {
             SidePanel.Visibility =
-                SidePanel.Visibility == Visibility.Visible 
-                ? Visibility.Hidden 
+                SidePanel.Visibility == Visibility.Visible
+                ? Visibility.Hidden
                 : Visibility.Visible;
         }
 
@@ -161,23 +159,23 @@ namespace RenderBox
 
         private void Resolution_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            try 
+            try
             {
-                if(ResolutionText != null)
+                if (ResolutionText != null)
                     ResolutionText.Content = Math.Round(Resolution.Value, 1).ToString();
             }
-            catch(Exception)
+            catch (Exception)
             {
             }
         }
 
         private void OnKeyPress(object sender, KeyEventArgs e)
         {
-            if(IsActive) Renderer?.OnKeyPress(e.Key, Update);
+            if (IsActive) Renderer?.OnKeyPress(e.Key, Update);
         }
     }
 
-    public static class Extensions 
+    public static class Extensions
     {
         public static Type[] GetSubclasses(this Type type)
         {

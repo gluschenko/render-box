@@ -1,5 +1,5 @@
-﻿using System;
-using RenderBox.Core;
+﻿using RenderBox.Core;
+using System;
 
 namespace RenderBox.Shared.Modules.PathTracer.Shapes
 {
@@ -9,7 +9,7 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
 
         //public Sphere(Vector position, Color diffuse) : base(position, diffuse) { }
 
-        public Sphere(Vector3 position, float radius, Color diffuse) : base(position, diffuse) 
+        public Sphere(Vector3 position, float radius, Color diffuse) : base(position, diffuse)
         {
             this.radius = radius;
         }
@@ -45,7 +45,7 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
             }
         }
 
-        public override Vector3 CalcNormal(Vector3 pos) 
+        public override Vector3 CalcNormal(Vector3 pos)
         {
             return Vector3.Normalize(pos - position);
         }

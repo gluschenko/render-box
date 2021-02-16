@@ -1,5 +1,4 @@
-﻿using System;
-using RenderBox.Core;
+﻿using RenderBox.Core;
 
 namespace RenderBox.Shared.Modules.PathTracer
 {

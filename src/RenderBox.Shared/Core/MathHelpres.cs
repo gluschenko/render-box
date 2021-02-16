@@ -53,22 +53,23 @@ namespace RenderBox.Core
 
         /**/
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool SolveQuadratic(ref double a, ref double b, ref double c, ref double x0, ref double x1) 
-        { 
-            var discr = b * b - 4 * a * c; 
-            if (discr < 0) 
-                return false; 
-            else if (discr == 0) 
-                x0 = x1 = -0.5 * b / a; 
-            else { 
+        public static bool SolveQuadratic(ref double a, ref double b, ref double c, ref double x0, ref double x1)
+        {
+            var discr = b * b - 4 * a * c;
+            if (discr < 0)
+                return false;
+            else if (discr == 0)
+                x0 = x1 = -0.5 * b / a;
+            else
+            {
                 var q = (b > 0) ?
                     -0.5 * (b + Math.Sqrt(discr)) :
                     -0.5 * (b - Math.Sqrt(discr));
-                x0 = q / a; 
-                x1 = c / q; 
-            } 
-            if (x0 > x1) (x0, x1) = (x1, x0); 
-            return true; 
+                x0 = q / a;
+                x1 = c / q;
+            }
+            if (x0 > x1) (x0, x1) = (x1, x0);
+            return true;
         }
     }
 }

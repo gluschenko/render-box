@@ -1,8 +1,6 @@
 ﻿using RenderBox.Core;
 using System;
-using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Threading;
 
@@ -51,7 +49,7 @@ namespace RenderBox.Rendering
 
                     context.Dispatcher.Invoke(() => RenderComplete?.Invoke());
                 }
-                catch (ThreadInterruptedException) 
+                catch (ThreadInterruptedException)
                 {
                 }
             }
@@ -90,9 +88,9 @@ namespace RenderBox.Rendering
 
         protected abstract void RenderScreen(RenderContext context);
 
-        protected virtual void BatchScreen(RenderContext context, 
-                                           RenderScreenBatch renderScreenBatch, 
-                                           GetRenderPriority getRenderPriority = null) 
+        protected virtual void BatchScreen(RenderContext context,
+                                           RenderScreenBatch renderScreenBatch,
+                                           GetRenderPriority getRenderPriority = null)
         {
             using var _threadManager = new ThreadManager();
 
@@ -128,7 +126,7 @@ namespace RenderBox.Rendering
 
         protected delegate Color[,] RenderScreenBatch(int ix, int iy, int sizeX, int sizeY);
         protected delegate int GetRenderPriority(int ix, int iy);
-        
+
     }
 
     public struct RenderContext

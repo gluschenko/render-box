@@ -26,7 +26,7 @@ namespace RenderBox.Rendering
             }
         }
 
-        public void Start(int count, Action onDone) 
+        public void Start(int count, Action onDone)
         {
             State = ThreadManagerState.Started;
 
@@ -39,14 +39,14 @@ namespace RenderBox.Rendering
 
             for (var i = 0; i < _pool.Length; i++)
             {
-                if (_pool[i] != null) 
+                if (_pool[i] != null)
                 {
                     _pool[i].Start();
                 }
             }
         }
 
-        private void Stop() 
+        private void Stop()
         {
             _onDone?.Invoke();
             _onDone = null;
@@ -55,13 +55,13 @@ namespace RenderBox.Rendering
 
         public void Push(Action action, int priority = 0)
         {
-            if (State != ThreadManagerState.Created) 
+            if (State != ThreadManagerState.Created)
                 throw new InvalidOperationException($"This method can be called only when State = {ThreadManagerState.Created}");
 
             _queue.Enqueue(new Routine(action, priority));
         }
 
-        private void SortQueue() 
+        private void SortQueue()
         {
             var sortedQueue = new ConcurrentQueue<Routine>();
             foreach (var item in _queue.OrderBy(x => x.Priority))
@@ -71,13 +71,13 @@ namespace RenderBox.Rendering
             _queue = sortedQueue;
         }
 
-        private void Kill() 
+        private void Kill()
         {
             if (_pool is null) return;
 
-            for (var i = 0; i < _pool.Length; i++) 
+            for (var i = 0; i < _pool.Length; i++)
             {
-                if (_pool[i] != null) 
+                if (_pool[i] != null)
                 {
                     _pool[i].Interrupt();
                     _pool[i] = null;
@@ -88,7 +88,7 @@ namespace RenderBox.Rendering
             _onDone = null;
         }
 
-        private void ThreadProcess() 
+        private void ThreadProcess()
         {
             try
             {
@@ -96,7 +96,7 @@ namespace RenderBox.Rendering
                 {
                     if (_queue.Count > 0)
                     {
-                        if (_queue.TryDequeue(out var routine)) 
+                        if (_queue.TryDequeue(out var routine))
                         {
                             routine.Action?.Invoke();
                         }
@@ -119,7 +119,7 @@ namespace RenderBox.Rendering
 
                 Interlocked.Increment(ref _endedThreads);
 
-                if (_endedThreads == _pool.Length) 
+                if (_endedThreads == _pool.Length)
                 {
                     Stop();
                 }
@@ -137,7 +137,7 @@ namespace RenderBox.Rendering
         }
     }
 
-    public enum ThreadManagerState 
+    public enum ThreadManagerState
     {
         Created = 0,
         Started = 1,

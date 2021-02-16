@@ -1,15 +1,14 @@
-﻿using System;
+﻿using RenderBox.Core;
 using System.Collections.Generic;
-using RenderBox.Core;
 
 namespace RenderBox.Shared.Modules.PathTracer.Shapes
 {
     public class Box : Mesh
     {
-        public Box(Vector3 position, Color diffuse) : base(position, diffuse) 
+        public Box(Vector3 position, Color diffuse) : base(position, diffuse)
         {
-            double 
-                A = 0.5, 
+            double
+                A = 0.5,
                 B = -A;
 
             var verts = new List<Vector3>()

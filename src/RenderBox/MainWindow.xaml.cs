@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows;
-using System.Windows.Input;
-using System.Windows.Controls;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace RenderBox
 {
@@ -25,7 +24,7 @@ namespace RenderBox
             Closing += OnClosing;
         }
 
-        private void AddTab() 
+        private void AddTab()
         {
             var page = new RenderPage();
 
@@ -43,7 +42,7 @@ namespace RenderBox
             Tabs.Items.Insert(idx - 1, item);
             Tabs.SelectedIndex = Tabs.Items.Count - 2;
 
-            void onItemClick(object sender, MouseButtonEventArgs e) 
+            void onItemClick(object sender, MouseButtonEventArgs e)
             {
                 if (Tabs.Items.Count > 2)
                 {
@@ -73,7 +72,7 @@ namespace RenderBox
         {
             var renderers = _pages.Select(x => x.Value).Select(x => x.Renderer).ToArray();
 
-            foreach (var renderer in renderers) 
+            foreach (var renderer in renderers)
             {
                 renderer?.Dispose();
             }

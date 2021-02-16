@@ -1,5 +1,4 @@
-﻿using System;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 
 namespace RenderBox.Core
 {
@@ -30,7 +29,7 @@ namespace RenderBox.Core
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Clamp() 
+        public void Clamp()
         {
             R = MathHelpres.Clamp(R);
             G = MathHelpres.Clamp(G);
@@ -45,7 +44,7 @@ namespace RenderBox.Core
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private byte GetChannel(float n) 
+        private byte GetChannel(float n)
         {
             if (n < 0) return 0;
             if (n > 1) return byte.MaxValue;

@@ -1,8 +1,8 @@
-﻿using System;
-using System.Windows.Controls;
-using RenderBox.Modules;
+﻿using RenderBox.Modules;
 using RenderBox.Options;
 using RenderBox.Shared.Modules.Mandelbrot.Filters;
+using System;
+using System.Windows.Controls;
 
 namespace RenderBox.Pages
 {
@@ -34,7 +34,7 @@ namespace RenderBox.Pages
 
             EffectsPanel.Children.Add(noFilterButton);
 
-            foreach (var filter in filters) 
+            foreach (var filter in filters)
             {
                 var instance = Activator.CreateInstance(filter);
 

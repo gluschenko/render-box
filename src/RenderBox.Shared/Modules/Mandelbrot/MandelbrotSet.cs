@@ -14,19 +14,19 @@ namespace RenderBox.Shared.Modules.Mandelbrot
             SetExtent(maxValueExtent);
         }
 
-        public void SetIterations(int maxIterations) 
+        public void SetIterations(int maxIterations)
         {
             MaxIterations = maxIterations;
         }
 
-        public void SetExtent(double maxValueExtent) 
+        public void SetExtent(double maxValueExtent)
         {
             MaxValueExtent = maxValueExtent;
             MaxNorm = MaxValueExtent * MaxValueExtent;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public virtual int GetInterationsCount(ComplexNumber c) 
+        public virtual int GetInterationsCount(ComplexNumber c)
         {
             int i = 0;
             ComplexNumber z = new ComplexNumber();
@@ -46,7 +46,7 @@ namespace RenderBox.Shared.Modules.Mandelbrot
 
             if (i < MaxIterations)
             {
-                return (double) i / MaxIterations;
+                return (double)i / MaxIterations;
             }
             else
             {
@@ -60,22 +60,22 @@ namespace RenderBox.Shared.Modules.Mandelbrot
         public double Re, Im;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ComplexNumber(double re, double im) 
-        { 
-            Re = re; 
+        public ComplexNumber(double re, double im)
+        {
+            Re = re;
             Im = im;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public double Norm() 
+        public double Norm()
             => Re * Re + Im * Im;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ComplexNumber operator +(ComplexNumber x, ComplexNumber y) 
+        public static ComplexNumber operator +(ComplexNumber x, ComplexNumber y)
             => new ComplexNumber(x.Re + y.Re, x.Im + y.Im);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ComplexNumber operator *(ComplexNumber x, ComplexNumber y) 
+        public static ComplexNumber operator *(ComplexNumber x, ComplexNumber y)
             => new ComplexNumber(x.Re * y.Re - x.Im * y.Im, x.Re * y.Im + x.Im * y.Re);
     }
 }

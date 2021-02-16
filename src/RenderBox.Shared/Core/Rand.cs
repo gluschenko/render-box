@@ -33,7 +33,7 @@ namespace RenderBox.Core
         public static void Reset() => random = new Random(RandomizeSeed());
     }
 
-    public static class RandomExtensions 
+    public static class RandomExtensions
     {
         public static float NextFloat(this Random random) => (float)random.NextDouble();
     }
