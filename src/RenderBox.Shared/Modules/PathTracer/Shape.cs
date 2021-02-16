@@ -4,15 +4,17 @@ namespace RenderBox.Shared.Modules.PathTracer
 {
     public abstract class Shape : IShape
     {
-        public Vector3 position;
-        public Material material;
+        public Vector3 Position { get; set; }
+        public Material Material { get; set; }
 
         public Shape(Vector3 pos, Color diffuse)
         {
-            position = pos;
+            Position = pos;
             //
-            material = new Material();
-            material.diffuse = diffuse;
+            Material = new Material
+            {
+                diffuse = diffuse
+            };
         }
 
         public abstract Vector3 CalcNormal(Vector3 pos);

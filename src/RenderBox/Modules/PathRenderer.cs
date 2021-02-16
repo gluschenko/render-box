@@ -40,7 +40,7 @@ namespace RenderBox.Modules
                 new Sphere(new Vector3(4, 2, 0), .6f, Color.Black),
 
                 //new Sphere(new Vector(1, 1, -3), 2f, Color.Black),
-                new Box(new Vector3(1, 1, -3), Color.Black),
+                //new Box(new Vector3(1, 1, -3), Color.Black),
             });
 
             Scene.Lights.AddRange(new Light[]
@@ -115,7 +115,7 @@ namespace RenderBox.Modules
                 return back;  // Nothing was hit
             }
 
-            Material material = closestHit.hitObject.material;
+            Material material = closestHit.hitObject.Material;
             Color emittance = material.diffuse; //material.emittance;
 
             // Pick a random direction from here and keep going

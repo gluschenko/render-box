@@ -1,5 +1,6 @@
 ﻿using RenderBox.Core;
 using System.Collections.Generic;
+using static RenderBox.Core.VectorMath;
 
 namespace RenderBox.Shared.Modules.PathTracer.Shapes
 {
@@ -27,7 +28,7 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
                 var v1 = Vertices[Indices[k * 3 + 1]];
                 var v2 = Vertices[Indices[k * 3 + 2]];
                 double t = 0, u = 0, v = 0;
-                if (rayTriangleIntersect(v0, v1, v2, ray, ref t, ref u, ref v))
+                if (RayTriangleIntersect(v0, v1, v2, ray, ref t, ref u, ref v))
                 {
                     //uv.x = u;
                     //uv.y = v;
@@ -51,26 +52,26 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
             TrianglesCount = indices.Count / 3;
         }
 
-        private bool rayTriangleIntersect(Vector3 v0, Vector3 v1, Vector3 v2, Ray ray, ref double near, ref double u, ref double v)
+        private bool RayTriangleIntersect(Vector3 v0, Vector3 v1, Vector3 v2, Ray ray, ref double near, ref double u, ref double v)
         {
             var edge1 = v1 - v0;
             var edge2 = v2 - v0;
-            var pvec = Vector3.Cross(ray.direction, edge2);
+            var pvec = Cross(ray.direction, edge2);
 
-            double det = Vector3.Dot(edge1, pvec);
+            double det = Dot(edge1, pvec);
             if (det == 0 || det < 0) return false;
 
             var tvec = ray.origin - v0;
-            u = Vector3.Dot(tvec, pvec);
+            u = Dot(tvec, pvec);
             if (u < 0 || u > det) return false;
 
-            var qvec = Vector3.Cross(tvec, edge1);
-            v = Vector3.Dot(ray.direction, qvec);
+            var qvec = Cross(tvec, edge1);
+            v = Dot(ray.direction, qvec);
             if (v < 0 || u + v > det) return false;
 
             double invDet = 1 / det;
 
-            near = Vector3.Dot(edge2, qvec) * invDet;
+            near = Dot(edge2, qvec) * invDet;
             u *= invDet;
             v *= invDet;
 

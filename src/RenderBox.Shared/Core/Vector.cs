@@ -53,15 +53,11 @@ namespace RenderBox.Core
 
         public double Length => Math.Sqrt(x * x + y * y + z * z);
 
-        public override bool Equals(object obj)
-        {
-            return EqualsInternal(obj as Vector3?);
-        }
+        public override bool Equals(object obj) 
+            => EqualsInternal(obj as Vector3?);
 
-        private bool EqualsInternal(Vector3? vector)
-        {
-            return vector.HasValue && vector.Value == this;
-        }
+        private bool EqualsInternal(Vector3? vector) 
+            => vector.HasValue && vector.Value == this;
 
         public override int GetHashCode() => HashCode.Combine(x, y, z);
 
@@ -114,15 +110,11 @@ namespace RenderBox.Core
 
         public double Length => Math.Sqrt(x * x + y * y);
 
-        public override bool Equals(object obj)
-        {
-            return EqualsInternal(obj as Vector2?);
-        }
+        public override bool Equals(object obj) 
+            => EqualsInternal(obj as Vector2?);
 
-        private bool EqualsInternal(Vector2? vector)
-        {
-            return vector.HasValue && vector.Value == this;
-        }
+        private bool EqualsInternal(Vector2? vector) 
+            => vector.HasValue && vector.Value == this;
 
         public override int GetHashCode() => HashCode.Combine(x, y);
 
@@ -150,6 +142,23 @@ namespace RenderBox.Core
         public static Vector2 Lerp(Vector2 a, Vector2 b, float r) => a + (b - a) * r;
         public static Vector2 Normalize(Vector2 a) => a / a.Length;
 
+        public static Vector2 Reflect(Vector2 i, Vector2 n)
+        {
+            return i - 2.0f * Dot(n, i) * n;
+        }
+
+        public static Vector2 Refract(Vector2 i, Vector2 n, float eta)
+        {
+            var ni = Dot(n, i);
+            var k = 1.0f - eta * eta * (1.0f - ni * ni);
+
+            var result = k >= 0.0f
+                ? eta * i - n * (eta * ni + Math.Sqrt(k))
+                : new Vector2();
+
+            return result;
+        }
+
         #endregion
 
         #region Vector3
@@ -159,39 +168,29 @@ namespace RenderBox.Core
         public static Vector3 Lerp(Vector3 a, Vector3 b, float r) => a + (b - a) * r;
         public static Vector3 Cross(Vector3 a, Vector3 b)
         {
-            return new Vector3(
-                a.y * b.z - a.z * b.y,
-                a.z * b.x - a.x * b.z,
-                a.x * b.y - a.y * b.x
-            );
+            var x = a.y * b.z - a.z * b.y;
+            var y = a.z * b.x - a.x * b.z;
+            var z = a.x * b.y - a.y * b.x;
+            return new Vector3(x, y, z);
         }
 
         public static Vector3 Normalize(Vector3 a) => a / a.Length;
 
-        // Vector interactions
-        public static Vector3 Reflect(Vector3 I, Vector3 N)
+        public static Vector3 Reflect(Vector3 i, Vector3 n)
         {
-            return I - 2 * Dot(I, N) * N;
+            return i - 2 * Dot(i, n) * n;
         }
 
-        public static Vector3 Refract(Vector3 I, Vector3 N, float ior)
+        public static Vector3 Refract(Vector3 i, Vector3 n, float eta)
         {
-            double cosi = MathHelpres.Clamp(Dot(I, N), -1.0, 1.0);
-            float etai = 1, etat = ior;
-            var n = N;
-            if (cosi < 0)
-            {
-                cosi = -cosi;
-            }
-            else
-            {
-                (etat, etai) = (etai, etat);
-                n = -N;
-            }
+            var ni = Dot(n, i);
+            var k = 1.0f - eta * eta * (1.0f - ni * ni);
 
-            double eta = etai / etat;
-            double k = 1 - eta * eta * (1 - cosi * cosi);
-            return k < 0 ? Vector3.Zero : eta * I + (eta * cosi - Math.Sqrt(k)) * n;
+            var result = k >= 0.0f 
+                ? eta * i - n * (eta * ni + Math.Sqrt(k)) 
+                : new Vector3();
+
+            return result;
         }
 
         #endregion
