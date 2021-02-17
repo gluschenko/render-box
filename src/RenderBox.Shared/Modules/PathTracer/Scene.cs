@@ -1,4 +1,5 @@
 ﻿using RenderBox.Core;
+using RenderBox.Shared.Modules.PathTracer.Shapes;
 using System.Collections.Generic;
 
 namespace RenderBox.Shared.Modules.PathTracer
@@ -7,7 +8,10 @@ namespace RenderBox.Shared.Modules.PathTracer
     {
         public Color BackgroundColor { get; set; }
         public List<Shape> Shapes { get; set; }
+        public List<Box> Boxes { get; set; }
         public List<Light> Lights { get; set; }
+
+        public int Samples { get; set; }
 
         public Scene()
         {
