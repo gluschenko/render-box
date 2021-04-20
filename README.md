@@ -1,10 +1,10 @@
-# RenderBox (ex Path Tracer Sharp)
+# RenderBox
 
-
+[![.NET Core Desktop](https://github.com/Gluschenko/render-box/actions/workflows/build.yml/badge.svg)](https://github.com/Gluschenko/render-box/actions/workflows/build.yml)
 
 ## Introduction
 
-Main aim of this project is implementation of path tracing algorithm in C# (without GPU optimisation at first time).
+Main aim of this project is implementation of path tracing algorithm in C# (without GPU optimization at first time).
 
 Sources:
 
@@ -16,11 +16,6 @@ Sources:
 
 * Visual Studio 2019
 * .NET Core SDK 5.0
-
-## TODO
-
-1. Basic drawing framework
-2. ...
 
 ## Draft (pseudo-code)
 
