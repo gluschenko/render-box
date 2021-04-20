@@ -1,5 +1,7 @@
 # RenderBox (ex Path Tracer Sharp)
 
+
+
 ## Introduction
 
 Main aim of this project is implementation of path tracing algorithm in C# (without GPU optimisation at first time).
@@ -9,6 +11,11 @@ Sources:
 * https://en.wikipedia.org/wiki/Path_tracing (EN)
 
 * https://ru.wikipedia.org/wiki/Трассировка_пути (RU)
+
+## Requirements
+
+* Visual Studio 2019
+* .NET Core SDK 5.0
 
 ## TODO
 
