@@ -28,6 +28,7 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
                 var v1 = Vertices[Indices[k * 3 + 1]];
                 var v2 = Vertices[Indices[k * 3 + 2]];
                 double t = 0, u = 0, v = 0;
+
                 if (RayTriangleIntersect(v0, v1, v2, ray, ref t, ref u, ref v))
                 {
                     //uv.x = u;
@@ -56,17 +57,17 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
         {
             var edge1 = v1 - v0;
             var edge2 = v2 - v0;
-            var pvec = Cross(ray.direction, edge2);
+            var pvec = Cross(ray.Direction, edge2);
 
             double det = Dot(edge1, pvec);
             if (det == 0 || det < 0) return false;
 
-            var tvec = ray.origin - v0;
+            var tvec = ray.Origin - v0;
             u = Dot(tvec, pvec);
             if (u < 0 || u > det) return false;
 
             var qvec = Cross(tvec, edge1);
-            v = Dot(ray.direction, qvec);
+            v = Dot(ray.Direction, qvec);
             if (v < 0 || u + v > det) return false;
 
             double invDet = 1 / det;

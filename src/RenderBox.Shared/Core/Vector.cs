@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 
 namespace RenderBox.Core
 {
@@ -52,10 +51,10 @@ namespace RenderBox.Core
 
         public double Length => Math.Sqrt(x * x + y * y);
 
-        public override bool Equals(object obj) 
+        public override bool Equals(object obj)
             => EqualsInternal(obj as Vector2?);
 
-        private bool EqualsInternal(Vector2? vector) 
+        private bool EqualsInternal(Vector2? vector)
             => vector.HasValue && vector.Value == this;
 
         public override int GetHashCode() => HashCode.Combine(x, y);
@@ -123,6 +122,15 @@ namespace RenderBox.Core
 
         public override int GetHashCode() => HashCode.Combine(x, y, z);
 
+        public static Vector3 Normalize(Vector3 u)
+        {
+            return u * (1.0 / u.Length);
+        }
+
+        public static Vector3 Cross(Vector3 u, Vector3 v)
+        {
+            return new Vector3(u.y * v.z - u.z * v.y, u.z * v.x - u.x * v.z, u.x * v.y - u.y * v.x);
+        }
     }
 
     public struct Vector4
@@ -168,12 +176,23 @@ namespace RenderBox.Core
             M[3] = 0.0f; M[7] = 0.0f; M[11] = 0.0f; M[15] = 1.0f;
         }
 
-        public double this[int i] => M[i];
+        public double this[int i]
+        {
+            get
+            {
+                return M[i];
+            }
+            set
+            {
+                M[i] = value;
+            }
+        }
+
         public double this[int x, int y] => M[y * 4 + x];
 
-        public static Quaternion operator *(Quaternion a, Quaternion b) 
+        public static Quaternion operator *(Quaternion a, Quaternion b)
         {
-            Quaternion c = new Quaternion(false);
+            var c = new Quaternion(false);
 
             c.M[0] = a.M[0] * b.M[0] + a.M[4] * b.M[1] + a.M[8] * b.M[2] + a.M[12] * b.M[3];
             c.M[1] = a.M[1] * b.M[0] + a.M[5] * b.M[1] + a.M[9] * b.M[2] + a.M[13] * b.M[3];
@@ -200,7 +219,7 @@ namespace RenderBox.Core
 
         public static Vector2 operator *(Quaternion a, Vector2 b) => (Vector2)(a * new Vector4(b.x, b.y, 0.0f, 1.0f));
         public static Vector3 operator *(Quaternion a, Vector3 b) => (Vector3)(a * new Vector4(b.x, b.y, b.z, 1.0f));
-        public static Vector4 operator *(Quaternion a, Vector4 b) 
+        public static Vector4 operator *(Quaternion a, Vector4 b)
         {
             Vector4 v;
 
@@ -225,7 +244,7 @@ namespace RenderBox.Core
         public override int GetHashCode() => HashCode.Combine(M);
     }
 
-    public static class VectorMath 
+    public static class VectorMath
     {
         #region Vector2
 
@@ -278,8 +297,8 @@ namespace RenderBox.Core
             var ni = Dot(n, i);
             var k = 1.0f - eta * eta * (1.0f - ni * ni);
 
-            var result = k >= 0.0f 
-                ? eta * i - n * (eta * ni + Math.Sqrt(k)) 
+            var result = k >= 0.0f
+                ? eta * i - n * (eta * ni + Math.Sqrt(k))
                 : new Vector3();
 
             return result;

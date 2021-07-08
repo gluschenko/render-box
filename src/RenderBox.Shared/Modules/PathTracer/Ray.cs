@@ -4,21 +4,21 @@ namespace RenderBox.Shared.Modules.PathTracer
 {
     public struct Ray
     {
-        public Vector3 origin;
-        public Vector3 direction;
+        public Vector3 Origin { get; set; }
+        public Vector3 Direction { get; set; }
 
         public Ray(Vector3 origin, Vector3 direction)
         {
-            this.origin = origin;
-            this.direction = direction;
+            Origin = origin;
+            Direction = direction;
         }
     }
 
     public struct Hit
     {
-        public Vector3 position;
-        public Shape hitObject;
+        public Vector3 Position { get; set; }
+        public Shape HitObject { get; set; }
 
-        public bool IsHitting => hitObject != null;
+        public bool IsHitting => HitObject != null;
     }
 }

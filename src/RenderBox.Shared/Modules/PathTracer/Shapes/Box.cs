@@ -7,9 +7,7 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
     {
         public Box(Vector3 position, Color diffuse) : base(position, diffuse)
         {
-            double
-                A = 0.5,
-                B = -A;
+            double A = 0.5, B = -A;
 
             var verts = new List<Vector3>()
             {
@@ -25,7 +23,8 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
 
             var indices = new List<int>()
             {
-
+                0, 1, 2, 3,
+                4, 5, 6, 7,
             };
 
             SetData(verts, indices);

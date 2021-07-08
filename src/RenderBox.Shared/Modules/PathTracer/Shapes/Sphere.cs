@@ -8,8 +8,6 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
     {
         public float Radius { get; set; }
 
-        //public Sphere(Vector position, Color diffuse) : base(position, diffuse) { }
-
         public Sphere(Vector3 position, float radius, Color diffuse) : base(position, diffuse)
         {
             Radius = radius;
@@ -19,30 +17,30 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
         {
             hit = new Hit();
 
-            var delta = ray.origin - Position;
+            var delta = ray.Origin - Position;
 
-            var a = Dot(ray.direction, ray.direction);
-            var b = 2 * Dot(ray.direction, delta);
+            var a = Dot(ray.Direction, ray.Direction);
+            var b = 2 * Dot(ray.Direction, delta);
             var c = Dot(delta, delta) - Radius * Radius;
 
             double dt = b * b - 4 * a * c;
 
             if (dt < 0)
             {
-                return -1;
+                return double.NaN;
             }
             else
             {
                 double D = (-b - Math.Sqrt(dt)) / (a * 2);
                 if (D < 0)
                 {
-                    return -1;
+                    return double.NaN;
                 }
 
-                hit.position = ray.origin + ray.direction * (float)D;
-                hit.hitObject = this;
+                hit.Position = ray.Origin + ray.Direction * (float)D;
+                hit.HitObject = this;
 
-                return Distance(hit.position, ray.origin);
+                return Distance(hit.Position, ray.Origin);
             }
         }
 
