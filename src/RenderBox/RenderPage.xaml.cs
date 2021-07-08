@@ -22,7 +22,7 @@ namespace RenderBox
         public Scene Scene { get; set; }
 
         private readonly ObservableCollection<string> _log;
-        private readonly Stopwatch _timer = new Stopwatch();
+        private readonly Stopwatch _timer = new();
 
         public RenderPage()
         {
@@ -81,8 +81,8 @@ namespace RenderBox
             if (Renderer == null)
             {
                 Renderer = (Renderer)Activator.CreateInstance(type, new Paint(Image, w, h, scale));
-                Renderer.RenderStart += () => _timer.Restart();
-                Renderer.RenderComplete += () => _log.Add($"Render frame: {_timer.ElapsedMilliseconds} ms");
+                Renderer.OnRenderStarted += () => _timer.Restart();
+                Renderer.OnRenderComplete += () => _log.Add($"Render frame: {_timer.ElapsedMilliseconds} ms");
 
                 var attributes = Renderer.GetType().GetCustomAttributes();
                 foreach (var attribute in attributes)
@@ -100,8 +100,7 @@ namespace RenderBox
             }
             else
             {
-                Renderer.Stop();
-                Renderer.Paint = new Paint(Image, w, h, scale);
+                Renderer.Reset(new Paint(Image, w, h, scale));
             }
         }
 
