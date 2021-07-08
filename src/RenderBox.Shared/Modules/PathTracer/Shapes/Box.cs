@@ -11,20 +11,41 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
 
             var verts = new List<Vector3>()
             {
-                new Vector3(B, B, B), // 0
+                new Vector3(A, B, A), // 0
                 new Vector3(A, B, B), // 1
                 new Vector3(B, B, A), // 2
-                new Vector3(A, B, A), // 3
-                new Vector3(B, A, B), // 4
+                new Vector3(B, B, B), // 3
+                new Vector3(A, A, A), // 4
                 new Vector3(A, A, B), // 5
                 new Vector3(B, A, A), // 6
-                new Vector3(A, A, A), // 7
+                new Vector3(B, A, B), // 7
             };
 
             var indices = new List<int>()
             {
-                0, 1, 2, 3,
-                4, 5, 6, 7,
+                // Top
+                4, 5, 6,
+                7, 6, 5,
+
+                // Bottom
+                1, 2, 3,
+                2, 1, 0,
+
+                // Front
+                0, 1, 5,
+                4, 0, 5,
+
+                // Back
+                7, 3, 2,
+                2, 6, 7,
+
+                // Left
+                1, 3, 7,
+                7, 5, 1,
+
+                // Right
+                6, 2, 0,
+                0, 4, 6,
             };
 
             SetData(verts, indices);

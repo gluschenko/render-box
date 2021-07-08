@@ -12,6 +12,7 @@
         <StackPanel Margin="10">
 
             <CheckBox x:Name="ShowNormals" Content="Normals" />
+            <CheckBox x:Name="ShowDepth" Content="Depth" />
 
             <Label Content="Batch size:"></Label>
             <TextBox x:Name="BatchSize"></TextBox>

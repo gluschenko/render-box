@@ -6,11 +6,13 @@ namespace RenderBox.Shared.Modules.PathTracer
     {
         public Vector3 Postion { get; set; }
         public double Intensity { get; set; }
+        public IShape Shape { get; set; }
 
-        public Light(Vector3 postion, double intensity)
+        public Light(Vector3 postion, double intensity, IShape shape)
         {
             Postion = postion;
             Intensity = intensity;
+            Shape = shape;
         }
     }
 }

@@ -5,6 +5,7 @@ using RenderBox.Rendering;
 using RenderBox.Shared.Modules.PathTracer;
 using RenderBox.Shared.Modules.PathTracer.Shapes;
 using System;
+using System.Linq;
 using System.Windows.Input;
 using static RenderBox.Core.VectorMath;
 
@@ -17,6 +18,7 @@ namespace RenderBox.Modules
         public Scene Scene { get; set; }
 
         public bool ShowNormals { get; set; }
+        public bool ShowDepth { get; set; }
 
         public PathRenderer(Paint paint) : base(paint)
         {
@@ -25,6 +27,8 @@ namespace RenderBox.Modules
 
             Scene.Shapes.AddRange(new Shape[]
             {
+                new Sphere(new Vector3(5, 0, -10), 5f, Color.Black),
+
                 new Sphere(new Vector3(-4, -2, 0), .6f, Color.Black),
                 new Sphere(new Vector3(-2, -2, 0), .6f, Color.Black),
                 new Sphere(new Vector3(0, -2, 0), .6f, Color.Black),
@@ -33,7 +37,6 @@ namespace RenderBox.Modules
 
                 new Sphere(new Vector3(-4, 0, 0), .5f, Color.Red),
                 new Sphere(new Vector3(-2, 0, 0), .6f, Color.Yellow),
-                new Sphere(new Vector3(0, 0, 0), .7f, Color.Green),
                 new Sphere(new Vector3(2, 0, 0), .6f, Color.Blue),
                 new Sphere(new Vector3(4, 0, 0), .5f, Color.Red),
 
@@ -43,12 +46,15 @@ namespace RenderBox.Modules
                 new Sphere(new Vector3(2, 2, 0), .6f, Color.Black),
                 new Sphere(new Vector3(4, 2, 0), .6f, Color.Black),
 
-                //new Box(new Vector3(1, 1, -30), Color.Black),
+                new Box(new Vector3(0, 0, 0), Color.Black),
+                new Box(new Vector3(1, 0, -2), Color.Yellow),
+                new Box(new Vector3(0, 0, -2), Color.Blue),
+                new Box(new Vector3(0, 0, -1), Color.Red),
             });
 
             Scene.Lights.AddRange(new Light[]
             {
-                new Light(new Vector3(4, 0, 4), 10),
+                new Light(new Vector3(4, 0, 4), 10, Scene.Shapes.First()),
             });
         }
 
@@ -128,6 +134,18 @@ namespace RenderBox.Modules
             var position = hit.Position;
             var normal = hit.HitObject.CalcNormal(position);
 
+            if (ShowDepth)
+            {
+                var dist = Distance(hit.Position, ray.Origin);
+                var max = 10;
+                var rate = 1 - (dist / max);
+                if (rate < 0) rate = 0;
+                if (rate > 1) rate = 1;
+                rate *= rate;
+
+                return new Color(rate, rate, rate);
+            }
+
             if (ShowNormals)
             {
                 return new Color(normal.x, normal.y, normal.z);
@@ -157,12 +175,11 @@ namespace RenderBox.Modules
         private static Hit FindClosestHit(Scene scene, Ray ray)
         {
             var closest = new Hit();
-
             var minDist = double.PositiveInfinity;
 
             foreach (var shape in scene.Shapes)
             {
-                var isHit = shape.GetIntersection(ray, 10, out Hit localHit, out var distance);
+                var isHit = shape.GetIntersection(ray, 10, out var hit, out var distance);
 
                 if (!isHit)
                 {
@@ -172,7 +189,7 @@ namespace RenderBox.Modules
                 if (distance < minDist)
                 {
                     minDist = distance;
-                    closest = localHit;
+                    closest = hit;
                 }
             }
 
@@ -188,12 +205,12 @@ namespace RenderBox.Modules
         {
             var origPos = MainCamera.Position;
 
-            if (key == Key.E) MainCamera.Position += Vector3.Back * 0.5f;
-            if (key == Key.Q) MainCamera.Position += Vector3.Forward * 0.5f;
+            if (key == Key.E) MainCamera.Position += Vector3.Up * 0.5f;
+            if (key == Key.Q) MainCamera.Position += Vector3.Down * 0.5f;
             if (key == Key.A) MainCamera.Position += Vector3.Left * 0.5f;
             if (key == Key.D) MainCamera.Position += Vector3.Right * 0.5f;
-            if (key == Key.W) MainCamera.Position += Vector3.Up * 0.5f;
-            if (key == Key.S) MainCamera.Position += Vector3.Down * 0.5f;
+            if (key == Key.W) MainCamera.Position += Vector3.Back * 0.5f;
+            if (key == Key.S) MainCamera.Position += Vector3.Forward * 0.5f;
 
             if (origPos != MainCamera.Position)
             {
