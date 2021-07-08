@@ -29,6 +29,15 @@ namespace RenderBox.Core
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Color(double r, double g, double b, double a = 1)
+        {
+            R = (float)r;
+            G = (float)g;
+            B = (float)b;
+            A = (float)a;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clamp()
         {
             R = MathHelpres.Clamp(R);

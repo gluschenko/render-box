@@ -29,9 +29,9 @@ namespace RenderBox.Shared.Modules.PathTracer
             Position = position;
             Target = target;
 
-            NormalZ = Vector3.Normalize(Position - Target);
-            NormalX = Vector3.Normalize(Vector3.Cross(new Vector3(0.0f, 1.0f, 0.0f), NormalZ));
-            NormalY = Vector3.Cross(NormalZ, NormalX);
+            NormalZ = VectorMath.Normalize(Position - Target);
+            NormalX = VectorMath.Normalize(VectorMath.Cross(new Vector3(0.0f, 1.0f, 0.0f), NormalZ));
+            NormalY = VectorMath.Cross(NormalZ, NormalX);
 
             if (!rotateAround)
             {

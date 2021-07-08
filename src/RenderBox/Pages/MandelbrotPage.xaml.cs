@@ -65,7 +65,7 @@ namespace RenderBox.Pages
 
         public void UseSource(object source)
         {
-            Source = (MandelbrotRenderer)source;
+            Source = source as MandelbrotRenderer;
 
             Iterations.Text = Source.Iterations.ToString();
             Extent.Text = Source.Extent.ToString();

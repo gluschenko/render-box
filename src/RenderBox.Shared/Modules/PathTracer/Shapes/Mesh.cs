@@ -16,7 +16,7 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
             Indices = new List<int>();
         }
 
-        public override double GetIntersection(Ray ray, out Hit hit)
+        public override bool GetIntersection(Ray ray, double maxDistance, out Hit hit, out double distance)
         {
             bool intersect = false;
 
@@ -38,12 +38,13 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
                 }
             }
 
-            return intersect ? 1.0 : 0.0;
+            distance = 0;
+            return intersect;
         }
 
         public override Vector3 CalcNormal(Vector3 pos)
         {
-            return Vector3.Zero;
+            return Normalize(pos - Position);
         }
 
         public void SetData(List<Vector3> verts, List<int> indices)

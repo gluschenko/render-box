@@ -121,16 +121,6 @@ namespace RenderBox.Core
             => vector.HasValue && vector.Value == this;
 
         public override int GetHashCode() => HashCode.Combine(x, y, z);
-
-        public static Vector3 Normalize(Vector3 u)
-        {
-            return u * (1.0 / u.Length);
-        }
-
-        public static Vector3 Cross(Vector3 u, Vector3 v)
-        {
-            return new Vector3(u.y * v.z - u.z * v.y, u.z * v.x - u.x * v.z, u.x * v.y - u.y * v.x);
-        }
     }
 
     public struct Vector4
@@ -285,7 +275,10 @@ namespace RenderBox.Core
             return new Vector3(x, y, z);
         }
 
-        public static Vector3 Normalize(Vector3 a) => a / a.Length;
+        public static Vector3 Normalize(Vector3 a)
+        {
+            return a * (1.0 / a.Length);
+        }
 
         public static Vector3 Reflect(Vector3 i, Vector3 n)
         {

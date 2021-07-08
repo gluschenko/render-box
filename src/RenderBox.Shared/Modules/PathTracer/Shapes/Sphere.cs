@@ -13,7 +13,7 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
             Radius = radius;
         }
 
-        public override double GetIntersection(Ray ray, out Hit hit)
+        public override bool GetIntersection(Ray ray, double maxDistance, out Hit hit, out double distance)
         {
             hit = new Hit();
 
@@ -27,20 +27,25 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
 
             if (dt < 0)
             {
-                return double.NaN;
+                distance = 0;
+                return false;
             }
             else
             {
                 double D = (-b - Math.Sqrt(dt)) / (a * 2);
                 if (D < 0)
                 {
-                    return double.NaN;
+                    distance = 0;
+                    return false;
                 }
 
                 hit.Position = ray.Origin + ray.Direction * (float)D;
                 hit.HitObject = this;
 
-                return Distance(hit.Position, ray.Origin);
+                var dist = Distance(hit.Position, ray.Origin);
+                distance = dist;
+
+                return dist < maxDistance;
             }
         }
 

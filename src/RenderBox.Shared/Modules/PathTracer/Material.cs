@@ -12,15 +12,16 @@ namespace RenderBox.Shared.Modules.PathTracer
 
     public class Material
     {
-        public Color
-            ambient = Color.White,
-            diffuse = Color.White,
-            specular = Color.White;
-
+        public Color Ambient { get; set; }
+        public Color Diffuse { get; set; }
+        public Color Specular { get; set; }
         public ShadingType ShadingType { get; set; }
 
         public Material()
         {
+            Ambient = Color.White;
+            Diffuse = Color.White;
+            Specular = Color.White;
             ShadingType = ShadingType.Diffuse;
         }
     }

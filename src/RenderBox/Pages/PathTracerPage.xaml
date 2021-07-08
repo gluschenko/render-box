@@ -1,0 +1,23 @@
+﻿<Page x:Class="RenderBox.Pages.PathTracerPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:RenderBox.Pages"
+      mc:Ignorable="d" 
+      d:DesignHeight="400" d:DesignWidth="400"
+      Title="PathTracerPage">
+
+    <Grid Background="#fff">
+        <StackPanel Margin="10">
+
+            <CheckBox x:Name="ShowNormals" Content="Normals" />
+
+            <Label Content="Batch size:"></Label>
+            <TextBox x:Name="BatchSize"></TextBox>
+
+            <Button x:Name="ApplyButton" Content="Apply" Margin="30" Click="ApplyButton_Click"></Button>
+
+        </StackPanel>
+    </Grid>
+</Page>

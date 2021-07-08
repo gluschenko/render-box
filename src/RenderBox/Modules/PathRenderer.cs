@@ -1,4 +1,6 @@
 ﻿using RenderBox.Core;
+using RenderBox.Options;
+using RenderBox.Pages;
 using RenderBox.Rendering;
 using RenderBox.Shared.Modules.PathTracer;
 using RenderBox.Shared.Modules.PathTracer.Shapes;
@@ -8,10 +10,13 @@ using static RenderBox.Core.VectorMath;
 
 namespace RenderBox.Modules
 {
+    [OptionsPage(typeof(PathTracerPage))]
     public class PathRenderer : Renderer
     {
         public Camera MainCamera { get; set; }
         public Scene Scene { get; set; }
+
+        public bool ShowNormals { get; set; }
 
         public PathRenderer(Paint paint) : base(paint)
         {
@@ -114,28 +119,26 @@ namespace RenderBox.Modules
 
             if (!hit.IsHitting)
             {
-                return back;  // Nothing was hit
+                return back; // Nothing was hit
             }
 
-            Material material = hit.HitObject.Material;
-            Color emittance = material.diffuse; //material.emittance;
+            var material = hit.HitObject.Material;
+            var emittance = material.Diffuse; //material.emittance;
 
             var position = hit.Position;
             var normal = hit.HitObject.CalcNormal(position);
+
+            if (ShowNormals)
+            {
+                return new Color(normal.x, normal.y, normal.z);
+            }
+
             var newRay = new Ray(position, normal);
 
-            // Probability of the newRay
-            //const float p = 1f / (2f * (float)Math.PI);
+            Color BRDF = material.Specular / (float)Math.PI;
 
-            // Compute the BRDF for this ray (assuming Lambertian reflection)
-            //float cos_theta = (float)Vector3.Dot(newRay.direction, normal);
-            Color BRDF = material.specular / (float)Math.PI;
-
-            // Recursively trace reflected light sources.
             Color incoming = TracePath(context, camera, scene, newRay, back, depth + 1);
-
-            // Apply the Rendering Equation here.
-            return emittance + (BRDF * incoming /** cos_theta / p*/);
+            return emittance + (BRDF * incoming);
         }
 
         /*void Render(Image finalImage, int numSamples)
@@ -159,9 +162,9 @@ namespace RenderBox.Modules
 
             foreach (var shape in scene.Shapes)
             {
-                var distance = shape.GetIntersection(ray, out Hit localHit);
+                var isHit = shape.GetIntersection(ray, 10, out Hit localHit, out var distance);
 
-                if (double.IsNaN(distance))
+                if (!isHit)
                 {
                     continue;
                 }
