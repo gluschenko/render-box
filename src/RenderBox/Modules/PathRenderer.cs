@@ -92,15 +92,27 @@ namespace RenderBox.Modules
             float halfX = width / 2;
             float halfY = height / 2;
 
+            Color[,] BatchPreview(int ix, int iy, int sizeX, int sizeY)
+            {
+                var tile = RenderBatch(ix, iy, sizeX, sizeY, (int)(8 * scale));
+                return tile;
+            }
+
             Color[,] Batch(int ix, int iy, int sizeX, int sizeY)
+            {
+                var tile = RenderBatch(ix, iy, sizeX, sizeY, 1);
+                return tile;
+            }
+
+            Color[,] RenderBatch(int ix, int iy, int sizeX, int sizeY, int step)
             {
                 var tile = new Color[sizeX, sizeY];
 
-                for (int localY = 0; localY < sizeY; localY++)
+                for (int localY = 0; localY < sizeY; localY += step)
                 {
                     int y = iy + localY;
 
-                    for (int localX = 0; localX < sizeX; localX++)
+                    for (int localX = 0; localX < sizeX; localX += step)
                     {
                         int x = ix + localX;
                         //
@@ -115,6 +127,25 @@ namespace RenderBox.Modules
                     }
                 }
 
+                if (step > 1)
+                {
+                    for (int localY = 0; localY < sizeY; localY += step)
+                    {
+                        for (int localX = 0; localX < sizeX; localX += step)
+                        {
+                            var template = tile[localX, localY];
+
+                            for (var y = localY; y < localY + step && y < sizeY; y++)
+                            {
+                                for (var x = localX; x < localX + step && x < sizeX; x++)
+                                {
+                                    tile[x, y] = template;
+                                }
+                            }
+                        }
+                    }
+                }
+
                 return tile;
             }
 
@@ -122,6 +153,7 @@ namespace RenderBox.Modules
             {
                 lock (scene)
                 {
+                    BatchScreen(context, BatchPreview);
                     BatchScreen(context, Batch);
                 }
             }
