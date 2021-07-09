@@ -27,29 +27,42 @@ namespace RenderBox.Modules
 
             Scene.Shapes.AddRange(new Shape[]
             {
+                /*
                 new Sphere(new Vector3(5, 0, -10), 5f, Color.Black),
 
-                new Sphere(new Vector3(-4, -2, 0), .6f, Color.Black),
-                new Sphere(new Vector3(-2, -2, 0), .6f, Color.Black),
-                new Sphere(new Vector3(0, -2, 0), .6f, Color.Black),
-                new Sphere(new Vector3(2, -2, 0), .6f, Color.Black),
-                new Sphere(new Vector3(4, -2, 0), .6f, Color.Black),
+                new Sphere(new Vector3(-4, -2, 0), .5f, Color.Black),
+                new Sphere(new Vector3(-2, -2, 0), .5f, Color.Black),
+                new Sphere(new Vector3(0, -2, 0), .5f, Color.Black),
+                new Sphere(new Vector3(2, -2, 0), .5f, Color.Black),
+                new Sphere(new Vector3(4, -2, 0), .5f, Color.Black),
 
                 new Sphere(new Vector3(-4, 0, 0), .5f, Color.Red),
-                new Sphere(new Vector3(-2, 0, 0), .6f, Color.Yellow),
-                new Sphere(new Vector3(2, 0, 0), .6f, Color.Blue),
+                new Sphere(new Vector3(-2, 0, 0), .5f, Color.Yellow),
+                new Sphere(new Vector3(2, 0, 0), .5f, Color.Blue),
                 new Sphere(new Vector3(4, 0, 0), .5f, Color.Red),
 
-                new Sphere(new Vector3(-4, 2, 0), .6f, Color.Black),
-                new Sphere(new Vector3(-2, 2, 0), .6f, Color.Black),
-                new Sphere(new Vector3(0, 2, 0), .6f, Color.Black),
-                new Sphere(new Vector3(2, 2, 0), .6f, Color.Black),
-                new Sphere(new Vector3(4, 2, 0), .6f, Color.Black),
+                new Sphere(new Vector3(-4, 2, 0), .5f, Color.Black),
+                new Sphere(new Vector3(-2, 2, 0), .5f, Color.Black),
+                new Sphere(new Vector3(0, 2, 0), .5f, Color.Black),
+                new Sphere(new Vector3(2, 2, 0), .5f, Color.Black),
+                new Sphere(new Vector3(4, 2, 0), .5f, Color.Black),
+                */
 
-                new Box(new Vector3(0, 0, 0), Color.Black),
-                new Box(new Vector3(1, 0, -2), Color.Yellow),
-                new Box(new Vector3(0, 0, -2), Color.Blue),
-                new Box(new Vector3(0, 0, -1), Color.Red),
+                new Box(new Vector3(0, 2, 0), Color.White, new Vector3(1, 0.2, 1)), // Lamp
+
+                new Box(new Vector3(0, -2, 0), Color.Gray, new Vector3(4, 0.01, 4)), // Floor
+                new Box(new Vector3(0, 2, 0), Color.Gray, new Vector3(4, 0.01, 4)), // Top
+                new Box(new Vector3(2, 0, 0), Color.Green, new Vector3(0.01, 4, 4)), // Right wall
+                new Box(new Vector3(-2, 0, 0), Color.Red, new Vector3(0.01, 4, 4)), // Left wall
+                new Box(new Vector3(0, 0, -2), Color.Gray, new Vector3(4, 4, 0.01)), // Back wall
+
+                new Sphere(new Vector3(0, -1.5, 1), .5f, Color.White),
+                new Sphere(new Vector3(1, -1.5, 1), .5f, Color.Yellow),
+                new Sphere(new Vector3(-1, -1.5, 1), .5f, Color.Blue),
+
+                new Box(new Vector3(0, -1.5, -1), Color.Yellow),
+                new Box(new Vector3(1, -1.5, -1), Color.Red),
+                new Box(new Vector3(-1, -1.5, -1), Color.Blue),
             });
 
             Scene.Lights.AddRange(new Light[]
@@ -62,6 +75,7 @@ namespace RenderBox.Modules
         {
             var width = context.Width;
             var height = context.Height;
+            var scale = context.Scale;
             var dispatcher = context.Dispatcher;
             var camera = MainCamera;
             var scene = Scene;
@@ -70,7 +84,7 @@ namespace RenderBox.Modules
             var samplesWidth = width * samples;
             var samplesHeight = height * samples;
 
-            float scale = (float)Math.Tan(MathHelpres.DegToRad(camera.FOV * 0.5));
+            float fovScale = (float)Math.Tan(MathHelpres.DegToRad(camera.FOV * 0.5));
             float aspectRatio = (float)width / height;
 
             Vector3 orig = camera.Position;
@@ -90,8 +104,8 @@ namespace RenderBox.Modules
                     {
                         int x = ix + localX;
                         //
-                        float posX = (2 * (x + 0.5f) / width - 1) * aspectRatio * scale;
-                        float posY = (1 - 2 * (y + 0.5f) / height) * scale;
+                        float posX = (2 * (x + 0.5f) / width - 1) * aspectRatio * fovScale;
+                        float posY = (1 - 2 * (y + 0.5f) / height) * fovScale;
                         //
                         var dir = Normalize(new Vector3(posX, posY, -1));
                         var ray = new Ray(orig, dir);
@@ -132,7 +146,7 @@ namespace RenderBox.Modules
             var emittance = material.Diffuse; //material.emittance;
 
             var position = hit.Position;
-            var normal = hit.HitObject.CalcNormal(position);
+            var normal = hit.Normal;
 
             if (ShowDepth)
             {
@@ -148,7 +162,15 @@ namespace RenderBox.Modules
 
             if (ShowNormals)
             {
-                return new Color(normal.x, normal.y, normal.z);
+                var x = normal.x;
+                var y = normal.y;
+                var z = normal.z;
+
+                if (x < 0) x *= -0.5;
+                if (y < 0) y *= -0.5;
+                if (z < 0) z *= -0.5;
+
+                return new Color(x, y, z);
             }
 
             var newRay = new Ray(position, normal);
@@ -174,14 +196,14 @@ namespace RenderBox.Modules
 
         private static Hit FindClosestHit(Scene scene, Ray ray)
         {
-            var closest = new Hit();
+            var closestHit = new Hit();
             var minDist = double.PositiveInfinity;
 
             foreach (var shape in scene.Shapes)
             {
-                var isHit = shape.GetIntersection(ray, 10, out var hit, out var distance);
+                shape.GetIntersection(ray, 10, out var hit, out var distance);
 
-                if (!isHit)
+                if (!hit.IsHitting)
                 {
                     continue;
                 }
@@ -189,7 +211,7 @@ namespace RenderBox.Modules
                 if (distance < minDist)
                 {
                     minDist = distance;
-                    closest = hit;
+                    closestHit = hit;
                 }
             }
 
@@ -198,7 +220,7 @@ namespace RenderBox.Modules
 
             }
 
-            return closest;
+            return closestHit;
         }
 
         public override void OnKeyPress(Key key, Action onRender)

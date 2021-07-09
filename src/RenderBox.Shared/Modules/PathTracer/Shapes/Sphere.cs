@@ -40,6 +40,7 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
                 }
 
                 hit.Position = ray.Origin + ray.Direction * (float)D;
+                hit.Normal = CalcNormal(hit.Position);
                 hit.HitObject = this;
 
                 var dist = Distance(hit.Position, ray.Origin);

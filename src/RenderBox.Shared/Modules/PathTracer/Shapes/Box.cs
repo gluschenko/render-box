@@ -1,12 +1,15 @@
 ﻿using RenderBox.Core;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace RenderBox.Shared.Modules.PathTracer.Shapes
 {
     public class Box : Mesh
     {
-        public Box(Vector3 position, Color diffuse) : base(position, diffuse)
+        public Box(Vector3 position, Color diffuse, Vector3? scale = null) : base(position, diffuse)
         {
+            scale ??= new Vector3(1, 1, 1);
+
             double A = 0.5, B = -A;
 
             var verts = new List<Vector3>()
@@ -48,7 +51,7 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
                 0, 4, 6,
             };
 
-            SetData(verts, indices);
+            SetData(verts.Select(x => x * scale.Value).ToList(), indices);
         }
     }
 }

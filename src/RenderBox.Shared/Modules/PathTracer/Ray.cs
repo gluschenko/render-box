@@ -12,11 +12,17 @@ namespace RenderBox.Shared.Modules.PathTracer
             Origin = origin;
             Direction = direction;
         }
+
+        public Vector3 PointAt(double t)
+        {
+            return Origin + Direction * t;
+        }
     }
 
     public struct Hit
     {
         public Vector3 Position { get; set; }
+        public Vector3 Normal { get; set; }
         public Shape HitObject { get; set; }
 
         public bool IsHitting => HitObject != null;
