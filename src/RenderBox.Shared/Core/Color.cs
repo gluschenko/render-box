@@ -87,5 +87,10 @@ namespace RenderBox.Core
             }
             return false;
         }
+
+        public static Color Lerp(Color a, Color b, float r)
+        {
+            return a + (b - a) * r;
+        }
     }
 }

@@ -7,22 +7,27 @@ namespace RenderBox.Shared.Modules.PathTracer
         Diffuse = 0,
         DiffuseGlossy = 1,
         Reflection = 2,
-        ReflectionAndRefraction = 3,
+        Refraction = 3,
     }
 
     public class Material
     {
-        public Color Ambient { get; set; }
+        public ShadingType ShadingType { get; set; }
         public Color Diffuse { get; set; }
         public Color Specular { get; set; }
-        public ShadingType ShadingType { get; set; }
+
+        public float Reflection { get; set; }
+        public float Refraction { get; set; }
+        public float RefractionEta { get; set; }
 
         public Material()
         {
-            Ambient = Color.White;
             Diffuse = Color.White;
             Specular = Color.White;
             ShadingType = ShadingType.Diffuse;
+            Reflection = 1;
+            Refraction = 0;
+            RefractionEta = 0.8f;
         }
     }
 }

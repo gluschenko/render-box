@@ -205,18 +205,42 @@ namespace RenderBox.Modules
                 return new Color(x, y, z);
             }
 
-            var newRayDirection = Reflect(ray.Direction, normal);
-            var newRay = new Ray(position, newRayDirection);
+            if (light != null)
+            {
+                return emittance;
+            }
 
-            var BRDF = material.Specular / (float)Math.PI;
+            emittance *= scene.AmbientColor;
 
-            var incoming = TracePath(context, camera, scene, newRay, back, depth + 1);
+            if (material.Refraction > 0)
+            {
+                var newRayDirection = Refract(ray.Direction, normal, material.RefractionEta);
+                var newRay = new Ray(position, newRayDirection);
 
-            var resultColor = light != null 
-                ? emittance 
-                : scene.AmbientColor * emittance + (BRDF * incoming);
+                var BRDF = material.Specular / (float)Math.PI;
 
-            return resultColor;
+                var incoming = TracePath(context, camera, scene, newRay, back, depth + 1);
+
+                var refractedColor = emittance + (BRDF * incoming);
+
+                emittance = Color.Lerp(emittance, refractedColor, material.Refraction);
+            }
+
+            if (material.Reflection > 0)
+            {
+                var newRayDirection = Reflect(ray.Direction, normal);
+                var newRay = new Ray(position, newRayDirection);
+
+                var BRDF = material.Specular / (float)Math.PI;
+
+                var incoming = TracePath(context, camera, scene, newRay, back, depth + 1);
+
+                var reflectedColor = emittance + (BRDF * incoming);
+
+                emittance = Color.Lerp(emittance, reflectedColor, material.Reflection);
+            }
+
+            return emittance;
         }
 
         /*void Render(Image finalImage, int numSamples)
