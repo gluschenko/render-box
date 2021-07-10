@@ -13,7 +13,7 @@ namespace RenderBox.Shared.Modules.PathTracer
             //
             Material = new Material
             {
-                Diffuse = diffuse
+                Color = diffuse
             };
         }
 
@@ -23,6 +23,8 @@ namespace RenderBox.Shared.Modules.PathTracer
 
     public interface IShape
     {
+        Vector3 Position { get; set; }
+        Material Material { get; set; }
         Vector3 CalcNormal(Vector3 pos);
         bool GetIntersection(Ray ray, double maxDistance, out Hit hit, out double distance);
     }

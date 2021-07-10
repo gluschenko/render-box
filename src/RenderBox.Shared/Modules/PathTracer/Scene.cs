@@ -15,7 +15,7 @@ namespace RenderBox.Shared.Modules.PathTracer
         public Scene()
         {
             BackgroundColor = new Color(.2f, .2f, .2f);
-            AmbientColor = new Color(.1f, .1f, .1f);
+            AmbientColor = Color.White;
             Shapes = new List<Shape>();
             Lights = new List<Light>();
         }
