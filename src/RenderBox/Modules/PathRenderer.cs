@@ -122,7 +122,7 @@ namespace RenderBox.Modules
                         var dir = Normalize(new Vector3(posX, posY, -1));
                         var ray = new Ray(orig, dir);
                         //
-                        var color = TracePath(context, camera, scene, ray, scene.BackgroundColor, 0);
+                        var color = TracePath(context, camera, scene, ray, scene.BackgroundColor);
                         tile[localX, localY] = color;
                     }
                 }
@@ -159,7 +159,7 @@ namespace RenderBox.Modules
             }
         }
 
-        private Color TracePath(RenderContext context, Camera camera, Scene scene, Ray ray, Color back, int depth)
+        private Color TracePath(RenderContext context, Camera camera, Scene scene, Ray ray, Color back, int depth = 0)
         {
             // Bounced enough times
             if (depth >= camera.MaxDepth)
@@ -167,7 +167,7 @@ namespace RenderBox.Modules
                 return back;
             }
 
-            var hit = FindClosestHit(scene, ray);
+            var hit = FindClosestHit(scene, ray, out var light);
 
             if (!hit.IsHitting)
             {
@@ -205,12 +205,18 @@ namespace RenderBox.Modules
                 return new Color(x, y, z);
             }
 
-            var newRay = new Ray(position, normal);
+            var newRayDirection = Reflect(ray.Direction, normal);
+            var newRay = new Ray(position, newRayDirection);
 
-            Color BRDF = material.Specular / (float)Math.PI;
+            var BRDF = material.Specular / (float)Math.PI;
 
-            Color incoming = TracePath(context, camera, scene, newRay, back, depth + 1);
-            return emittance + (BRDF * incoming);
+            var incoming = TracePath(context, camera, scene, newRay, back, depth + 1);
+
+            var resultColor = light != null 
+                ? emittance 
+                : scene.AmbientColor * emittance + (BRDF * incoming);
+
+            return resultColor;
         }
 
         /*void Render(Image finalImage, int numSamples)
@@ -226,14 +232,37 @@ namespace RenderBox.Modules
             }
         }*/
 
-        private static Hit FindClosestHit(Scene scene, Ray ray)
+        private static Hit FindClosestHit(Scene scene, Ray ray, out Light hitLight)
         {
             var closestHit = new Hit();
+            hitLight = null;
+
             var minDist = double.PositiveInfinity;
+
+            var maxDistance = 10;
+
+            foreach (var light in scene.Lights)
+            {
+                var shape = light.Shape;
+                shape.GetIntersection(ray, maxDistance, out var hit, out var distance);
+
+                if (!hit.IsHitting)
+                {
+                    continue;
+                }
+
+                if (distance < minDist)
+                {
+                    minDist = distance;
+                    closestHit = hit;
+
+                    hitLight = light;
+                }
+            }
 
             foreach (var shape in scene.Shapes)
             {
-                shape.GetIntersection(ray, 10, out var hit, out var distance);
+                shape.GetIntersection(ray, maxDistance, out var hit, out var distance);
 
                 if (!hit.IsHitting)
                 {
@@ -245,11 +274,6 @@ namespace RenderBox.Modules
                     minDist = distance;
                     closestHit = hit;
                 }
-            }
-
-            foreach (var light in scene.Lights)
-            {
-
             }
 
             return closestHit;
