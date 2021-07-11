@@ -18,7 +18,6 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
 
         public override bool GetIntersection(Ray ray, double maxDistance, out Hit hit, out double distance)
         {
-            bool isMatch = false;
             hit = new Hit();
 
             for (int k = 0; k < TrianglesCount; ++k)
@@ -31,15 +30,19 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
                 {
                     if (localHit.IsHitting)
                     {
-                        isMatch = true;
+                        var dist = (localHit.Position - ray.Origin).Length;
+                        if (dist > maxDistance) 
+                        {
+                            continue;
+                        }
+
                         hit = localHit;
                     }
                 }
             }
 
             distance = (hit.Position - ray.Origin).Length;
-
-            return isMatch;
+            return hit.IsHitting;
         }
 
         public override Vector3 CalcNormal(Vector3 pos)

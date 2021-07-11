@@ -39,14 +39,21 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
                     return false;
                 }
 
-                hit.Position = ray.Origin + ray.Direction * (float)D;
+                var position = ray.Origin + ray.Direction * (float)D;
+                var dist = Distance(position, ray.Origin);
+
+                if (dist > maxDistance)
+                {
+                    distance = dist;
+                    return false;
+                }
+
+                hit.Position = position;
                 hit.Normal = CalcNormal(hit.Position);
                 hit.HitObject = this;
-
-                var dist = Distance(hit.Position, ray.Origin);
                 distance = dist;
 
-                return dist < maxDistance;
+                return hit.IsHitting;
             }
         }
 
