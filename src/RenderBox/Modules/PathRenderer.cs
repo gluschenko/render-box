@@ -399,7 +399,7 @@ namespace RenderBox.Modules
                 factor += NdotRR / (1.0f + dist * dist);
             }
 
-            return 1f - (factor / Scene.GISamples);
+            return 1f - (factor / Scene.GISamples) * 3f;
         }
 
         private Hit FindClosestHit(Ray ray, int maxDistance, Shape currentShape = null)
