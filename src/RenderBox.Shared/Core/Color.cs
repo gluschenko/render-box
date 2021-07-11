@@ -11,6 +11,7 @@ namespace RenderBox.Core
         public static Color Green => new Color(0, 1, 0);
         public static Color Cyan => new Color(0, 1, 1);
         public static Color Blue => new Color(0, 0, 1);
+        public static Color Gray => new Color(0.5, 0.5, 0.5);
 
         //
 
@@ -26,6 +27,15 @@ namespace RenderBox.Core
             G = g;
             B = b;
             A = a;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Color(double r, double g, double b, double a = 1)
+        {
+            R = (float)r;
+            G = (float)g;
+            B = (float)b;
+            A = (float)a;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -76,6 +86,11 @@ namespace RenderBox.Core
                 return this == color;
             }
             return false;
+        }
+
+        public static Color Lerp(Color a, Color b, float r)
+        {
+            return a + (b - a) * r;
         }
     }
 }

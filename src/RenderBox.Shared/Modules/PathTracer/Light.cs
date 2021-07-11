@@ -4,13 +4,23 @@ namespace RenderBox.Shared.Modules.PathTracer
 {
     public class Light
     {
-        public Vector3 postion;
-        public double intensity;
+        public Color Color { get; set; }
+        public double Intensity { get; set; }
 
-        public Light(Vector3 postion, double intensity)
+        public float ConstantAttenuation { get; set; }
+        public float LinearAttenuation { get; set; }
+        public float QuadraticAttenuation { get; set; }
+
+        public IShape Shape { get; set; }
+
+        public Light(Color color, double intensity)
         {
-            this.postion = postion;
-            this.intensity = intensity;
+            Color = color;
+            Intensity = intensity;
+
+            ConstantAttenuation = 1;
+            LinearAttenuation = 0.5f;
+            QuadraticAttenuation = 0.5f;
         }
     }
 }

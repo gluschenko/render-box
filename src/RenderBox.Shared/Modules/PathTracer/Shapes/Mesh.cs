@@ -16,33 +16,38 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
             Indices = new List<int>();
         }
 
-        public override double GetIntersection(Ray ray, out Hit hit)
+        public override bool GetIntersection(Ray ray, double maxDistance, out Hit hit, out double distance)
         {
-            bool intersect = false;
-
             hit = new Hit();
 
             for (int k = 0; k < TrianglesCount; ++k)
             {
-                var v0 = Vertices[Indices[k * 3]];
-                var v1 = Vertices[Indices[k * 3 + 1]];
-                var v2 = Vertices[Indices[k * 3 + 2]];
-                double t = 0, u = 0, v = 0;
-                if (RayTriangleIntersect(v0, v1, v2, ray, ref t, ref u, ref v))
+                var v0 = Position + Vertices[Indices[k * 3 + 0]];
+                var v1 = Position + Vertices[Indices[k * 3 + 1]];
+                var v2 = Position + Vertices[Indices[k * 3 + 2]];
+
+                if (RayTriangleIntersect(v0, v1, v2, ray, out var localHit))
                 {
-                    //uv.x = u;
-                    //uv.y = v;
-                    //index = k;
-                    intersect |= true;
+                    if (localHit.IsHitting)
+                    {
+                        var dist = (localHit.Position - ray.Origin).Length;
+                        if (dist > maxDistance) 
+                        {
+                            continue;
+                        }
+
+                        hit = localHit;
+                    }
                 }
             }
 
-            return intersect ? 1.0 : 0.0;
+            distance = (hit.Position - ray.Origin).Length;
+            return hit.IsHitting;
         }
 
         public override Vector3 CalcNormal(Vector3 pos)
         {
-            return Vector3.Zero;
+            return Normalize(pos - Position);
         }
 
         public void SetData(List<Vector3> verts, List<int> indices)
@@ -52,29 +57,47 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
             TrianglesCount = indices.Count / 3;
         }
 
-        private bool RayTriangleIntersect(Vector3 v0, Vector3 v1, Vector3 v2, Ray ray, ref double near, ref double u, ref double v)
+        private bool RayTriangleIntersect(Vector3 v0, Vector3 v1, Vector3 v2, Ray ray, out Hit hit)
         {
-            var edge1 = v1 - v0;
-            var edge2 = v2 - v0;
-            var pvec = Cross(ray.direction, edge2);
+            hit = new Hit();
 
-            double det = Dot(edge1, pvec);
-            if (det == 0 || det < 0) return false;
+            var e1 = v1 - v0;
+            var e2 = v2 - v0;
+            var p = Cross(ray.Direction, e2);
 
-            var tvec = ray.origin - v0;
-            u = Dot(tvec, pvec);
-            if (u < 0 || u > det) return false;
+            var det = Dot(e1, p);
+            if (det == 0 || det < 0)
+            {
+                return false; // parallel to the plane
+            }
 
-            var qvec = Cross(tvec, edge1);
-            v = Dot(ray.direction, qvec);
-            if (v < 0 || u + v > det) return false;
+            var f = 1.0f / det;
+            var s = ray.Origin - v0;
+            var u = f * Dot(s, p);
 
-            double invDet = 1 / det;
+            if (u < 0.0f || u > 1.0f)
+            {
+                return false; // but outside the triangle
+            }
 
-            near = Dot(edge2, qvec) * invDet;
-            u *= invDet;
-            v *= invDet;
+            var q = Cross(s, e1);
+            var v = f * Dot(ray.Direction, q);
 
+            if (v < 0.0f || (u + v) > 1.0f)
+            {
+                return false; // but outside the triangle
+            }
+
+            var t = f * Dot(e2, q);
+
+            if(t <= 0)
+            {
+                return false;
+            }
+
+            hit.HitObject = this;
+            hit.Position = ray.PointAt(t);
+            hit.Normal = Normalize(Cross(e1, e2));
             return true;
         }
     }

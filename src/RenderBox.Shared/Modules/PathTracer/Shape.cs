@@ -6,6 +6,7 @@ namespace RenderBox.Shared.Modules.PathTracer
     {
         public Vector3 Position { get; set; }
         public Material Material { get; set; }
+        public Light Light { get; private set; }
 
         public Shape(Vector3 pos, Color diffuse)
         {
@@ -13,17 +14,27 @@ namespace RenderBox.Shared.Modules.PathTracer
             //
             Material = new Material
             {
-                diffuse = diffuse
+                Color = diffuse
             };
         }
 
+        public Shape SetLight(Light light)
+        {
+            light.Shape = this;
+            light.Color = Material.Color;
+            Light = light;
+            return this;
+        }
+
         public abstract Vector3 CalcNormal(Vector3 pos);
-        public abstract double GetIntersection(Ray ray, out Hit hit);
+        public abstract bool GetIntersection(Ray ray, double maxDistance, out Hit hit, out double distance);
     }
 
     public interface IShape
     {
-        double GetIntersection(Ray ray, out Hit hit);
+        Vector3 Position { get; set; }
+        Material Material { get; set; }
         Vector3 CalcNormal(Vector3 pos);
+        bool GetIntersection(Ray ray, double maxDistance, out Hit hit, out double distance);
     }
 }

@@ -24,12 +24,10 @@ namespace RenderBox.Rendering
             CreateBitmap(img, width, height);
         }
 
-        public Paint(Image img, double width, double height, double scale)
-            : this(img, (int)width, (int)height, scale) { }
-
         public void Dispose()
         {
             Bitmap = null;
+            GC.SuppressFinalize(this);
         }
 
         /// <summary>

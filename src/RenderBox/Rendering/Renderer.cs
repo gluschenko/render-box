@@ -11,15 +11,15 @@ namespace RenderBox.Rendering
 
     public abstract class Renderer : IDisposable
     {
-        // public
         public int BatchSize { get; set; } = 32;
-        public Paint Paint { get; set; }
+        public Paint Paint { get; private set; }
 
-        public event RenderStartHandler RenderStart;
-        public event RenderCompleteHandler RenderComplete;
-        // private
+        public event RenderStartHandler OnRenderStarted;
+        public event RenderCompleteHandler OnRenderComplete;
+
+
         private Thread _renderThread;
-        //
+
         public Renderer(Paint paint)
         {
             Paint = paint;
@@ -40,14 +40,14 @@ namespace RenderBox.Rendering
             {
                 try
                 {
-                    context.Dispatcher.Invoke(() => RenderStart?.Invoke());
+                    context.Dispatcher.Invoke(() => OnRenderStarted?.Invoke());
 
                     lock (Paint)
                     {
                         RenderScreen(context);
                     }
 
-                    context.Dispatcher.Invoke(() => RenderComplete?.Invoke());
+                    context.Dispatcher.Invoke(() => OnRenderComplete?.Invoke());
                 }
                 catch (ThreadInterruptedException)
                 {
@@ -62,6 +62,12 @@ namespace RenderBox.Rendering
                 _renderThread.Interrupt();
                 _renderThread = null;
             }
+        }
+
+        public void Reset(Paint paint)
+        {
+            Stop();
+            Paint = paint;
         }
 
         public void Dispose()
@@ -92,7 +98,7 @@ namespace RenderBox.Rendering
                                            RenderScreenBatch renderScreenBatch,
                                            GetRenderPriority getRenderPriority = null)
         {
-            using var _threadManager = new ThreadManager();
+            using var threadManager = new ThreadManager();
 
             var width = context.Width;
             var height = context.Height;
@@ -110,7 +116,7 @@ namespace RenderBox.Rendering
                     //
                     var priority = getRenderPriority?.Invoke(ix, iy) ?? 0;
 
-                    _threadManager.Push(() =>
+                    threadManager.Push(() =>
                     {
                         var tile = renderScreenBatch(ix, iy, sizeX, sizeY);
                         dispatcher.Invoke(() => Paint.SetPixels(ix, iy, tile));
@@ -119,7 +125,7 @@ namespace RenderBox.Rendering
             }
 
             var locker = new EventWaitHandle(false, EventResetMode.AutoReset);
-            _threadManager.Start(Environment.ProcessorCount, () => locker.Set());
+            threadManager.Start(Environment.ProcessorCount, () => locker.Set());
             WaitHandle.WaitAll(new[] { locker });
             locker.Reset();
         }
