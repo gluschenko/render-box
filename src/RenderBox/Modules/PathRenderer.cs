@@ -27,7 +27,8 @@ namespace RenderBox.Modules
 
             var glass = new Material
             {
-                Refraction = .5f,
+                Refraction = 0.6f,
+                Reflection = 0.6f,
             };
 
             var mirror = new Material
@@ -37,7 +38,8 @@ namespace RenderBox.Modules
 
             var lamp1 = new Light(Color.White, 3f);
             var lamp2 = new Light(Color.White, 3f);
-            var lamp3 = new Light(Color.Blue, 3f);
+            var lamp3 = new Light(Color.White, 3f);
+            var lamp4 = new Light(Color.White, 0.5f);
 
             Scene.Shapes.AddRange(new Shape[]
             {
@@ -63,8 +65,8 @@ namespace RenderBox.Modules
                 */
 
                 new Box(new Vector3(0, 1.9, 0), Color.White, new Vector3(1, 0.2, 1)).SetLight(lamp1), // Lamp
-                new Box(new Vector3(1.5f, 1.9, 0), Color.White, new Vector3(1, 0.2, 1)).SetLight(lamp2), // Lamp
-                new Box(new Vector3(-1.5f, 1.9, 0), Color.Blue, new Vector3(1, 0.2, 1)).SetLight(lamp3), // Lamp
+                new Box(new Vector3(1.5f, 1.9, 0), Color.Blue, new Vector3(1, 0.2, 1)).SetLight(lamp2), // Lamp
+                new Box(new Vector3(-1.5f, 1.9, 0), Color.Yellow, new Vector3(1, 0.2, 1)).SetLight(lamp3), // Lamp
                 
                 new Box(new Vector3(0, 2, 0), Color.White, new Vector3(4, 0.01, 4)), // Top
                 new Box(new Vector3(0, -2, 0), Color.White, new Vector3(4, 0.01, 4)), // Floor
@@ -82,6 +84,10 @@ namespace RenderBox.Modules
                 },
                 new Sphere(new Vector3(1, -1.5, 1), .5f, Color.Yellow),
                 new Sphere(new Vector3(-1, -1.5, 1), .5f, Color.Blue),
+
+                new Sphere(new Vector3(1.2, -1.9, 1.4), .05f, Color.White).SetLight(lamp4),
+
+                new Sphere(new Vector3(1.8, 0, 0), .2f, Color.White),
 
                 new Box(new Vector3(0, -1.5, -1), Color.Yellow),
                 new Box(new Vector3(1, -1.5, -1), Color.Red),
@@ -178,7 +184,7 @@ namespace RenderBox.Modules
             }
         }
 
-        private Color TracePath(RenderContext context, Camera camera, Ray ray, Color back, int depth = 0)
+        private Color TracePath(RenderContext context, Camera camera, Ray ray, Color back, int depth = 0, Shape currentShape = null)
         {
             // Bounced enough times
             if (depth >= camera.MaxDepth)
@@ -187,7 +193,7 @@ namespace RenderBox.Modules
             }
 
             var maxDistance = 10;
-            var hit = FindClosestHit(ray, maxDistance, out var light);
+            var hit = FindClosestHit(ray, maxDistance, currentShape);
 
             if (!hit.IsHitting)
             {
@@ -223,19 +229,22 @@ namespace RenderBox.Modules
                 return new Color(x, y, z);
             }
 
-            if (light != null)
+            if (hit.HitObject.Light != null)
             {
                 return emittance;
             }
 
-            emittance = Enlight(emittance, hit);
+            if (Scene.LightingEnabled)
+            {
+                emittance = Enlight(emittance, hit);
+            }
 
             if (material.Refraction > 0)
             {
                 var newRayDirection = Refract(ray.Direction, normal, material.RefractionEta);
                 var newRay = new Ray(position, newRayDirection);
 
-                var incoming = TracePath(context, camera, newRay, back, depth + 1);
+                var incoming = TracePath(context, camera, newRay, back, depth + 1, hit.HitObject);
 
                 var refractedColor = incoming; //emittance * incoming;
 
@@ -249,7 +258,7 @@ namespace RenderBox.Modules
 
                 var BRDF = material.Specular / (float)Math.PI;
 
-                var incoming = TracePath(context, camera, newRay, back, depth + 1);
+                var incoming = TracePath(context, camera, newRay, back, depth + 1, currentShape);
 
                 var reflectedColor = emittance + (BRDF * incoming);
 
@@ -263,21 +272,46 @@ namespace RenderBox.Modules
         {
             var ambientFactor = 1f;
 
-            var color = new Color();
-
-            foreach (var light in Scene.Lights)
+            if (Scene.AmbientOcclusion)
             {
-                color += LightIntensity(hit, light, Scene.AmbientColor, ambientFactor);
+                ambientFactor = CalcAmbientOcclusion(hit);
             }
 
-            emittance *= color;
+            if (!Scene.SoftShadows)
+            {
+                var color = new Color();
+
+                foreach (var light in Scene.Lights)
+                {
+                    color += LightIntensity(hit, light, light.Shape.Position, Scene.AmbientColor, ambientFactor);
+                }
+
+                emittance *= color;
+            }
+            else
+            {
+                var color = new Color();
+
+                foreach (var light in Scene.Lights)
+                {
+                    for (int i = 0; i < Scene.GISamples; i++)
+                    {
+                        var randomRay = new Vector3(Rand.Float(), Rand.Float(), Rand.Float());
+                        var lightPosition = light.Shape.Position + randomRay * 0.05f;
+
+                        color += LightIntensity(hit, light, lightPosition, Scene.AmbientColor, ambientFactor);
+                    }
+                }
+
+                emittance *= color / Scene.GISamples;
+            }
+
 
             return emittance;
         }
 
-        private Color LightIntensity(Hit hit, Light light, Color ambientColor, float ambientFactor)
+        private Color LightIntensity(Hit hit, Light light, Vector3 lightPosition, Color ambientColor, float ambientFactor)
         {
-            var lightPosition = light.Shape.Position;
             var lightDirection = lightPosition - hit.Position;
 
             var lightDistance = lightDirection.Length;
@@ -285,14 +319,10 @@ namespace RenderBox.Modules
 
             lightDirection *= 1f / lightDistance;
 
-            var attenuation = (float)
-            (
-                (
-                    lightDistance * light.QuadraticAttenuation +
-                    lightDistance2 * light.LinearAttenuation +
-                    light.ConstantAttenuation
-                ) * 1 / light.Intensity
-            );
+            var a = lightDistance * light.QuadraticAttenuation;
+            var b = lightDistance2 * light.LinearAttenuation;
+            var c = light.ConstantAttenuation;
+            var attenuation = (float)((a + b + c) * (1 / light.Intensity));
 
             var NdotLD = (float)Dot(hit.Normal, lightDirection);
 
@@ -300,16 +330,31 @@ namespace RenderBox.Modules
             {
                 if (!IsShadow(hit.HitObject, lightPosition, lightDirection, (float)lightDistance))
                 {
-                    var mul = (ambientColor * ambientFactor + light.Color * NdotLD) / attenuation;
-                    return light.Shape.Material.Color * mul;
+                    var linghtnessMul = (ambientColor * ambientFactor + light.Color * NdotLD) / attenuation;
+                    return light.Color * linghtnessMul;
                 }
             }
 
-            return light.Shape.Material.Color * (ambientColor * ambientFactor / attenuation);
+            /*var refractedColor = Color.Black;
+
+            if (hit.HitObject.Material.Refraction > 0)
+            {
+                refractedColor = Color.White;
+            }*/
+
+            //return new Color(hit.Normal.x, hit.Normal.y, hit.Normal.z);
+
+            var ambientMul = (ambientColor * ambientFactor) / attenuation;
+            return light.Color * ambientMul;
         }
 
         private bool IsShadow(Shape currentShape, Vector3 lightPosition, Vector3 lightDirection, float lightDistance)
         {
+            if (!Scene.ShadowsEnabled)
+            {
+                return false;
+            }
+
             var ray = new Ray(lightPosition, -lightDirection);
 
             foreach (var shape in Scene.Shapes.Where(x => x != currentShape && x.Light == null))
@@ -323,15 +368,53 @@ namespace RenderBox.Modules
             return false;
         }
 
-        private Hit FindClosestHit(Ray ray, int maxDistance, out Light hitLight)
+        private float CalcAmbientOcclusion(Hit hit)
+        {
+            var factor = 0f;
+
+            for (var i = 0; i < Scene.GISamples; i++)
+            {
+                var randomRay = new Vector3(Rand.Float(), Rand.Float(), Rand.Float());
+
+                var NdotRR = (float)Dot(hit.Normal, randomRay);
+
+                if (NdotRR < 0.0f)
+                {
+                    randomRay = -randomRay;
+                    NdotRR = -NdotRR;
+                }
+
+                var ray = new Ray(hit.Position, randomRay);
+
+                var dist = 1000f;
+
+                foreach (var shape in Scene.Shapes.Where(x => x.Light == null))
+                {
+                    if (shape.GetIntersection(ray, dist, out var _, out var testDist))
+                    {
+                        dist = (float)testDist;
+                    }
+                }
+
+                factor += NdotRR / (1.0f + dist * dist);
+            }
+
+            return 1f - (factor / Scene.GISamples);
+        }
+
+        private Hit FindClosestHit(Ray ray, int maxDistance, Shape currentShape = null)
         {
             var closestHit = new Hit();
-            hitLight = null;
 
             var minDist = double.PositiveInfinity;
 
             foreach (var shape in Scene.Shapes)
             {
+                if (shape == currentShape)
+                {
+                    continue;
+                }
+
                 shape.GetIntersection(ray, maxDistance, out var hit, out var distance);
 
                 if (!hit.IsHitting)
@@ -344,11 +427,6 @@ namespace RenderBox.Modules
                     minDist = distance;
                     closestHit = hit;
                 }
-            }
-
-            if (closestHit.IsHitting && closestHit.HitObject.Light != null)
-            {
-                hitLight = closestHit.HitObject.Light;
             }
 
             return closestHit;

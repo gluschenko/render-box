@@ -25,9 +25,9 @@ namespace RenderBox.Shared.Modules.PathTracer
             Color = Color.White;
             Specular = Color.White;
             ShadingType = ShadingType.Diffuse;
-            Reflection = .1f;
+            Reflection = 0.1f;
             Refraction = 0;
-            RefractionEta = 0.8f;
+            RefractionEta = -0.5f;
         }
     }
 }

@@ -21,6 +21,7 @@ namespace RenderBox.Shared.Modules.PathTracer
         public Shape SetLight(Light light)
         {
             light.Shape = this;
+            light.Color = Material.Color;
             Light = light;
             return this;
         }
