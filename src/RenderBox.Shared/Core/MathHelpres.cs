@@ -73,21 +73,9 @@ namespace RenderBox.Core
             return true;
         }
 
-        // 0x5FE6EC85E7DE30DA
-        // 0x5FE6EB50C7B537A9 -- true
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float QuakeInvSqrt(float number)
         {
-            /*const float THREE_HALFS = 1.5F;
-
-            float half = number * 0.5F;
-
-            var conv = new FloatIntUnion(number);
-            conv.I = 0x5F3759DF - (conv.I >> 1);
-            conv.F *= THREE_HALFS - half * conv.F * conv.F;
-            return conv.F;*/
-
             var half = 0.5f * number;
             var i = BitConverter.SingleToInt32Bits(number);
             i = 0x5F3759DF - (i >> 1);
@@ -99,20 +87,18 @@ namespace RenderBox.Core
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float FastSqrt(float number) => 1f / QuakeInvSqrt(number);
 
-        /*[StructLayout(LayoutKind.Explicit, Size = 4)]
-        private struct FloatIntUnion
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double QuakeInvSqrt(double number)
         {
-            [FieldOffset(0)]
-            public float F;
-            [FieldOffset(0)]
-            public uint I;
+            var half = 0.5 * number;
+            var i = BitConverter.DoubleToInt64Bits(number);
+            i = 0x5FE6EB50C7B537A9 - (i >> 1);
+            number = BitConverter.Int64BitsToDouble(i);
+            number *= 1.5 - half * number * number;
+            return number;
+        }
 
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public FloatIntUnion(float f)
-            {
-                I = 0;
-                F = f;
-            }
-        }*/
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double FastSqrt(double number) => 1.0 / QuakeInvSqrt(number);
     }
 }

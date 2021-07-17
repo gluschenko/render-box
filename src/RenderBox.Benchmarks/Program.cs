@@ -19,6 +19,16 @@ namespace RenderBox.Benchmarks
                 Console.WriteLine($"{num}: {a} vs {b}");
             }
 
+            for (var i = 0; i < 100; i++)
+            {
+                var num = i / 10.0;
+
+                var a = Math.Sqrt(num);
+                var b = MathHelpres.FastSqrt(num);
+
+                Console.WriteLine($"{num}: {a} vs {b}");
+            }
+
             //BenchmarkRunner.Run<Md5_Sha256>();
             BenchmarkRunner.Run<Sqrt_FastSqrt>();
 
