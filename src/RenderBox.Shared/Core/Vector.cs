@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace RenderBox.Core
 {
@@ -15,47 +16,76 @@ namespace RenderBox.Core
 
         public double x, y;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Vector2(double x, double y)
         {
             this.x = x;
             this.y = y;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Vector2(float x, float y)
         {
             this.x = x;
             this.y = y;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Vector2(double x) : this(x, x) { }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Vector2(float x) : this(x, x) { }
 
         // public
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 operator +(Vector2 a, Vector2 b) => new Vector2(a.x + b.x, a.y + b.y);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 operator -(Vector2 a, Vector2 b) => new Vector2(a.x - b.x, a.y - b.y);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 operator *(Vector2 a, Vector2 b) => new Vector2(a.x * b.x, a.y * b.y);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 operator /(Vector2 a, Vector2 b) => new Vector2(a.x / b.x, a.y / b.y);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 operator -(Vector2 a) => a * -1.0;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 operator +(Vector2 a) => a;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 operator *(Vector2 a, double m) => new Vector2(a.x * m, a.y * m);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 operator *(double m, Vector2 a) => a * m;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 operator /(Vector2 a, double d) => new Vector2(a.x / d, a.y / d);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 operator /(double d, Vector2 a) => a / d;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(Vector2 a, Vector2 b) => a.x == b.x && a.y == b.y;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(Vector2 a, Vector2 b) => !(a == b);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator Vector2(Vector4 a) => new Vector2(a.x, a.y);
 
-        public double Length => Math.Sqrt(x * x + y * y);
+        public double Length => MathHelpres.FastSqrt(x * x + y * y);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override bool Equals(object obj)
             => EqualsInternal(obj as Vector2?);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool EqualsInternal(Vector2? vector)
             => vector.HasValue && vector.Value == this;
+
 
         public override int GetHashCode() => HashCode.Combine(x, y);
 
@@ -76,6 +106,7 @@ namespace RenderBox.Core
 
         public double x, y, z;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Vector3(double x, double y, double z)
         {
             this.x = x;
@@ -83,6 +114,7 @@ namespace RenderBox.Core
             this.z = z;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Vector3(float x, float y, float z)
         {
             this.x = x;
@@ -90,33 +122,59 @@ namespace RenderBox.Core
             this.z = z;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Vector3(double x) : this(x, x, x) { }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Vector3(float x) : this(x, x, x) { }
 
         // public
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 operator +(Vector3 a, Vector3 b) => new Vector3(a.x + b.x, a.y + b.y, a.z + b.z);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 operator -(Vector3 a, Vector3 b) => new Vector3(a.x - b.x, a.y - b.y, a.z - b.z);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 operator *(Vector3 a, Vector3 b) => new Vector3(a.x * b.x, a.y * b.y, a.z * b.z);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 operator /(Vector3 a, Vector3 b) => new Vector3(a.x / b.x, a.y / b.y, a.z / b.z);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 operator -(Vector3 a) => a * -1.0;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 operator +(Vector3 a) => a;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 operator *(Vector3 a, double m) => new Vector3(a.x * m, a.y * m, a.z * m);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 operator *(double m, Vector3 a) => a * m;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 operator /(Vector3 a, double d) => new Vector3(a.x / d, a.y / d, a.z / d);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 operator /(double d, Vector3 a) => a / d;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(Vector3 a, Vector3 b) => a.x == b.x && a.y == b.y && a.z == b.z;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(Vector3 a, Vector3 b) => !(a == b);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator Vector3(Vector4 a) => new Vector3(a.x, a.y, a.z);
 
-        public double Length => Math.Sqrt(x * x + y * y + z * z);
+        public double Length => MathHelpres.FastSqrt(x * x + y * y + z * z);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override bool Equals(object obj)
             => EqualsInternal(obj as Vector3?);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool EqualsInternal(Vector3? vector)
             => vector.HasValue && vector.Value == this;
 
@@ -238,23 +296,32 @@ namespace RenderBox.Core
     {
         #region Vector2
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Dot(Vector2 a, Vector2 b) => a.x * b.x + a.y * b.y;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Distance(Vector2 a, Vector2 b) => (a - b).Length;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 Lerp(Vector2 a, Vector2 b, float r) => a + (b - a) * r;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 Normalize(Vector2 a) => a / a.Length;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 Reflect(Vector2 i, Vector2 n)
         {
             return i - 2.0f * Dot(n, i) * n;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 Refract(Vector2 i, Vector2 n, float eta)
         {
             var ni = Dot(n, i);
             var k = 1.0f - eta * eta * (1.0f - ni * ni);
 
             var result = k >= 0.0f
-                ? eta * i - n * (eta * ni + Math.Sqrt(k))
+                ? eta * i - n * (eta * ni + MathHelpres.FastSqrt(k))
                 : new Vector2();
 
             return result;
@@ -264,9 +331,16 @@ namespace RenderBox.Core
 
         #region Vector3
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Dot(Vector3 a, Vector3 b) => a.x * b.x + a.y * b.y + a.z * b.z;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Distance(Vector3 a, Vector3 b) => (a - b).Length;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 Lerp(Vector3 a, Vector3 b, float r) => a + (b - a) * r;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 Cross(Vector3 a, Vector3 b)
         {
             var x = a.y * b.z - a.z * b.y;
@@ -275,23 +349,26 @@ namespace RenderBox.Core
             return new Vector3(x, y, z);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 Normalize(Vector3 a)
         {
             return a * (1.0 / a.Length);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 Reflect(Vector3 i, Vector3 n)
         {
             return i - 2 * Dot(i, n) * n;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 Refract(Vector3 i, Vector3 n, float eta)
         {
             var ni = Dot(n, i);
             var k = 1.0f - eta * eta * (1.0f - ni * ni);
 
             var result = k >= 0.0f
-                ? eta * i - n * (eta * ni + Math.Sqrt(k))
+                ? eta * i - n * (eta * ni + MathHelpres.FastSqrt(k))
                 : new Vector3();
 
             return result;

@@ -64,8 +64,8 @@ namespace RenderBox.Core
             else
             {
                 var q = (b > 0) ?
-                    -0.5 * (b + Math.Sqrt(discr)) :
-                    -0.5 * (b - Math.Sqrt(discr));
+                    -0.5 * (b + FastSqrt(discr)) :
+                    -0.5 * (b - FastSqrt(discr));
                 x0 = q / a;
                 x1 = c / q;
             }
