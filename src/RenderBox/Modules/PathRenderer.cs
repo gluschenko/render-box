@@ -33,40 +33,24 @@ namespace RenderBox.Modules
 
             var mirror = new Material
             {
+                Refraction = 0f,
                 Reflection = 1f,
             };
 
-            var lamp1 = new Light(Color.White, 3f);
-            var lamp2 = new Light(Color.White, 3f);
-            var lamp3 = new Light(Color.White, 3f);
-            var lamp4 = new Light(Color.White, 0.5f);
+            var metal = new Material
+            {
+                Refraction = 0f,
+                Reflection = 1f,
+                IsMetallic = true,
+            };
 
             Scene.Shapes.AddRange(new Shape[]
             {
-                /*
-                new Sphere(new Vector3(5, 0, -10), 5f, Color.Black),
+                //new Box(new Vector3(-1.9, -1.4, 1), Color.White, new Vector3(0.2, 1, 1)).SetLight(new Light(Color.White, 3f)), // Lamp
 
-                new Sphere(new Vector3(-4, -2, 0), .5f, Color.Black),
-                new Sphere(new Vector3(-2, -2, 0), .5f, Color.Black),
-                new Sphere(new Vector3(0, -2, 0), .5f, Color.Black),
-                new Sphere(new Vector3(2, -2, 0), .5f, Color.Black),
-                new Sphere(new Vector3(4, -2, 0), .5f, Color.Black),
-
-                new Sphere(new Vector3(-4, 0, 0), .5f, Color.Red),
-                new Sphere(new Vector3(-2, 0, 0), .5f, Color.Yellow),
-                new Sphere(new Vector3(2, 0, 0), .5f, Color.Blue),
-                new Sphere(new Vector3(4, 0, 0), .5f, Color.Red),
-
-                new Sphere(new Vector3(-4, 2, 0), .5f, Color.Black),
-                new Sphere(new Vector3(-2, 2, 0), .5f, Color.Black),
-                new Sphere(new Vector3(0, 2, 0), .5f, Color.Black),
-                new Sphere(new Vector3(2, 2, 0), .5f, Color.Black),
-                new Sphere(new Vector3(4, 2, 0), .5f, Color.Black),
-                */
-
-                new Box(new Vector3(0, 1.9, 0), Color.White, new Vector3(1, 0.2, 1)).SetLight(lamp1), // Lamp
-                new Box(new Vector3(1.5f, 1.9, 0), Color.Blue, new Vector3(1, 0.2, 1)).SetLight(lamp2), // Lamp
-                new Box(new Vector3(-1.5f, 1.9, 0), Color.Yellow, new Vector3(1, 0.2, 1)).SetLight(lamp3), // Lamp
+                new Box(new Vector3(0, 1.9, 0), Color.White, new Vector3(1, 0.2, 1)).SetLight(new Light(Color.White, 3f)), // Lamp
+                new Box(new Vector3(1.5f, 1.9, 0), Color.Blue, new Vector3(1, 0.2, 1)).SetLight(new Light(Color.White, 3f)), // Lamp
+                new Box(new Vector3(-1.5f, 1.9, 0), Color.Yellow, new Vector3(1, 0.2, 1)).SetLight(new Light(Color.White, 3f)), // Lamp
                 
                 new Box(new Vector3(0, 2, 0), Color.White, new Vector3(4, 0.01, 4)), // Top
                 new Box(new Vector3(0, -2, 0), Color.White, new Vector3(4, 0.01, 4)), // Floor
@@ -74,10 +58,19 @@ namespace RenderBox.Modules
                 new Box(new Vector3(-2, 0, 0), Color.Red, new Vector3(0.01, 4, 4)), // Left wall
                 new Box(new Vector3(0, 0, -2), Color.White, new Vector3(4, 4, 0.01)), // Back wall
 
+                //new Box(new Vector3(-1.02, 1, 0), Color.White, new Vector3(2, 0.01, 4)),
+                //new Box(new Vector3(1.02, 1, 0), Color.White, new Vector3(2, 0.01, 4)),
+
+                new Sphere(new Vector3(-1, -0.5, -1), .5f, Color.White)
+                {
+                    Material = metal,
+                },
                 new Sphere(new Vector3(0, -0.5, -1), .5f, Color.White)
                 {
                     Material = mirror,
                 },
+                new Sphere(new Vector3(1, -0.5, -1), .5f, Color.White).SetLight(new Light(Color.White, 1f)),
+
                 new Sphere(new Vector3(0, -1.5, 1), .5f, Color.White)
                 {
                     Material = glass,
@@ -85,7 +78,7 @@ namespace RenderBox.Modules
                 new Sphere(new Vector3(1, -1.5, 1), .5f, Color.Yellow),
                 new Sphere(new Vector3(-1, -1.5, 1), .5f, Color.Blue),
 
-                new Sphere(new Vector3(1.2, -1.9, 1.4), .05f, Color.White).SetLight(lamp4),
+                new Sphere(new Vector3(1.2, -1.9, 1.4), .05f, Color.White).SetLight(new Light(Color.White, 0.5f)),
 
                 new Sphere(new Vector3(1.8, 0, 0), .2f, Color.White),
 
@@ -260,7 +253,9 @@ namespace RenderBox.Modules
 
                 var incoming = TracePath(context, camera, newRay, back, depth + 1, currentShape);
 
-                var reflectedColor = emittance + (BRDF * incoming);
+                var reflectedColor = !material.IsMetallic 
+                    ? emittance + (BRDF * incoming) 
+                    : incoming;
 
                 emittance = Color.Lerp(emittance, reflectedColor, material.Reflection);
             }
@@ -296,8 +291,8 @@ namespace RenderBox.Modules
                 {
                     for (int i = 0; i < Scene.GISamples; i++)
                     {
-                        var randomRay = new Vector3(Rand.Float(), Rand.Float(), Rand.Float());
-                        var lightPosition = light.Shape.Position + randomRay * 0.05f;
+                        var random = new Vector3(Rand.Float() * 2 - 1, Rand.Float() * 2 - 1, Rand.Float() * 2 - 1);
+                        var lightPosition = light.Shape.Position + light.Shape.GetLightEmission(random);
 
                         color += LightIntensity(hit, light, lightPosition, Scene.AmbientColor, ambientFactor);
                     }
@@ -374,7 +369,7 @@ namespace RenderBox.Modules
 
             for (var i = 0; i < Scene.GISamples; i++)
             {
-                var randomRay = new Vector3(Rand.Float(), Rand.Float(), Rand.Float());
+                var randomRay = new Vector3(Rand.Float() * 2 - 1, Rand.Float() * 2 - 1, Rand.Float() * 2 - 1);
 
                 var NdotRR = (float)Dot(hit.Normal, randomRay);
 
@@ -399,7 +394,7 @@ namespace RenderBox.Modules
                 factor += NdotRR / (1.0f + dist * dist);
             }
 
-            return 1f - (factor / Scene.GISamples) * 3f;
+            return 1f - (factor / Scene.GISamples) * 4f;
         }
 
         private Hit FindClosestHit(Ray ray, int maxDistance, Shape currentShape = null)

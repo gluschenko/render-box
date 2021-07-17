@@ -1,5 +1,6 @@
 ﻿using RenderBox.Core;
 using System.Collections.Generic;
+using System.Linq;
 using static RenderBox.Core.VectorMath;
 
 namespace RenderBox.Shared.Modules.PathTracer.Shapes
@@ -22,9 +23,9 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
 
             for (int k = 0; k < TrianglesCount; ++k)
             {
-                var v0 = Position + Vertices[Indices[k * 3 + 0]];
-                var v1 = Position + Vertices[Indices[k * 3 + 1]];
-                var v2 = Position + Vertices[Indices[k * 3 + 2]];
+                var v0 = Vertices[Indices[k * 3 + 0]];
+                var v1 = Vertices[Indices[k * 3 + 1]];
+                var v2 = Vertices[Indices[k * 3 + 2]];
 
                 if (RayTriangleIntersect(v0, v1, v2, ray, out var localHit))
                 {
@@ -50,9 +51,9 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
             return Normalize(pos - Position);
         }
 
-        public void SetData(List<Vector3> verts, List<int> indices)
+        public void SetData(IEnumerable<Vector3> verts, List<int> indices)
         {
-            Vertices = verts;
+            Vertices = verts.Select(x => Position + x).ToList();
             Indices = indices;
             TrianglesCount = indices.Count / 3;
         }

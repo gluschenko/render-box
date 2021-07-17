@@ -6,9 +6,12 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
 {
     public class Box : Mesh
     {
+        public Vector3 Scale { get; set; }
+
         public Box(Vector3 position, Color diffuse, Vector3? scale = null) : base(position, diffuse)
         {
             scale ??= new Vector3(1, 1, 1);
+            Scale = scale.Value;
 
             double A = 0.5, B = -A;
 
@@ -52,6 +55,11 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
             };
 
             SetData(verts.Select(x => x * scale.Value).ToList(), indices);
+        }
+
+        public override Vector3 GetLightEmission(Vector3 random)
+        {
+            return Scale * random;
         }
     }
 }

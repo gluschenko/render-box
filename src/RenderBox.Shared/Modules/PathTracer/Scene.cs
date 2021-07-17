@@ -26,10 +26,10 @@ namespace RenderBox.Shared.Modules.PathTracer
 
             LightingEnabled = true;
             ShadowsEnabled = true;
-            SoftShadows = false;
-            AmbientOcclusion = false;
+            SoftShadows = true;
+            AmbientOcclusion = true;
 
-            GISamples = 16;
+            GISamples = 32;
         }
 
         public void UpdateLights()

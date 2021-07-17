@@ -61,5 +61,10 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
         {
             return Normalize(pos - Position);
         }
+
+        public override Vector3 GetLightEmission(Vector3 random)
+        {
+            return Normalize(random) * Radius;
+        }
     }
 }

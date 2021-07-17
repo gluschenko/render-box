@@ -20,14 +20,19 @@ namespace RenderBox.Shared.Modules.PathTracer
         public float Refraction { get; set; }
         public float RefractionEta { get; set; }
 
+        public bool IsMetallic { get; set; }
+
         public Material()
         {
             Color = Color.White;
             Specular = Color.White;
             ShadingType = ShadingType.Diffuse;
+
             Reflection = 0.1f;
             Refraction = 0;
             RefractionEta = -0.5f;
+
+            IsMetallic = false;
         }
     }
 }

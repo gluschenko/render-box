@@ -2,6 +2,15 @@
 
 namespace RenderBox.Shared.Modules.PathTracer
 {
+    public interface IShape
+    {
+        Vector3 Position { get; set; }
+        Material Material { get; set; }
+        Vector3 CalcNormal(Vector3 pos);
+        bool GetIntersection(Ray ray, double maxDistance, out Hit hit, out double distance);
+        Vector3 GetLightEmission(Vector3 random);
+    }
+
     public abstract class Shape : IShape
     {
         public Vector3 Position { get; set; }
@@ -28,13 +37,10 @@ namespace RenderBox.Shared.Modules.PathTracer
 
         public abstract Vector3 CalcNormal(Vector3 pos);
         public abstract bool GetIntersection(Ray ray, double maxDistance, out Hit hit, out double distance);
-    }
 
-    public interface IShape
-    {
-        Vector3 Position { get; set; }
-        Material Material { get; set; }
-        Vector3 CalcNormal(Vector3 pos);
-        bool GetIntersection(Ray ray, double maxDistance, out Hit hit, out double distance);
+        public virtual Vector3 GetLightEmission(Vector3 random)
+        {
+            return Vector3.Zero;
+        }
     }
 }
