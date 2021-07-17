@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace RenderBox.Core
 {
@@ -71,5 +72,47 @@ namespace RenderBox.Core
             if (x0 > x1) (x0, x1) = (x1, x0);
             return true;
         }
+
+        // 0x5FE6EC85E7DE30DA
+        // 0x5FE6EB50C7B537A9 -- true
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float QuakeInvSqrt(float number)
+        {
+            /*const float THREE_HALFS = 1.5F;
+
+            float half = number * 0.5F;
+
+            var conv = new FloatIntUnion(number);
+            conv.I = 0x5F3759DF - (conv.I >> 1);
+            conv.F *= THREE_HALFS - half * conv.F * conv.F;
+            return conv.F;*/
+
+            var half = 0.5f * number;
+            var i = BitConverter.SingleToInt32Bits(number);
+            i = 0x5F3759DF - (i >> 1);
+            number = BitConverter.Int32BitsToSingle(i);
+            number *= 1.5f - half * number * number;
+            return number;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float FastSqrt(float number) => 1f / QuakeInvSqrt(number);
+
+        /*[StructLayout(LayoutKind.Explicit, Size = 4)]
+        private struct FloatIntUnion
+        {
+            [FieldOffset(0)]
+            public float F;
+            [FieldOffset(0)]
+            public uint I;
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public FloatIntUnion(float f)
+            {
+                I = 0;
+                F = f;
+            }
+        }*/
     }
 }
