@@ -58,8 +58,8 @@ namespace RenderBox.Modules
                 new Box(new Vector3(-2, 0, 0), Color.Red, new Vector3(0.01, 4, 4)), // Left wall
                 new Box(new Vector3(0, 0, -2), Color.White, new Vector3(4, 4, 0.01)), // Back wall
 
-                //new Box(new Vector3(-1.02, 1, 0), Color.White, new Vector3(2, 0.01, 4)),
-                //new Box(new Vector3(1.02, 1, 0), Color.White, new Vector3(2, 0.01, 4)),
+                //new Box(new Vector3(-1, 1, 0), Color.White, new Vector3(2, 0.01, 4)),
+                //new Box(new Vector3(1, 1, 0), Color.White, new Vector3(2, 0.01, 4)),
 
                 new Sphere(new Vector3(-1, -0.5, -1), .5f, Color.White)
                 {
@@ -215,9 +215,9 @@ namespace RenderBox.Modules
                 var y = normal.y;
                 var z = normal.z;
 
-                if (x < 0) x *= -0.5;
-                if (y < 0) y *= -0.5;
-                if (z < 0) z *= -0.5;
+                if (x < 0) x *= -0.5f;
+                if (y < 0) y *= -0.5f;
+                if (z < 0) z *= -0.5f;
 
                 return new Color(x, y, z);
             }

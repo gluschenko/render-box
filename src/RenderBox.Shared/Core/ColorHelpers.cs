@@ -16,8 +16,8 @@ namespace RenderBox.Core
             double delta, min;
             double h = 0, s, v;
 
-            min = Math.Min(Math.Min(color.R, color.G), color.B);
-            v = Math.Max(Math.Max(color.R, color.G), color.B);
+            min = Math.Min(Math.Min(color.r, color.g), color.b);
+            v = Math.Max(Math.Max(color.r, color.g), color.b);
             delta = v - min;
 
             if (v == 0.0)
@@ -31,12 +31,12 @@ namespace RenderBox.Core
             }
             else
             {
-                if (color.R == v)
-                    h = (color.G - color.B) / delta;
-                else if (color.G == v)
-                    h = 2 + (color.B - color.R) / delta;
-                else if (color.B == v)
-                    h = 4 + (color.R - color.G) / delta;
+                if (color.r == v)
+                    h = (color.g - color.b) / delta;
+                else if (color.g == v)
+                    h = 2 + (color.b - color.r) / delta;
+                else if (color.b == v)
+                    h = 4 + (color.r - color.g) / delta;
 
                 h *= 60;
 
