@@ -11,14 +11,20 @@ using static RenderBox.Core.VectorMath;
 
 namespace RenderBox.Modules
 {
+    public enum RenderMode
+    {
+        Light = 0,
+        Normals = 1,
+        Depth = 2,
+    }
+
     [OptionsPage(typeof(PathTracerPage))]
     public class PathRenderer : Renderer
     {
         public Camera MainCamera { get; set; }
         public Scene Scene { get; set; }
 
-        public bool ShowNormals { get; set; }
-        public bool ShowDepth { get; set; }
+        public RenderMode Mode { get; set; }
 
         public PathRenderer(Paint paint) : base(paint)
         {
@@ -48,9 +54,13 @@ namespace RenderBox.Modules
             {
                 //new Box(new Vector3(-1.9, -1.4, 1), Color.White, new Vector3(0.2, 1, 1)).SetLight(new Light(Color.White, 3f)), // Lamp
 
-                new Box(new Vector3(0, 1.9, 0), Color.White, new Vector3(1, 0.2, 1)).SetLight(new Light(Color.White, 3f)), // Lamp
                 new Box(new Vector3(1.5f, 1.9, 0), Color.Blue, new Vector3(1, 0.2, 1)).SetLight(new Light(Color.White, 3f)), // Lamp
+                new Box(new Vector3(0, 1.9, 0), Color.White, new Vector3(1, 0.2, 1)).SetLight(new Light(Color.White, 3f)), // Lamp
                 new Box(new Vector3(-1.5f, 1.9, 0), Color.Yellow, new Vector3(1, 0.2, 1)).SetLight(new Light(Color.White, 3f)), // Lamp
+
+                //new Box(new Vector3(-0.4, 1.9, 0), Color.Red, new Vector3(0.4, 0.2, 1)).SetLight(new Light(Color.White, 3f)), // Lamp
+                //new Box(new Vector3(0, 1.9, 0), Color.Green, new Vector3(0.4, 0.2, 1)).SetLight(new Light(Color.White, 3f)), // Lamp
+                //new Box(new Vector3(0.4, 1.9, 0), Color.Blue, new Vector3(0.4, 0.2, 1)).SetLight(new Light(Color.White, 3f)), // Lamp
                 
                 new Box(new Vector3(0, 2, 0), Color.White, new Vector3(4, 0.01, 4)), // Top
                 new Box(new Vector3(0, -2, 0), Color.White, new Vector3(4, 0.01, 4)), // Floor
@@ -61,20 +71,11 @@ namespace RenderBox.Modules
                 //new Box(new Vector3(-1, 1, 0), Color.White, new Vector3(2, 0.01, 4)),
                 //new Box(new Vector3(1, 1, 0), Color.White, new Vector3(2, 0.01, 4)),
 
-                new Sphere(new Vector3(-1, -0.5, -1), .5f, Color.White)
-                {
-                    Material = metal,
-                },
-                new Sphere(new Vector3(0, -0.5, -1), .5f, Color.White)
-                {
-                    Material = mirror,
-                },
+                new Sphere(new Vector3(-1, -0.5, -1), .5f, Color.White) { Material = metal },
+                new Sphere(new Vector3(0, -0.5, -1), .5f, Color.White) { Material = mirror },
                 new Sphere(new Vector3(1, -0.5, -1), .5f, Color.White).SetLight(new Light(Color.White, 1f)),
 
-                new Sphere(new Vector3(0, -1.5, 1), .5f, Color.White)
-                {
-                    Material = glass,
-                },
+                new Sphere(new Vector3(0, -1.5, 1), .5f, Color.White) { Material = glass },
                 new Sphere(new Vector3(1, -1.5, 1), .5f, Color.Yellow),
                 new Sphere(new Vector3(-1, -1.5, 1), .5f, Color.Blue),
 
@@ -180,12 +181,12 @@ namespace RenderBox.Modules
         private Color TracePath(RenderContext context, Camera camera, Ray ray, Color back, int depth = 0, Shape currentShape = null)
         {
             // Bounced enough times
-            if (depth >= camera.MaxDepth)
+            if (depth >= camera.MaxBounceDepth)
             {
                 return back;
             }
 
-            var maxDistance = 10;
+            var maxDistance = camera.MaxDistance;
             var hit = FindClosestHit(ray, maxDistance, currentShape);
 
             if (!hit.IsHitting)
@@ -199,7 +200,7 @@ namespace RenderBox.Modules
             var position = hit.Position;
             var normal = hit.Normal;
 
-            if (ShowDepth)
+            if (Mode == RenderMode.Depth)
             {
                 var dist = Distance(hit.Position, ray.Origin);
                 var rate = 1 - (dist / maxDistance);
@@ -209,7 +210,7 @@ namespace RenderBox.Modules
                 return new Color(rate, rate, rate);
             }
 
-            if (ShowNormals)
+            if (Mode == RenderMode.Normals)
             {
                 var x = normal.x;
                 var y = normal.y;
@@ -397,7 +398,7 @@ namespace RenderBox.Modules
             return 1f - (factor / Scene.GISamples) * 4f;
         }
 
-        private Hit FindClosestHit(Ray ray, int maxDistance, Shape currentShape = null)
+        private Hit FindClosestHit(Ray ray, float maxDistance, Shape currentShape = null)
         {
             var closestHit = new Hit();
 

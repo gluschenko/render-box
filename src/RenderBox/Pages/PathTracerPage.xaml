@@ -5,20 +5,50 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:RenderBox.Pages"
       mc:Ignorable="d" 
-      d:DesignHeight="400" d:DesignWidth="400"
+      d:DesignHeight="500" d:DesignWidth="200"
       Title="PathTracerPage">
 
     <Grid Background="#fff">
-        <StackPanel Margin="10">
+        <ScrollViewer>
+            <StackPanel Margin="10">
 
-            <CheckBox x:Name="ShowNormals" Content="Normals" />
-            <CheckBox x:Name="ShowDepth" Content="Depth" />
+                <Label Content="Mode:"></Label>
 
-            <Label Content="Batch size:"></Label>
-            <TextBox x:Name="BatchSize"></TextBox>
+                <StackPanel x:Name="RenderMode">
+                    <RadioButton GroupName="RenderMode" 
+                             Tag="0" Content="Light" 
+                             Margin="0, 5"
+                             IsChecked="true" />
+                    <RadioButton GroupName="RenderMode" 
+                             Tag="1" Content="Normals"
+                             Margin="0, 5" />
+                    <RadioButton GroupName="RenderMode" 
+                             Tag="2" Content="Depth"
+                             Margin="0, 5" />
+                </StackPanel>
 
-            <Button x:Name="ApplyButton" Content="Apply" Margin="30" Click="ApplyButton_Click"></Button>
+                <Label Content="Scene:"></Label>
 
-        </StackPanel>
+                <CheckBox x:Name="Lighting" Content="Lighting" Margin="0, 5" />
+                <CheckBox x:Name="Shadows" Content="Shadows" Margin="0, 5" />
+                <CheckBox x:Name="SoftShadows" Content="Soft Shadows" Margin="0, 5" />
+                <CheckBox x:Name="AmbientOcclusion" Content="Ambient Occlusion" Margin="0, 5" />
+
+                <Label Content="Field of View:"></Label>
+                <TextBox x:Name="FOV"></TextBox>
+
+                <Label Content="Camera distance:"></Label>
+                <TextBox x:Name="CameraDistance"></TextBox>
+
+                <Label Content="GI Samples:"></Label>
+                <TextBox x:Name="GISamples"></TextBox>
+
+                <Label Content="Batch Size:"></Label>
+                <TextBox x:Name="BatchSize"></TextBox>
+
+                <Button x:Name="ApplyButton" Content="Apply" Margin="30,15" Click="ApplyButton_Click"></Button>
+
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </Page>

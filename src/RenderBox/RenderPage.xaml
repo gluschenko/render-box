@@ -14,10 +14,10 @@
             <Image x:Name="Image" Stretch="Fill" HorizontalAlignment="Center" VerticalAlignment="Center"></Image>
             <Grid x:Name="SidePanel" Width="200" HorizontalAlignment="Right" Background="White">
                 <TabControl>
-                    <TabItem Header="Options">
+                    <TabItem Header="Options" IsSelected="True">
                         <Frame x:Name="OptionsFrame"></Frame>
                     </TabItem>
-                    <TabItem Header="Log" IsSelected="True">
+                    <TabItem Header="Log">
                         <ScrollViewer>
                             <ListBox x:Name="LogList">
                                 <ListBoxItem>123</ListBoxItem>
@@ -40,11 +40,13 @@
                     VerticalAlignment="Bottom" 
                     Click="RenderButton_Click"></Button>
 
-                <Slider x:Name="Resolution" Width="100" 
+                <Label Foreground="#fff">Scale:</Label>
+
+                <Slider x:Name="Resolution" Width="200" 
                         ValueChanged="Resolution_ValueChanged"
                         VerticalAlignment="Center" 
                         Minimum="0.1"
-                        Maximum="5" 
+                        Maximum="10" 
                         Value="1" ></Slider>
                 <Label x:Name="ResolutionText" Content="1" Foreground="White"></Label>
             </StackPanel>
