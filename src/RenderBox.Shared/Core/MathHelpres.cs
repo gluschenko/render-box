@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace RenderBox.Core
 {
@@ -63,13 +64,41 @@ namespace RenderBox.Core
             else
             {
                 var q = (b > 0) ?
-                    -0.5 * (b + Math.Sqrt(discr)) :
-                    -0.5 * (b - Math.Sqrt(discr));
+                    -0.5 * (b + FastSqrt(discr)) :
+                    -0.5 * (b - FastSqrt(discr));
                 x0 = q / a;
                 x1 = c / q;
             }
             if (x0 > x1) (x0, x1) = (x1, x0);
             return true;
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float QuakeInvSqrt(float number)
+        {
+            var half = 0.5f * number;
+            var i = BitConverter.SingleToInt32Bits(number);
+            i = 0x5F3759DF - (i >> 1);
+            number = BitConverter.Int32BitsToSingle(i);
+            number *= 1.5f - half * number * number;
+            return number;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float FastSqrt(float number) => 1f / QuakeInvSqrt(number);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double QuakeInvSqrt(double number)
+        {
+            var half = 0.5 * number;
+            var i = BitConverter.DoubleToInt64Bits(number);
+            i = 0x5FE6EB50C7B537A9 - (i >> 1);
+            number = BitConverter.Int64BitsToDouble(i);
+            number *= 1.5 - half * number * number;
+            return number;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double FastSqrt(double number) => 1.0 / QuakeInvSqrt(number);
     }
 }

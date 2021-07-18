@@ -33,12 +33,21 @@ Sources:
 * Transparency & reflection
 * Camera movement
 
-![](.media/PTX_7.jpg)
-![](.media/PTX_9.jpg)
-![](.media/PTX_10.jpg)
+![](.media/PTX_15.jpg)
+![](.media/PTX_16.jpg)
 ![](.media/PTX_11.jpg)
 ![](.media/PTX_13.jpg)
 
+#### Making of
+
+![](.media/PTX_2.jpg)
+![](.media/PTX_3.jpg)
+![](.media/PTX_1.jpg)
+![](.media/PTX_5.jpg)
+![](.media/PTX_6.jpg)
+![](.media/PTX_7.jpg)
+![](.media/PTX_9.jpg)
+![](.media/PTX_10.jpg)
 
 ### MandelbrotRenderer
 

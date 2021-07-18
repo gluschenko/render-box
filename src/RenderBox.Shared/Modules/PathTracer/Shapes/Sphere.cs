@@ -32,7 +32,7 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
             }
             else
             {
-                double D = (-b - Math.Sqrt(dt)) / (a * 2);
+                double D = (-b - MathHelpres.FastSqrt(dt)) / (a * 2);
                 if (D < 0)
                 {
                     distance = 0;
@@ -60,6 +60,11 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
         public override Vector3 CalcNormal(Vector3 pos)
         {
             return Normalize(pos - Position);
+        }
+
+        public override Vector3 GetLightEmission(Vector3 random)
+        {
+            return Normalize(random) * Radius;
         }
     }
 }

@@ -13,7 +13,7 @@ namespace RenderBox.Shared.Modules.PathTracer
             Direction = direction;
         }
 
-        public Vector3 PointAt(double t)
+        public Vector3 PointAt(float t)
         {
             return Origin + Direction * t;
         }

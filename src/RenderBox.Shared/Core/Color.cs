@@ -15,42 +15,39 @@ namespace RenderBox.Core
 
         //
 
-        public float R { get; set; }
-        public float G { get; set; }
-        public float B { get; set; }
-        public float A { get; set; }
+        public float r, g, b, a;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Color(float r, float g, float b, float a = 1)
         {
-            R = r;
-            G = g;
-            B = b;
-            A = a;
+            this.r = r;
+            this.g = g;
+            this.b = b;
+            this.a = a;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Color(double r, double g, double b, double a = 1)
         {
-            R = (float)r;
-            G = (float)g;
-            B = (float)b;
-            A = (float)a;
+            this.r = (float)r;
+            this.g = (float)g;
+            this.b = (float)b;
+            this.a = (float)a;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clamp()
         {
-            R = MathHelpres.Clamp(R);
-            G = MathHelpres.Clamp(G);
-            B = MathHelpres.Clamp(B);
-            A = MathHelpres.Clamp(A);
+            r = MathHelpres.Clamp(r);
+            g = MathHelpres.Clamp(g);
+            b = MathHelpres.Clamp(b);
+            a = MathHelpres.Clamp(a);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int GetRaw()
         {
-            return GetChannel(R) << 16 | GetChannel(G) << 8 | GetChannel(B);
+            return GetChannel(r) << 16 | GetChannel(g) << 8 | GetChannel(b);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -62,15 +59,15 @@ namespace RenderBox.Core
             return (byte)(n * byte.MaxValue);
         }
 
-        public static bool operator ==(Color a, Color b) => a.R == b.R && a.G == b.G && a.B == b.B && a.A == b.A;
+        public static bool operator ==(Color a, Color b) => a.r == b.r && a.g == b.g && a.b == b.b && a.a == b.a;
         public static bool operator !=(Color a, Color b) => !(a == b);
 
-        public static Color operator +(Color a, Color b) => new Color(a.R + b.R, a.G + b.G, a.B + b.B, a.A + b.A);
-        public static Color operator -(Color a, Color b) => new Color(a.R - b.R, a.G - b.G, a.B - b.B, a.A - b.A);
-        public static Color operator *(Color a, Color b) => new Color(a.R * b.R, a.G * b.G, a.B * b.B, a.A * b.A);
+        public static Color operator +(Color a, Color b) => new Color(a.r + b.r, a.g + b.g, a.b + b.b, a.a + b.a);
+        public static Color operator -(Color a, Color b) => new Color(a.r - b.r, a.g - b.g, a.b - b.b, a.a - b.a);
+        public static Color operator *(Color a, Color b) => new Color(a.r * b.r, a.g * b.g, a.b * b.b, a.a * b.a);
 
-        public static Color operator *(Color a, float m) => new Color(a.R * m, a.G * m, a.B * m, a.A * m);
-        public static Color operator /(Color a, float d) => new Color(a.R / d, a.G / d, a.B / d, a.A / d);
+        public static Color operator *(Color a, float m) => new Color(a.r * m, a.g * m, a.b * m, a.a * m);
+        public static Color operator /(Color a, float d) => new Color(a.r / d, a.g / d, a.b / d, a.a / d);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator int(Color a) => a.GetRaw();

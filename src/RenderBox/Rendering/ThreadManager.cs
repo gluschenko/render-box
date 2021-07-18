@@ -75,6 +75,9 @@ namespace RenderBox.Rendering
         {
             if (_pool is null) return;
 
+            _queue.Clear();
+            _onDone = null;
+
             for (var i = 0; i < _pool.Length; i++)
             {
                 if (_pool[i] != null)
@@ -83,9 +86,6 @@ namespace RenderBox.Rendering
                     _pool[i] = null;
                 }
             }
-
-            _queue.Clear();
-            _onDone = null;
         }
 
         private void ThreadProcess()
@@ -94,14 +94,14 @@ namespace RenderBox.Rendering
             {
                 while (true)
                 {
-                    if (_queue.Count > 0)
+                    if (!_queue.IsEmpty)
                     {
                         if (_queue.TryDequeue(out var routine))
                         {
                             routine.Action?.Invoke();
                         }
 
-                        if (_queue.Count == 0)
+                        if (_queue.IsEmpty)
                         {
                             break;
                         }
@@ -111,7 +111,7 @@ namespace RenderBox.Rendering
                         Thread.Sleep(1);
                     }
 
-                    if (_queue.Count == 0)
+                    if (_queue.IsEmpty)
                     {
                         break;
                     }
@@ -119,7 +119,7 @@ namespace RenderBox.Rendering
 
                 Interlocked.Increment(ref _endedThreads);
 
-                if (_endedThreads == _pool.Length)
+                if (_endedThreads >= _pool.Length)
                 {
                     Stop();
                 }
@@ -133,7 +133,6 @@ namespace RenderBox.Rendering
         {
             Kill();
             GC.SuppressFinalize(this);
-            GC.ReRegisterForFinalize(this);
         }
     }
 

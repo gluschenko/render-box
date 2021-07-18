@@ -6,8 +6,9 @@ namespace RenderBox.Shared.Modules.PathTracer
     {
         public Vector3 Position { get; set; }
         public Vector3 Target { get; set; }
-        public int MaxDepth { get; set; } = 3;
-        public double FOV { get; set; } = 90;
+        public int MaxBounceDepth { get; set; } = 3;
+        public float FOV { get; set; } = 90;
+        public float MaxDistance { get; set; } = 10;
 
         private Vector3 NormalX, NormalY, NormalZ;
         private Quaternion ViewMatrix, PosMatrix, BiasMatrix, ViewPosMatrix, RayMatrix;
