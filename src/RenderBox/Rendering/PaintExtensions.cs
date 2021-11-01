@@ -10,7 +10,7 @@ namespace RenderBox.Rendering
         /// A naive line-drawing algorithm:
         /// https://en.wikipedia.org/wiki/Line_drawing_algorithm
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Runtime.IMPL_OPTIONS)]
         public static void Line(this Paint paint, int x1, int y1, int x2, int y2, Color color)
         {
             var rawColor = color.GetRaw();
@@ -25,7 +25,7 @@ namespace RenderBox.Rendering
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Runtime.IMPL_OPTIONS)]
         public static void FillRect(this Paint paint, int x, int y, int width, int height, Color color)
         {
             var startX = Math.Min(x, x + width);

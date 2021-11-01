@@ -1,5 +1,4 @@
 ﻿using RenderBox.Core;
-using System;
 using static RenderBox.Core.VectorMath;
 
 namespace RenderBox.Shared.Modules.PathTracer.Shapes

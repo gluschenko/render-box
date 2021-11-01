@@ -17,7 +17,7 @@ namespace RenderBox.Core
 
         public float r, g, b, a;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Runtime.IMPL_OPTIONS)]
         public Color(float r, float g, float b, float a = 1)
         {
             this.r = r;
@@ -26,7 +26,7 @@ namespace RenderBox.Core
             this.a = a;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Runtime.IMPL_OPTIONS)]
         public Color(double r, double g, double b, double a = 1)
         {
             this.r = (float)r;
@@ -35,7 +35,7 @@ namespace RenderBox.Core
             this.a = (float)a;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Runtime.IMPL_OPTIONS)]
         public void Clamp()
         {
             r = MathHelpres.Clamp(r);
@@ -44,13 +44,13 @@ namespace RenderBox.Core
             a = MathHelpres.Clamp(a);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Runtime.IMPL_OPTIONS)]
         public int GetRaw()
         {
             return GetChannel(r) << 16 | GetChannel(g) << 8 | GetChannel(b);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Runtime.IMPL_OPTIONS)]
         private byte GetChannel(float n)
         {
             if (n < 0) return 0;
@@ -69,13 +69,13 @@ namespace RenderBox.Core
         public static Color operator *(Color a, float m) => new Color(a.r * m, a.g * m, a.b * m, a.a * m);
         public static Color operator /(Color a, float d) => new Color(a.r / d, a.g / d, a.b / d, a.a / d);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Runtime.IMPL_OPTIONS)]
         public static explicit operator int(Color a) => a.GetRaw();
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Runtime.IMPL_OPTIONS)]
         public override int GetHashCode() => GetRaw();
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Runtime.IMPL_OPTIONS)]
         public override bool Equals(object obj)
         {
             if (obj is Color color)

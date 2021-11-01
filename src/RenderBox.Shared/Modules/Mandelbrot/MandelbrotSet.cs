@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using RenderBox.Core;
+using System.Runtime.CompilerServices;
 
 namespace RenderBox.Shared.Modules.Mandelbrot
 {
@@ -25,11 +26,11 @@ namespace RenderBox.Shared.Modules.Mandelbrot
             MaxNorm = MaxValueExtent * MaxValueExtent;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Runtime.IMPL_OPTIONS)]
         public virtual int GetInterationsCount(ComplexNumber c)
         {
-            int i = 0;
-            ComplexNumber z = new ComplexNumber();
+            var i = 0;
+            var z = new ComplexNumber();
             while (z.Norm() < MaxNorm && i < MaxIterations)
             {
                 z = z * z + c;
@@ -39,7 +40,7 @@ namespace RenderBox.Shared.Modules.Mandelbrot
             return i;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Runtime.IMPL_OPTIONS)]
         public virtual double Calc(ComplexNumber c, double defaultValue = 1)
         {
             int i = GetInterationsCount(c);
@@ -59,23 +60,23 @@ namespace RenderBox.Shared.Modules.Mandelbrot
     {
         public double Re, Im;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Runtime.IMPL_OPTIONS)]
         public ComplexNumber(double re, double im)
         {
             Re = re;
             Im = im;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Runtime.IMPL_OPTIONS)]
         public double Norm()
             => Re * Re + Im * Im;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Runtime.IMPL_OPTIONS)]
         public static ComplexNumber operator +(ComplexNumber x, ComplexNumber y)
-            => new ComplexNumber(x.Re + y.Re, x.Im + y.Im);
+            => new(x.Re + y.Re, x.Im + y.Im);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Runtime.IMPL_OPTIONS)]
         public static ComplexNumber operator *(ComplexNumber x, ComplexNumber y)
-            => new ComplexNumber(x.Re * y.Re - x.Im * y.Im, x.Re * y.Im + x.Im * y.Re);
+            => new(x.Re * y.Re - x.Im * y.Im, x.Re * y.Im + x.Im * y.Re);
     }
 }

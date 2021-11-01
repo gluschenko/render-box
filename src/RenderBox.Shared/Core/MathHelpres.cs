@@ -9,51 +9,51 @@ namespace RenderBox.Core
         const double deg2rad = Math.PI / 180.0;
         const double rad2deg = 180.0 / Math.PI;
         /**/
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Runtime.IMPL_OPTIONS)]
         public static double DegToRad(double deg) => deg * deg2rad;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Runtime.IMPL_OPTIONS)]
         public static double RadToDeg(double rad) => rad * rad2deg;
         /**/
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Runtime.IMPL_OPTIONS)]
         public static double Clamp(double val, double low, double high) => Math.Max(low, Math.Min(high, val));
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Runtime.IMPL_OPTIONS)]
         public static double Clamp(double val) => Math.Max(0, Math.Min(1, val));
         /**/
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Runtime.IMPL_OPTIONS)]
         public static float Clamp(float val, float low, float high) => Math.Max(low, Math.Min(high, val));
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Runtime.IMPL_OPTIONS)]
         public static float Clamp(float val) => Math.Max(0, Math.Min(1, val));
         /**/
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Runtime.IMPL_OPTIONS)]
         public static int Clamp(int val, int low, int high) => Math.Max(low, Math.Min(high, val));
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Runtime.IMPL_OPTIONS)]
         public static int Clamp(int val) => Math.Max(0, Math.Min(1, val));
         /**/
 
         /// <summary>
         /// Линейная интерполяция
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Runtime.IMPL_OPTIONS)]
         public static double Lerp(double a, double b, double r) => a + (b - a) * r;
 
         /// <summary>
         /// Линейная интерполяция
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Runtime.IMPL_OPTIONS)]
         public static int Lerp(int a, int b, double r) => (int)(a + (b - a) * r);
 
         /// <summary>
         /// Линейная интерполяция
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Runtime.IMPL_OPTIONS)]
         public static long Lerp(long a, long b, double r) => (long)(a + (b - a) * r);
 
         /**/
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Runtime.IMPL_OPTIONS)]
         public static bool SolveQuadratic(ref double a, ref double b, ref double c, ref double x0, ref double x1)
         {
             var discr = b * b - 4 * a * c;
@@ -73,7 +73,7 @@ namespace RenderBox.Core
             return true;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Runtime.IMPL_OPTIONS)]
         public static float QuakeInvSqrt(float number)
         {
             var half = 0.5f * number;
@@ -84,10 +84,10 @@ namespace RenderBox.Core
             return number;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Runtime.IMPL_OPTIONS)]
         public static float FastSqrt(float number) => 1f / QuakeInvSqrt(number);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Runtime.IMPL_OPTIONS)]
         public static double QuakeInvSqrt(double number)
         {
             var half = 0.5 * number;
@@ -98,7 +98,7 @@ namespace RenderBox.Core
             return number;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Runtime.IMPL_OPTIONS)]
         public static double FastSqrt(double number) => 1.0 / QuakeInvSqrt(number);
     }
 }
