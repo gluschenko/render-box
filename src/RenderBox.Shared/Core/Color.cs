@@ -4,14 +4,14 @@ namespace RenderBox.Core
 {
     public struct Color
     {
-        public static Color Black => new Color(0, 0, 0);
-        public static Color White => new Color(1, 1, 1);
-        public static Color Red => new Color(1, 0, 0);
-        public static Color Yellow => new Color(1, 1, 0);
-        public static Color Green => new Color(0, 1, 0);
-        public static Color Cyan => new Color(0, 1, 1);
-        public static Color Blue => new Color(0, 0, 1);
-        public static Color Gray => new Color(0.5, 0.5, 0.5);
+        public static Color Black => new(0, 0, 0);
+        public static Color White => new(1, 1, 1);
+        public static Color Red => new(1, 0, 0);
+        public static Color Yellow => new(1, 1, 0);
+        public static Color Green => new(0, 1, 0);
+        public static Color Cyan => new(0, 1, 1);
+        public static Color Blue => new(0, 0, 1);
+        public static Color Gray => new(0.5, 0.5, 0.5);
 
         //
 
@@ -51,7 +51,7 @@ namespace RenderBox.Core
         }
 
         [MethodImpl(Runtime.IMPL_OPTIONS)]
-        private byte GetChannel(float n)
+        private static byte GetChannel(float n)
         {
             if (n < 0) return 0;
             if (n > 1) return byte.MaxValue;
@@ -62,12 +62,12 @@ namespace RenderBox.Core
         public static bool operator ==(Color a, Color b) => a.r == b.r && a.g == b.g && a.b == b.b && a.a == b.a;
         public static bool operator !=(Color a, Color b) => !(a == b);
 
-        public static Color operator +(Color a, Color b) => new Color(a.r + b.r, a.g + b.g, a.b + b.b, a.a + b.a);
-        public static Color operator -(Color a, Color b) => new Color(a.r - b.r, a.g - b.g, a.b - b.b, a.a - b.a);
-        public static Color operator *(Color a, Color b) => new Color(a.r * b.r, a.g * b.g, a.b * b.b, a.a * b.a);
+        public static Color operator +(Color a, Color b) => new(a.r + b.r, a.g + b.g, a.b + b.b, a.a + b.a);
+        public static Color operator -(Color a, Color b) => new(a.r - b.r, a.g - b.g, a.b - b.b, a.a - b.a);
+        public static Color operator *(Color a, Color b) => new(a.r * b.r, a.g * b.g, a.b * b.b, a.a * b.a);
 
-        public static Color operator *(Color a, float m) => new Color(a.r * m, a.g * m, a.b * m, a.a * m);
-        public static Color operator /(Color a, float d) => new Color(a.r / d, a.g / d, a.b / d, a.a / d);
+        public static Color operator *(Color a, float m) => new(a.r * m, a.g * m, a.b * m, a.a * m);
+        public static Color operator /(Color a, float d) => new(a.r / d, a.g / d, a.b / d, a.a / d);
 
         [MethodImpl(Runtime.IMPL_OPTIONS)]
         public static explicit operator int(Color a) => a.GetRaw();

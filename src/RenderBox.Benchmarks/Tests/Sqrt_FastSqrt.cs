@@ -11,13 +11,9 @@ namespace RenderBox.Benchmarks.Tests
 
         public Sqrt_FastSqrt()
         {
-            var rnd = new Random();
-            _single = rnd.Next(0, 10000);
+            _single = Math.Abs(Rand.Float()) * 10000f;
             _double = _single;
         }
-
-        [Benchmark]
-        public float Add() => _single + _single;
 
         [Benchmark]
         public float Sqrt32() => MathF.Sqrt(_single);

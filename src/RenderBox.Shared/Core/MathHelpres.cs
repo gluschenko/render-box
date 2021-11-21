@@ -100,5 +100,29 @@ namespace RenderBox.Core
 
         [MethodImpl(Runtime.IMPL_OPTIONS)]
         public static double FastSqrt(double number) => 1.0 / QuakeInvSqrt(number);
+
+        [MethodImpl(Runtime.IMPL_OPTIONS)]
+        public static float FastPow(float a, float b)
+        {
+            var i = (int)(BitConverter.DoubleToInt64Bits(a) >> 32);
+            var j = (int)(b * (i - 1072632447) + 1072632447);
+            return (float)BitConverter.Int64BitsToDouble(((long)j) << 32);
+        }
+
+        [MethodImpl(Runtime.IMPL_OPTIONS)]
+        public static double FastPow(double a, double b)
+        {
+            var i = (int)(BitConverter.DoubleToInt64Bits(a) >> 32);
+            var j = (int)(b * (i - 1072632447) + 1072632447);
+            return BitConverter.Int64BitsToDouble(((long)j) << 32);
+        }
+
+        [MethodImpl(Runtime.IMPL_OPTIONS)]
+        public static double VeryFastPow(double a, double b)
+        {
+            var i = BitConverter.DoubleToInt64Bits(a);
+            var j = (long)(b * (i - 4606921280493453312L)) + 4606921280493453312L;
+            return BitConverter.Int64BitsToDouble(j);
+        }
     }
 }
