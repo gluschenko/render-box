@@ -20,6 +20,12 @@ namespace RenderBox.Benchmarks.Tests
         }
 
         [Benchmark]
+        public float Mul32() => _single1 * _single2;
+
+        [Benchmark]
+        public double Mul64() => _double1 * _double2;
+
+        [Benchmark]
         public float Pow32() => MathF.Pow(_single1, _single2);
 
         [Benchmark]

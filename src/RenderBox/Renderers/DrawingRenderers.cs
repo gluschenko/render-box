@@ -1,11 +1,11 @@
 ﻿using RenderBox.Core;
 using RenderBox.Rendering;
 
-namespace RenderBox.Modules
+namespace RenderBox.Renderers
 {
-    public class DrawingRenderer : Renderer
+    public class DrawingRenderers : Renderer
     {
-        public DrawingRenderer(Paint paint) : base(paint)
+        public DrawingRenderers(Paint paint) : base(paint)
         {
 
         }

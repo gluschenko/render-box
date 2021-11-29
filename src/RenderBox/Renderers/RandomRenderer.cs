@@ -2,7 +2,7 @@
 using RenderBox.Rendering;
 using System;
 
-namespace RenderBox.Modules
+namespace RenderBox.Renderers
 {
     public class RandomRenderer : Renderer
     {

@@ -9,7 +9,7 @@ using System.Linq;
 using System.Windows.Input;
 using static RenderBox.Core.VectorMath;
 
-namespace RenderBox.Modules
+namespace RenderBox.Renderers
 {
     public enum RenderMode
     {

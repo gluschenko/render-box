@@ -2,7 +2,7 @@
 using RenderBox.Rendering;
 using RenderBox.Shared.Modules.Perlin;
 
-namespace RenderBox.Modules
+namespace RenderBox.Renderers
 {
     public class PerlinRenderer : Renderer
     {

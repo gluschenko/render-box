@@ -1,4 +1,4 @@
-﻿using RenderBox.Modules;
+﻿using RenderBox.Renderers;
 using RenderBox.Options;
 using RenderBox.Shared.Modules.Mandelbrot.Filters;
 using System;

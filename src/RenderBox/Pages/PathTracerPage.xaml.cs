@@ -1,4 +1,4 @@
-﻿using RenderBox.Modules;
+﻿using RenderBox.Renderers;
 using RenderBox.Options;
 using System.Windows.Controls;
 
@@ -56,7 +56,7 @@ namespace RenderBox.Pages
                 }
             }
 
-            return Modules.RenderMode.Light;
+            return Renderers.RenderMode.Light;
         }
     }
 }

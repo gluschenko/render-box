@@ -17,7 +17,7 @@ namespace RenderBox
         public bool IsActive { get; set; }
         public bool IsStarted { get; private set; }
 
-        public Renderer Renderer { get; set; }
+        public Rendering.Renderer Renderer { get; set; }
         public Camera MainCamera { get; set; }
         public Scene Scene { get; set; }
 
@@ -36,7 +36,7 @@ namespace RenderBox
 
             //
 
-            var modules = typeof(Renderer).GetSubclasses();
+            var modules = typeof(Rendering.Renderer).GetSubclasses();
 
             ModulesList.Children.Clear();
             foreach (var module in modules)
@@ -80,7 +80,7 @@ namespace RenderBox
 
             if (Renderer == null)
             {
-                Renderer = (Renderer)Activator.CreateInstance(type, new Paint(Image, w, h, scale));
+                Renderer = (Rendering.Renderer)Activator.CreateInstance(type, new Paint(Image, w, h, scale));
                 Renderer.OnRenderStarted += () => _timer.Restart();
                 Renderer.OnRenderComplete += () => _log.Add($"Render frame: {_timer.ElapsedMilliseconds} ms");
 

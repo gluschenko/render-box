@@ -8,7 +8,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Windows.Input;
 
-namespace RenderBox.Modules
+namespace RenderBox.Renderers
 {
     [OptionsPage(typeof(MandelbrotPage))]
     public class MandelbrotRenderer : Renderer
