@@ -48,7 +48,10 @@ namespace RenderBox.Pages
         {
             foreach (var item in RenderMode.Children)
             {
-                if (item is not RadioButton radio) continue;
+                if (item is not RadioButton radio)
+                {
+                    continue;
+                }
 
                 if (radio.IsChecked ?? false)
                 {

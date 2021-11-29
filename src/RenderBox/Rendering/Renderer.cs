@@ -124,7 +124,7 @@ namespace RenderBox.Rendering
                 }
             }
 
-            var locker = new EventWaitHandle(false, EventResetMode.AutoReset);
+            using var locker = new EventWaitHandle(false, EventResetMode.AutoReset);
             threadManager.Start(Environment.ProcessorCount, () => locker.Set());
             WaitHandle.WaitAll(new[] { locker });
             locker.Reset();
@@ -137,9 +137,9 @@ namespace RenderBox.Rendering
 
     public struct RenderContext
     {
-        public int Width;
-        public int Height;
-        public double Scale;
-        public Dispatcher Dispatcher;
+        public int Width { get; set; }
+        public int Height { get; set; }
+        public double Scale { get; set; }
+        public Dispatcher Dispatcher { get; set; }
     }
 }

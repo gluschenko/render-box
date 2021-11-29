@@ -18,9 +18,9 @@ namespace RenderBox.Rendering
             var dx = x2 - x1;
             var dy = y2 - y1;
 
-            for (int x = x1; x <= x2; x++)
+            for (var x = x1; x <= x2; x++)
             {
-                var y = y1 + dy * (x - x1) / dx;
+                var y = y1 + (dy * (x - x1) / dx);
                 paint.SetPixel(x, y, rawColor);
             }
         }
@@ -46,11 +46,12 @@ namespace RenderBox.Rendering
             paint.SetPixels(startX, startY, colors);
         }
 
+        [MethodImpl(Runtime.IMPL_OPTIONS)]
         public static void FillColors(this Color[,] colors, Color color)
         {
-            for (int x = 0; x < colors.GetLength(0); x++)
+            for (var x = 0; x < colors.GetLength(0); x++)
             {
-                for (int y = 0; y < colors.GetLength(1); y++)
+                for (var y = 0; y < colors.GetLength(1); y++)
                 {
                     colors[x, y] = color;
                 }

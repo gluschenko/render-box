@@ -8,7 +8,7 @@ namespace RenderBox.Pages
 {
     public partial class MandelbrotPage : Page, IOptionsPage
     {
-        public MandelbrotRenderer Source { get; set; }
+        private MandelbrotRenderer _source;
 
         public MandelbrotPage()
         {
@@ -28,8 +28,8 @@ namespace RenderBox.Pages
 
             noFilterButton.Click += (s, e) =>
             {
-                Source.Filter = null;
-                Source.Render(Dispatcher);
+                _source.Filter = null;
+                _source.Render(Dispatcher);
             };
 
             EffectsPanel.Children.Add(noFilterButton);
@@ -46,30 +46,31 @@ namespace RenderBox.Pages
 
                 button.Click += (s, e) =>
                 {
-                    Source.Filter = (IPaletteFilter)instance;
-                    Source.Render(Dispatcher);
+                    _source.Filter = (IPaletteFilter)instance;
+                    _source.Render(Dispatcher);
                 };
 
                 EffectsPanel.Children.Add(button);
             }
         }
 
-        private void ApplyButton_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            Source.Iterations = int.TryParse(Iterations.Text, out int a) ? a : 0;
-            Source.Extent = double.TryParse(Extent.Text, out double b) ? b : 0;
-            Source.BatchSize = int.TryParse(BatchSize.Text, out int c) ? c : 0;
-
-            Source.Render(Dispatcher);
-        }
-
         public void UseSource(object source)
         {
-            Source = source as MandelbrotRenderer;
+            _source = source as MandelbrotRenderer;
 
-            Iterations.Text = Source.Iterations.ToString();
-            Extent.Text = Source.Extent.ToString();
-            BatchSize.Text = Source.BatchSize.ToString();
+            Iterations.Text = _source.Iterations.ToString();
+            Extent.Text = _source.Extent.ToString();
+            BatchSize.Text = _source.BatchSize.ToString();
         }
+
+        private void ApplyButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            _source.Iterations = int.TryParse(Iterations.Text, out int a) ? a : 0;
+            _source.Extent = double.TryParse(Extent.Text, out double b) ? b : 0;
+            _source.BatchSize = int.TryParse(BatchSize.Text, out int c) ? c : 0;
+
+            _source.Render(Dispatcher);
+        }
+        
     }
 }
