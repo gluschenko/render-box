@@ -1,6 +1,6 @@
-﻿using RenderBox.Core;
-using System;
+﻿using System;
 using System.Runtime.CompilerServices;
+using RenderBox.Core;
 
 namespace RenderBox.Rendering
 {
@@ -40,14 +40,17 @@ namespace RenderBox.Rendering
             endX = Math.Min(endX, paint.Width - 1);
             endY = Math.Min(endY, paint.Height - 1);
 
-            var colors = new Color[endX - startX, endY - startY];
-            colors.FillColors(color);
+            var sizeX = endX - startX;
+            var sizeY = endY - startY;
+
+            var colors = new Color[sizeX, sizeY];
+            colors.Fill(color);
 
             paint.SetPixels(startX, startY, colors);
         }
 
         [MethodImpl(Runtime.IMPL_OPTIONS)]
-        public static void FillColors(this Color[,] colors, Color color)
+        public static void Fill(this Color[,] colors, Color color)
         {
             for (var x = 0; x < colors.GetLength(0); x++)
             {

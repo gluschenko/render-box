@@ -1,6 +1,6 @@
-﻿using BenchmarkDotNet.Attributes;
-using System;
+﻿using System;
 using System.Security.Cryptography;
+using BenchmarkDotNet.Attributes;
 
 namespace RenderBox.Benchmarks.Tests
 {

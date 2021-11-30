@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 namespace RenderBox.Core
 {
@@ -16,22 +15,22 @@ namespace RenderBox.Core
         public static double RadToDeg(double rad) => rad * rad2deg;
         /**/
         [MethodImpl(Runtime.IMPL_OPTIONS)]
-        public static double Clamp(double val, double low, double high) => Math.Max(low, Math.Min(high, val));
+        public static double Clamp(double val, double low, double high) => Math.Clamp(val, low, high);
 
         [MethodImpl(Runtime.IMPL_OPTIONS)]
-        public static double Clamp(double val) => Math.Max(0, Math.Min(1, val));
+        public static double Clamp(double val) => Math.Clamp(val, 0, 1);
         /**/
         [MethodImpl(Runtime.IMPL_OPTIONS)]
-        public static float Clamp(float val, float low, float high) => Math.Max(low, Math.Min(high, val));
+        public static float Clamp(float val, float low, float high) => Math.Clamp(val, low, high);
 
         [MethodImpl(Runtime.IMPL_OPTIONS)]
-        public static float Clamp(float val) => Math.Max(0, Math.Min(1, val));
+        public static float Clamp(float val) => Math.Clamp(val, 0, 1);
         /**/
         [MethodImpl(Runtime.IMPL_OPTIONS)]
-        public static int Clamp(int val, int low, int high) => Math.Max(low, Math.Min(high, val));
+        public static int Clamp(int val, int low, int high) => Math.Clamp(val, low, high);
 
         [MethodImpl(Runtime.IMPL_OPTIONS)]
-        public static int Clamp(int val) => Math.Max(0, Math.Min(1, val));
+        public static int Clamp(int val) => Math.Clamp(val, 0, 1);
         /**/
 
         /// <summary>

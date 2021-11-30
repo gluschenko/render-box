@@ -1,5 +1,5 @@
-﻿using RenderBox.Core;
-using System;
+﻿using System;
+using RenderBox.Core;
 
 namespace RenderBox.Shared.Modules.Mandelbrot.Filters
 {

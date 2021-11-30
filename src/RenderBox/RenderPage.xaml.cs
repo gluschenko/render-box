@@ -1,7 +1,4 @@
-﻿using RenderBox.Options;
-using RenderBox.Rendering;
-using RenderBox.Shared.Modules.PathTracer;
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
@@ -9,6 +6,9 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using RenderBox.Options;
+using RenderBox.Rendering;
+using RenderBox.Shared.Modules.PathTracer;
 
 namespace RenderBox
 {

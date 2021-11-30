@@ -1,8 +1,8 @@
-﻿using RenderBox.Renderers;
-using RenderBox.Options;
-using RenderBox.Shared.Modules.Mandelbrot.Filters;
-using System;
+﻿using System;
 using System.Windows.Controls;
+using RenderBox.Options;
+using RenderBox.Renderers;
+using RenderBox.Shared.Modules.Mandelbrot.Filters;
 
 namespace RenderBox.Pages
 {
@@ -71,6 +71,6 @@ namespace RenderBox.Pages
 
             _source.Render(Dispatcher);
         }
-        
+
     }
 }

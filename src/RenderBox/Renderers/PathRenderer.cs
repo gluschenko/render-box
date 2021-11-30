@@ -1,12 +1,13 @@
-﻿using RenderBox.Core;
+﻿using System;
+using System.Diagnostics;
+using System.Linq;
+using System.Windows.Input;
+using RenderBox.Core;
 using RenderBox.Options;
 using RenderBox.Pages;
 using RenderBox.Rendering;
 using RenderBox.Shared.Modules.PathTracer;
 using RenderBox.Shared.Modules.PathTracer.Shapes;
-using System;
-using System.Linq;
-using System.Windows.Input;
 using static RenderBox.Core.VectorMath;
 
 namespace RenderBox.Renderers
@@ -16,6 +17,7 @@ namespace RenderBox.Renderers
         Light = 0,
         Normals = 1,
         Depth = 2,
+        Time = 3,
     }
 
     [OptionsPage(typeof(PathTracerPage))]
@@ -26,8 +28,12 @@ namespace RenderBox.Renderers
 
         public RenderMode Mode { get; set; }
 
+        private readonly Stopwatch _stopwatch;
+
         public PathRenderer(Paint paint) : base(paint)
         {
+            _stopwatch = new Stopwatch();
+
             MainCamera = new Camera(new Vector3(0, 0, 4));
             Scene = new Scene();
 
@@ -103,10 +109,10 @@ namespace RenderBox.Renderers
             var samplesWidth = width * samples;
             var samplesHeight = height * samples;
 
-            float fovScale = (float)Math.Tan(MathHelpres.DegToRad(camera.FOV * 0.5));
-            float aspectRatio = (float)width / height;
+            var fovScale = (float)Math.Tan(MathHelpres.DegToRad(camera.FOV * 0.5));
+            var aspectRatio = (float)width / height;
 
-            Vector3 orig = camera.Position;
+            var orig = camera.Position;
 
             float halfX = width / 2;
             float halfY = height / 2;
@@ -123,20 +129,25 @@ namespace RenderBox.Renderers
                 return tile;
             }
 
+            int GetRenderPriority(int x, int y)
+            {
+                return (int)Distance(new Vector2(x, y), new Vector2(width / 2, height / 2));
+            }
+
             Color[,] RenderBatch(int ix, int iy, int sizeX, int sizeY, int step)
             {
                 var tile = new Color[sizeX, sizeY];
 
-                for (int localY = 0; localY < sizeY; localY += step)
+                for (var localY = 0; localY < sizeY; localY += step)
                 {
-                    int y = iy + localY;
+                    var y = iy + localY;
 
-                    for (int localX = 0; localX < sizeX; localX += step)
+                    for (var localX = 0; localX < sizeX; localX += step)
                     {
-                        int x = ix + localX;
+                        var x = ix + localX;
                         //
-                        float posX = (2 * (x + 0.5f) / width - 1) * aspectRatio * fovScale;
-                        float posY = (1 - 2 * (y + 0.5f) / height) * fovScale;
+                        var posX = (2 * (x + 0.5f) / width - 1) * aspectRatio * fovScale;
+                        var posY = (1 - 2 * (y + 0.5f) / height) * fovScale;
                         //
                         var dir = Normalize(new Vector3(posX, posY, -1));
                         var ray = new Ray(orig, dir);
@@ -148,9 +159,9 @@ namespace RenderBox.Renderers
 
                 if (step > 1)
                 {
-                    for (int localY = 0; localY < sizeY; localY += step)
+                    for (var localY = 0; localY < sizeY; localY += step)
                     {
-                        for (int localX = 0; localX < sizeX; localX += step)
+                        for (var localX = 0; localX < sizeX; localX += step)
                         {
                             var template = tile[localX, localY];
 
@@ -172,14 +183,19 @@ namespace RenderBox.Renderers
             {
                 lock (Scene)
                 {
-                    BatchScreen(context, BatchPreview);
-                    BatchScreen(context, Batch);
+                    BatchScreen(context, BatchPreview, GetRenderPriority);
+                    BatchScreen(context, Batch, GetRenderPriority);
                 }
             }
         }
 
         private Color TracePath(RenderContext context, Camera camera, Ray ray, Color back, int depth = 0, Shape currentShape = null)
         {
+            if (Mode == RenderMode.Time)
+            {
+                _stopwatch.Restart();
+            }
+
             // Bounced enough times
             if (depth >= camera.MaxBounceDepth)
             {
@@ -250,15 +266,21 @@ namespace RenderBox.Renderers
                 var newRayDirection = Reflect(ray.Direction, normal);
                 var newRay = new Ray(position, newRayDirection);
 
-                var BRDF = material.Specular / (float)Math.PI;
+                var brdf = material.Specular / (float)Math.PI;
 
                 var incoming = TracePath(context, camera, newRay, back, depth + 1, currentShape);
 
-                var reflectedColor = !material.IsMetallic 
-                    ? emittance + (BRDF * incoming) 
+                var reflectedColor = !material.IsMetallic
+                    ? emittance + (brdf * incoming)
                     : incoming;
 
                 emittance = Color.Lerp(emittance, reflectedColor, material.Reflection);
+            }
+
+            if (Mode == RenderMode.Time)
+            {
+                var ticks = _stopwatch.ElapsedTicks / 1000.0;
+                return new Color(ticks, ticks, ticks);
             }
 
             return emittance;
@@ -290,7 +312,7 @@ namespace RenderBox.Renderers
 
                 foreach (var light in Scene.Lights)
                 {
-                    for (int i = 0; i < Scene.GISamples; i++)
+                    for (var i = 0; i < Scene.GISamples; i++)
                     {
                         var random = new Vector3(Rand.Float() * 2 - 1, Rand.Float() * 2 - 1, Rand.Float() * 2 - 1);
                         var lightPosition = light.Shape.Position + light.Shape.GetLightEmission(random);
@@ -301,7 +323,6 @@ namespace RenderBox.Renderers
 
                 emittance *= color / Scene.GISamples;
             }
-
 
             return emittance;
         }
@@ -320,13 +341,13 @@ namespace RenderBox.Renderers
             var c = light.ConstantAttenuation;
             var attenuation = (float)((a + b + c) * (1 / light.Intensity));
 
-            var NdotLD = (float)Dot(hit.Normal, lightDirection);
+            var ndotLD = (float)Dot(hit.Normal, lightDirection);
 
-            if (NdotLD > 0)
+            if (ndotLD > 0)
             {
                 if (!IsShadow(hit.HitObject, lightPosition, lightDirection, (float)lightDistance))
                 {
-                    var linghtnessMul = (ambientColor * ambientFactor + light.Color * NdotLD) / attenuation;
+                    var linghtnessMul = (ambientColor * ambientFactor + light.Color * ndotLD) / attenuation;
                     return light.Color * linghtnessMul;
                 }
             }
@@ -372,12 +393,12 @@ namespace RenderBox.Renderers
             {
                 var randomRay = new Vector3(Rand.Float() * 2 - 1, Rand.Float() * 2 - 1, Rand.Float() * 2 - 1);
 
-                var NdotRR = (float)Dot(hit.Normal, randomRay);
+                var ndotRR = (float)Dot(hit.Normal, randomRay);
 
-                if (NdotRR < 0.0f)
+                if (ndotRR < 0.0f)
                 {
                     randomRay = -randomRay;
-                    NdotRR = -NdotRR;
+                    ndotRR = -ndotRR;
                 }
 
                 var ray = new Ray(hit.Position, randomRay);
@@ -392,7 +413,7 @@ namespace RenderBox.Renderers
                     }
                 }
 
-                factor += NdotRR / (1.0f + dist * dist);
+                factor += ndotRR / (1.0f + dist * dist);
             }
 
             return 1f - (factor / Scene.GISamples) * 4f;

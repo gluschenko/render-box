@@ -26,10 +26,10 @@ namespace RenderBox.Core
         public static int RandomizeSeed() => Guid.NewGuid().GetHashCode();
         public static void Reset() => _random = new Random(RandomizeSeed());
 
-        private static int 
-            x = RandomizeSeed(), 
-            y = RandomizeSeed(), 
-            z = RandomizeSeed(), 
+        private static int
+            x = RandomizeSeed(),
+            y = RandomizeSeed(),
+            z = RandomizeSeed(),
             w = RandomizeSeed();
 
         private static int FastNext()

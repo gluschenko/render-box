@@ -1,8 +1,8 @@
-﻿using RenderBox.Core;
-using System;
+﻿using System;
 using System.Threading;
 using System.Windows.Input;
 using System.Windows.Threading;
+using RenderBox.Core;
 
 namespace RenderBox.Rendering
 {
@@ -116,18 +116,35 @@ namespace RenderBox.Rendering
                     //
                     var priority = getRenderPriority?.Invoke(ix, iy) ?? 0;
 
-                    threadManager.Push(() =>
+                    void DrawTile()
                     {
                         var tile = renderScreenBatch(ix, iy, sizeX, sizeY);
                         dispatcher.Invoke(() => Paint.SetPixels(ix, iy, tile));
-                    }, priority);
+                    }
+
+                    threadManager.Push(DrawTile, priority);
                 }
             }
 
+            using var semaphore = new SemaphoreSlim(1, 1);
+
+            try
+            {
+                semaphore.Wait();
+                threadManager.Start(Environment.ProcessorCount, () => semaphore.Release());
+                semaphore.Wait();
+            }
+            finally
+            {
+                semaphore.Release();
+            }
+
+            /*
             using var locker = new EventWaitHandle(false, EventResetMode.AutoReset);
             threadManager.Start(Environment.ProcessorCount, () => locker.Set());
             WaitHandle.WaitAll(new[] { locker });
             locker.Reset();
+            */
         }
 
         protected delegate Color[,] RenderScreenBatch(int ix, int iy, int sizeX, int sizeY);

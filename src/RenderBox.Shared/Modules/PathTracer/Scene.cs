@@ -1,6 +1,6 @@
-﻿using RenderBox.Core;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using RenderBox.Core;
 
 namespace RenderBox.Shared.Modules.PathTracer
 {

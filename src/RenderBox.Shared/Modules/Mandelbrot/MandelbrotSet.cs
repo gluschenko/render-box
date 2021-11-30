@@ -1,5 +1,5 @@
-﻿using RenderBox.Core;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
+using RenderBox.Core;
 
 namespace RenderBox.Shared.Modules.Mandelbrot
 {

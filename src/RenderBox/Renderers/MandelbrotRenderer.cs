@@ -1,12 +1,12 @@
-﻿using RenderBox.Core;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Windows.Input;
+using RenderBox.Core;
 using RenderBox.Options;
 using RenderBox.Pages;
 using RenderBox.Rendering;
 using RenderBox.Shared.Modules.Mandelbrot;
 using RenderBox.Shared.Modules.Mandelbrot.Filters;
-using System;
-using System.Collections.Concurrent;
-using System.Windows.Input;
 
 namespace RenderBox.Renderers
 {
@@ -70,7 +70,9 @@ namespace RenderBox.Renderers
             }
 
             int GetRenderPriority(int x, int y)
-                => rates.TryGetValue(new Point2(x, y), out var rate) ? rate : 0;
+            {
+                return rates.TryGetValue(new Point2(x, y), out var rate) ? rate : 0;
+            }
 
             int[,] RenderBatch(int ix, int iy, int sizeX, int sizeY, int step)
             {

@@ -1,6 +1,6 @@
-﻿using RenderBox.Renderers;
+﻿using System.Windows.Controls;
 using RenderBox.Options;
-using System.Windows.Controls;
+using RenderBox.Renderers;
 
 namespace RenderBox.Pages
 {

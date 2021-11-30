@@ -1,6 +1,6 @@
-﻿using RenderBox.Core;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using RenderBox.Core;
 using static RenderBox.Core.VectorMath;
 
 namespace RenderBox.Shared.Modules.PathTracer.Shapes
@@ -32,7 +32,7 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
                     if (localHit.IsHitting)
                     {
                         var dist = (localHit.Position - ray.Origin).Length;
-                        if (dist > maxDistance) 
+                        if (dist > maxDistance)
                         {
                             continue;
                         }
@@ -91,7 +91,7 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
 
             var t = f * Dot(e2, q);
 
-            if(t <= 0)
+            if (t <= 0)
             {
                 return false;
             }

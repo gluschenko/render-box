@@ -25,6 +25,9 @@
                     <RadioButton GroupName="RenderMode" 
                              Tag="2" Content="Depth"
                              Margin="0, 5" />
+                    <RadioButton GroupName="RenderMode" 
+                             Tag="3" Content="Time"
+                             Margin="0, 5" />
                 </StackPanel>
 
                 <Label Content="Scene:"></Label>

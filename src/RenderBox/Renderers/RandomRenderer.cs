@@ -1,6 +1,6 @@
-﻿using RenderBox.Core;
+﻿using System;
+using RenderBox.Core;
 using RenderBox.Rendering;
-using System;
 
 namespace RenderBox.Renderers
 {

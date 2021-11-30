@@ -1,9 +1,9 @@
-﻿using RenderBox.Core;
+﻿using System.Windows;
+using System.Windows.Controls;
+using RenderBox.Core;
 using RenderBox.Options;
 using RenderBox.Renderers;
 using RenderBox.Rendering;
-using System.Windows;
-using System.Windows.Controls;
 
 namespace RenderBox.Pages
 {
@@ -23,7 +23,7 @@ namespace RenderBox.Pages
 
         private void BlitButton_Click(object sender, RoutedEventArgs e)
         {
-            _source.SetRender((context) => 
+            _source.SetRender((context) =>
             {
                 _source.Paint.FillRect(0, 0, context.Width, context.Height, Color.Green);
             });

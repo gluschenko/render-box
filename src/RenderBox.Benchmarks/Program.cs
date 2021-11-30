@@ -1,6 +1,6 @@
-﻿using BenchmarkDotNet.Running;
+﻿using System;
+using BenchmarkDotNet.Running;
 using RenderBox.Benchmarks.Tests;
-using System;
 using RenderBox.Core;
 
 namespace RenderBox.Benchmarks

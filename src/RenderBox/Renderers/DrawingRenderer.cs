@@ -13,7 +13,7 @@ namespace RenderBox.Renderers
 
         public DrawingRenderer(Paint paint) : base(paint)
         {
-            _render = (context) => 
+            _render = (context) =>
             {
                 Paint.FillRect(10, 10, 80, 40, Color.Green);
                 Paint.FillRect(10, 60, 80, 40, Color.Yellow);
