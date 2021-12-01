@@ -88,10 +88,9 @@ namespace RenderBox
                 if (pageType is not null)
                 {
                     var page = Activator.CreateInstance(pageType);
-                    if (page is IOptionsPage<Renderer> optionsPage)
-                    {
-                        optionsPage.UseSource(Renderer);
-                    }
+                    var useSource = pageType.GetMethod(nameof(IOptionsPage<Renderer>.UseSource));
+                    useSource.Invoke(page, new[] { Renderer });
+
                     OptionsFrame.Navigate(page);
                 }
             }
