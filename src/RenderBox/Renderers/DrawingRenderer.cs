@@ -1,12 +1,9 @@
 ﻿using System;
 using RenderBox.Core;
-using RenderBox.Options;
-using RenderBox.Pages;
 using RenderBox.Rendering;
 
 namespace RenderBox.Renderers
 {
-    [OptionsPage(typeof(DrawingPage))]
     public class DrawingRenderer : Renderer
     {
         private Action<RenderContext> _render;

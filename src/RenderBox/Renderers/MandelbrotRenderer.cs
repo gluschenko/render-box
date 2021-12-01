@@ -2,15 +2,12 @@
 using System.Collections.Concurrent;
 using System.Windows.Input;
 using RenderBox.Core;
-using RenderBox.Options;
-using RenderBox.Pages;
 using RenderBox.Rendering;
 using RenderBox.Shared.Modules.Mandelbrot;
 using RenderBox.Shared.Modules.Mandelbrot.Filters;
 
 namespace RenderBox.Renderers
 {
-    [OptionsPage(typeof(MandelbrotPage))]
     public class MandelbrotRenderer : Renderer
     {
         public MandelbrotSet Mandelbrot { get; private set; }

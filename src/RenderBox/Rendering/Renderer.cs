@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Windows.Input;
 using System.Windows.Threading;
 using RenderBox.Core;
+using RenderBox.Options;
 
 namespace RenderBox.Rendering
 {
@@ -23,6 +25,21 @@ namespace RenderBox.Rendering
         public Renderer(Paint paint)
         {
             Paint = paint;
+        }
+
+        public Type GetOptionPageType()
+        {
+            var type = GetType();
+            var optionsType = typeof(IOptionsPage<>);
+
+            var optionsPages = AppDomain.CurrentDomain
+                .GetAssemblies()
+                .SelectMany(x => x.GetTypes())
+                .Where(x => !x.IsInterface)
+                .Where(x => x.GetInterfaces().Any(x => x.Name == optionsType.Name && x.GetGenericArguments().Contains(type)))
+                .ToArray();
+
+            return optionsPages.FirstOrDefault();
         }
 
         public void Render(Dispatcher dispatcher) => Render(BuildContext(dispatcher));

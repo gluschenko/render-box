@@ -27,18 +27,18 @@ namespace RenderBox.Core
         public static void Reset() => _random = new Random(RandomizeSeed());
 
         private static int
-            x = RandomizeSeed(),
-            y = RandomizeSeed(),
-            z = RandomizeSeed(),
-            w = RandomizeSeed();
+            _x = RandomizeSeed(),
+            _y = RandomizeSeed(),
+            _z = RandomizeSeed(),
+            _w = RandomizeSeed();
 
         private static int FastNext()
         {
-            int t = x ^ (x << 11);
-            x = y;
-            y = z;
-            z = w;
-            return (w = (w ^ (w >> 19)) ^ (t ^ (t >> 8)));
+            var t = _x ^ (_x << 11);
+            _x = _y;
+            _y = _z;
+            _z = _w;
+            return (_w = (_w ^ (_w >> 19)) ^ (t ^ (t >> 8)));
         }
     }
 }

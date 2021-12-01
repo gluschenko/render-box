@@ -6,7 +6,7 @@ using RenderBox.Shared.Modules.Mandelbrot.Filters;
 
 namespace RenderBox.Pages
 {
-    public partial class MandelbrotPage : Page, IOptionsPage
+    public partial class MandelbrotPage : Page, IOptionsPage<MandelbrotRenderer>
     {
         private MandelbrotRenderer _source;
 
@@ -54,9 +54,9 @@ namespace RenderBox.Pages
             }
         }
 
-        public void UseSource(object source)
+        public void UseSource(MandelbrotRenderer source)
         {
-            _source = source as MandelbrotRenderer;
+            _source = source;
 
             Iterations.Text = _source.Iterations.ToString();
             Extent.Text = _source.Extent.ToString();

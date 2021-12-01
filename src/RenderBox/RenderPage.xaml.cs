@@ -2,7 +2,6 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -75,27 +74,25 @@ namespace RenderBox
         private void SetupRender(Type type)
         {
             var scale = Resolution.Value;
-            int w = (int)(ActualWidth * scale);
-            int h = (int)(ActualHeight * scale);
+            var w = (int)(ActualWidth * scale);
+            var h = (int)(ActualHeight * scale);
 
             if (Renderer == null)
             {
-                Renderer = (Rendering.Renderer)Activator.CreateInstance(type, new Paint(Image, w, h, scale));
+                Renderer = (Renderer)Activator.CreateInstance(type, new Paint(Image, w, h, scale));
                 Renderer.OnRenderStarted += () => _timer.Restart();
                 Renderer.OnRenderComplete += () => _log.Add($"Render frame: {_timer.ElapsedMilliseconds} ms");
 
-                var attributes = Renderer.GetType().GetCustomAttributes();
-                foreach (var attribute in attributes)
+                var pageType = Renderer.GetOptionPageType();
+
+                if (pageType is not null)
                 {
-                    if (attribute is OptionsPageAttribute optionsPageAttribute)
+                    var page = Activator.CreateInstance(pageType);
+                    if (page is IOptionsPage<Renderer> optionsPage)
                     {
-                        var page = Activator.CreateInstance(optionsPageAttribute.OptionsPageType);
-                        if (page is IOptionsPage optionsPage)
-                        {
-                            optionsPage.UseSource(Renderer);
-                        }
-                        OptionsFrame.Navigate(page);
+                        optionsPage.UseSource(Renderer);
                     }
+                    OptionsFrame.Navigate(page);
                 }
             }
             else

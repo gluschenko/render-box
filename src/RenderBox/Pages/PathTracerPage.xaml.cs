@@ -4,7 +4,7 @@ using RenderBox.Renderers;
 
 namespace RenderBox.Pages
 {
-    public partial class PathTracerPage : Page, IOptionsPage
+    public partial class PathTracerPage : Page, IOptionsPage<PathRenderer>
     {
         private PathRenderer _source;
 
@@ -13,9 +13,9 @@ namespace RenderBox.Pages
             InitializeComponent();
         }
 
-        public void UseSource(object source)
+        public void UseSource(PathRenderer source)
         {
-            _source = source as PathRenderer;
+            _source = source;
 
             Lighting.IsChecked = _source.Scene.LightingEnabled;
             Shadows.IsChecked = _source.Scene.ShadowsEnabled;

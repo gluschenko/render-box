@@ -1,7 +1,9 @@
-﻿namespace RenderBox.Options
+﻿using RenderBox.Rendering;
+
+namespace RenderBox.Options
 {
-    public interface IOptionsPage
+    public interface IOptionsPage<T> where T : Renderer
     {
-        void UseSource(object source);
+        void UseSource(T source);
     }
 }

@@ -7,7 +7,7 @@ using RenderBox.Rendering;
 
 namespace RenderBox.Pages
 {
-    public partial class DrawingPage : Page, IOptionsPage
+    public partial class DrawingPage : Page, IOptionsPage<DrawingRenderer>
     {
         private DrawingRenderer _source;
 
@@ -16,9 +16,9 @@ namespace RenderBox.Pages
             InitializeComponent();
         }
 
-        public void UseSource(object source)
+        public void UseSource(DrawingRenderer source)
         {
-            _source = source as DrawingRenderer;
+            _source = source;
         }
 
         private void BlitButton_Click(object sender, RoutedEventArgs e)

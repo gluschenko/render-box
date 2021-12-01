@@ -3,8 +3,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
 using RenderBox.Core;
-using RenderBox.Options;
-using RenderBox.Pages;
 using RenderBox.Rendering;
 using RenderBox.Shared.Modules.PathTracer;
 using RenderBox.Shared.Modules.PathTracer.Shapes;
@@ -20,7 +18,6 @@ namespace RenderBox.Renderers
         Time = 3,
     }
 
-    [OptionsPage(typeof(PathTracerPage))]
     public class PathRenderer : Renderer
     {
         public Camera MainCamera { get; set; }
@@ -92,6 +89,8 @@ namespace RenderBox.Renderers
                 new Box(new Vector3(0, -1.5, -1), Color.Yellow),
                 new Box(new Vector3(1, -1.5, -1), Color.Red),
                 new Box(new Vector3(-1, -1.5, -1), Color.Blue),
+
+                new Box(new Vector3(-1.6, -1.9, 1.4), Color.White, new Vector3(0.24f, 0.24f, 0.24f)) { Material = metal },
             });
 
             Scene.UpdateLights();
@@ -279,7 +278,7 @@ namespace RenderBox.Renderers
 
             if (Mode == RenderMode.Time)
             {
-                var ticks = _stopwatch.ElapsedTicks / 1000.0;
+                var ticks = Math.Log(_stopwatch.ElapsedTicks) / 10.0;
                 return new Color(ticks, ticks, ticks);
             }
 
@@ -314,7 +313,7 @@ namespace RenderBox.Renderers
                 {
                     for (var i = 0; i < Scene.GISamples; i++)
                     {
-                        var random = new Vector3(Rand.Float() * 2 - 1, Rand.Float() * 2 - 1, Rand.Float() * 2 - 1);
+                        var random = new Vector3((Rand.Float() * 2) - 1, (Rand.Float() * 2) - 1, (Rand.Float() * 2) - 1);
                         var lightPosition = light.Shape.Position + light.Shape.GetLightEmission(random);
 
                         color += LightIntensity(hit, light, lightPosition, Scene.AmbientColor, ambientFactor);

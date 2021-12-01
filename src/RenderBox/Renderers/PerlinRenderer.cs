@@ -15,25 +15,27 @@ namespace RenderBox.Renderers
 
         protected override void RenderScreen(RenderContext context)
         {
-            float zoom = context.Width / 800f;
-            float halfX = context.Width / 2;
-            float halfY = context.Height / 2;
+            var zoom = context.Width / 800f;
+            var halfX = context.Width / 2f;
+            var halfY = context.Height / 2f;
 
-            Color[,] batch(int ix, int iy, int sizeX, int sizeY)
+            Color[,] Batch(int ix, int iy, int sizeX, int sizeY)
             {
-                Color[,] tile = new Color[sizeX, sizeY];
+                var tile = new Color[sizeX, sizeY];
 
-                for (int y = 0; y < sizeY; y++)
+                for (var y = 0; y < sizeY; y++)
                 {
-                    float posY = (iy + y) * zoom;
+                    var posY = (iy + y) * zoom;
 
-                    for (int x = 0; x < sizeX; x++)
+                    for (var x = 0; x < sizeX; x++)
                     {
-                        float posX = (ix + x) * zoom;
-                        //
+                        var posX = (ix + x) * zoom;
+
                         var n = Perlin.FractalNoise2D(posX, posY, 4, 100, 1);
 
-                        var color = n > 0 ? ColorHelpers.FromHSV(120.0, 1, n) : ColorHelpers.FromHSV(240.0, 1, -n);
+                        var color = n > 0
+                            ? ColorHelpers.FromHSV(120.0, 1, n)
+                            : ColorHelpers.FromHSV(240.0, 1, -n);
 
                         tile[x, y] = color;
                     }
@@ -42,7 +44,7 @@ namespace RenderBox.Renderers
                 return tile;
             }
 
-            BatchScreen(context, batch);
+            BatchScreen(context, Batch);
         }
     }
 }
