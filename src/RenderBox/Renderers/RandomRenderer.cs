@@ -14,11 +14,11 @@ namespace RenderBox.Renderers
         {
             static Color[,] Batch(int ix, int iy, int sizeX, int sizeY)
             {
-                Color[,] tile = new Color[sizeX, sizeY];
+                var tile = new Color[sizeX, sizeY];
 
-                for (int y = 0; y < sizeY; y++)
+                for (var y = 0; y < sizeY; y++)
                 {
-                    for (int x = 0; x < sizeX; x++)
+                    for (var x = 0; x < sizeX; x++)
                     {
                         var r = Math.Max(0, Rand.Float());
                         var g = Math.Max(0, Rand.Float());

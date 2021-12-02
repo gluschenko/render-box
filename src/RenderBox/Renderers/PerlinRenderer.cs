@@ -33,9 +33,7 @@ namespace RenderBox.Renderers
 
                         var n = Perlin.FractalNoise2D(posX, posY, 4, 100, 1);
 
-                        var color = n > 0
-                            ? ColorHelpers.FromHSV(120.0, 1, n)
-                            : ColorHelpers.FromHSV(240.0, 1, -n);
+                        var color = ColorHelpers.FromHSV(360.0 * ((n + 1) / 2.0), 1, 1);
 
                         tile[x, y] = color;
                     }
