@@ -55,24 +55,15 @@ namespace RenderBox.Renderers
 
             Scene.Shapes.AddRange(new Shape[]
             {
-                //new Box(new Vector3(-1.9, -1.4, 1), Color.White, new Vector3(0.2, 1, 1)).SetLight(new Light(Color.White, 3f)), // Lamp
-
                 new Box(new Vector3(1.5f, 1.9, 0), Color.Blue, new Vector3(1, 0.2, 1)).SetLight(new Light(Color.White, 3f)), // Lamp
                 new Box(new Vector3(0, 1.9, 0), Color.White, new Vector3(1, 0.2, 1)).SetLight(new Light(Color.White, 3f)), // Lamp
                 new Box(new Vector3(-1.5f, 1.9, 0), Color.Yellow, new Vector3(1, 0.2, 1)).SetLight(new Light(Color.White, 3f)), // Lamp
 
-                //new Box(new Vector3(-0.4, 1.9, 0), Color.Red, new Vector3(0.4, 0.2, 1)).SetLight(new Light(Color.White, 3f)), // Lamp
-                //new Box(new Vector3(0, 1.9, 0), Color.Green, new Vector3(0.4, 0.2, 1)).SetLight(new Light(Color.White, 3f)), // Lamp
-                //new Box(new Vector3(0.4, 1.9, 0), Color.Blue, new Vector3(0.4, 0.2, 1)).SetLight(new Light(Color.White, 3f)), // Lamp
-                
                 new Box(new Vector3(0, 2, 0), Color.White, new Vector3(4, 0.01, 4)), // Top
                 new Box(new Vector3(0, -2, 0), Color.White, new Vector3(4, 0.01, 4)), // Floor
                 new Box(new Vector3(2, 0, 0), Color.Green, new Vector3(0.01, 4, 4)), // Right wall
                 new Box(new Vector3(-2, 0, 0), Color.Red, new Vector3(0.01, 4, 4)), // Left wall
                 new Box(new Vector3(0, 0, -2), Color.White, new Vector3(4, 4, 0.01)), // Back wall
-
-                //new Box(new Vector3(-1, 1, 0), Color.White, new Vector3(2, 0.01, 4)),
-                //new Box(new Vector3(1, 1, 0), Color.White, new Vector3(2, 0.01, 4)),
 
                 new Sphere(new Vector3(-1, -0.5, -1), .5f, Color.White) { Material = metal },
                 new Sphere(new Vector3(0, -0.5, -1), .5f, Color.White) { Material = mirror },
