@@ -4,16 +4,16 @@ using RenderBox.Renderers;
 
 namespace RenderBox.Pages
 {
-    public partial class PathTracerPage : Page, IOptionsPage<PathRenderer>
+    public partial class PathTracePage : Page, IOptionsPage<PathTraceRenderer>
     {
-        private PathRenderer _source;
+        private PathTraceRenderer _source;
 
-        public PathTracerPage()
+        public PathTracePage()
         {
             InitializeComponent();
         }
 
-        public void UseSource(PathRenderer source)
+        public void UseSource(PathTraceRenderer source)
         {
             _source = source;
 

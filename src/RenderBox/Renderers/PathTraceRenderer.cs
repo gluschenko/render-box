@@ -18,7 +18,7 @@ namespace RenderBox.Renderers
         Time = 3,
     }
 
-    public class PathRenderer : Renderer
+    public class PathTraceRenderer : Renderer
     {
         public Camera MainCamera { get; set; }
         public Scene Scene { get; set; }
@@ -27,7 +27,7 @@ namespace RenderBox.Renderers
 
         private readonly Stopwatch _stopwatch;
 
-        public PathRenderer(Paint paint) : base(paint)
+        public PathTraceRenderer(Paint paint) : base(paint)
         {
             _stopwatch = new Stopwatch();
 
