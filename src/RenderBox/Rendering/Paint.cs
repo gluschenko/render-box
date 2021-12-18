@@ -35,7 +35,10 @@ namespace RenderBox.Rendering
         /// </summary>
         private void CreateBitmap(Image img, int width, int height)
         {
-            if (width <= 0 || height <= 0) return;
+            if (width <= 0 || height <= 0)
+            {
+                return;
+            }
 
             RenderOptions.SetBitmapScalingMode(img, BitmapScalingMode.HighQuality);
             RenderOptions.SetEdgeMode(img, EdgeMode.Aliased);
@@ -52,17 +55,23 @@ namespace RenderBox.Rendering
         /// </summary>
         public void SetPixel(int x, int y, int color)
         {
-            if (Bitmap == null) return;
+            if (Bitmap == null)
+            {
+                return;
+            }
 
-            bool isValid = x >= 0 && y >= 0 && x < Bitmap.PixelWidth && y < Bitmap.PixelHeight;
-            if (!isValid) return;
+            var isValid = x >= 0 && y >= 0 && x < Bitmap.PixelWidth && y < Bitmap.PixelHeight;
 
+            if (!isValid)
+            {
+                return;
+            }
 
             Bitmap.Lock();
 
             unsafe
             {
-                IntPtr backBuffer = Bitmap.BackBuffer;
+                var backBuffer = Bitmap.BackBuffer;
 
                 backBuffer += y * Bitmap.BackBufferStride;
                 backBuffer += x * 4;
@@ -76,33 +85,38 @@ namespace RenderBox.Rendering
 
         public void SetPixels(int x, int y, Color[,] colors)
         {
-            if (Bitmap == null) return;
+            if (Bitmap == null)
+            {
+                return;
+            }
 
-            int width = colors.GetLength(0);
-            int height = colors.GetLength(1);
+            var width = colors.GetLength(0);
+            var height = colors.GetLength(1);
 
-            bool isValid = x >= 0 && y >= 0 && x + width < Bitmap.PixelWidth && y + height < Bitmap.PixelHeight;
-            if (!isValid) return;
-
+            var isValid = x >= 0 && y >= 0 && x + width < Bitmap.PixelWidth && y + height < Bitmap.PixelHeight;
+            if (!isValid)
+            {
+                return;
+            }
 
             Bitmap.Lock();
 
             unsafe
             {
-                IntPtr backBuffer = Bitmap.BackBuffer;
+                var backBuffer = Bitmap.BackBuffer;
 
-                const int pixel = sizeof(int);
+                const int Pixel = sizeof(int);
 
-                backBuffer += y * (Bitmap.PixelWidth * pixel);
-                backBuffer += x * pixel - pixel;
+                backBuffer += y * Bitmap.PixelWidth * Pixel;
+                backBuffer += (x * Pixel) - Pixel;
 
-                int newLineOffset = (Bitmap.PixelWidth - width) * pixel;
+                var newLineOffset = (Bitmap.PixelWidth - width) * Pixel;
 
-                for (int localY = 0; localY < height; localY++)
+                for (var localY = 0; localY < height; localY++)
                 {
-                    for (int localX = 0; localX < width; localX++)
+                    for (var localX = 0; localX < width; localX++)
                     {
-                        backBuffer += pixel;
+                        backBuffer += Pixel;
                         *(int*)backBuffer = (int)colors[localX, localY];
                     }
 
