@@ -36,7 +36,7 @@ namespace RenderBox.Rendering
                 .GetAssemblies()
                 .SelectMany(x => x.GetTypes())
                 .Where(x => !x.IsInterface)
-                .Where(x => 
+                .Where(x =>
                 {
                     return x.GetInterfaces()
                         .Any(x => x.Name == optionsType.Name && x.GetGenericArguments().Contains(type));
@@ -157,7 +157,7 @@ namespace RenderBox.Rendering
             }
             finally
             {
-                semaphore.Release();
+                _ = semaphore.Release();
             }
 
             /*

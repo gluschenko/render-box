@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,7 +17,7 @@ namespace RenderBox
         public bool IsActive { get; set; }
         public bool IsStarted { get; private set; }
 
-        public Rendering.Renderer Renderer { get; set; }
+        public Renderer Renderer { get; set; }
         public Camera MainCamera { get; set; }
         public Scene Scene { get; set; }
 
@@ -35,7 +36,7 @@ namespace RenderBox
 
             //
 
-            var modules = typeof(Rendering.Renderer).GetSubclasses();
+            var modules = typeof(Renderer).GetSubclasses();
 
             ModulesList.Children.Clear();
             foreach (var module in modules)
@@ -52,13 +53,14 @@ namespace RenderBox
                     ModulesListRoot.Visibility = Visibility.Hidden;
                 };
 
-                ModulesList.Children.Add(button);
+                _ = ModulesList.Children.Add(button);
             }
         }
 
         public void Dispose()
         {
             Renderer?.Dispose();
+            GC.SuppressFinalize(this);
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
@@ -89,9 +91,9 @@ namespace RenderBox
                 {
                     var page = Activator.CreateInstance(pageType);
                     var useSource = pageType.GetMethod(nameof(IOptionsPage<Renderer>.UseSource));
-                    useSource.Invoke(page, new[] { Renderer });
+                    _ = useSource.Invoke(page, new[] { Renderer });
 
-                    OptionsFrame.Navigate(page);
+                    _ = OptionsFrame.Navigate(page);
                 }
             }
             else
@@ -157,7 +159,9 @@ namespace RenderBox
             try
             {
                 if (ResolutionText != null)
-                    ResolutionText.Content = Math.Round(Resolution.Value, 1).ToString();
+                {
+                    ResolutionText.Content = Math.Round(Resolution.Value, 1).ToString(CultureInfo.InvariantCulture);
+                }
             }
             catch (Exception)
             {
@@ -166,7 +170,10 @@ namespace RenderBox
 
         private void OnKeyPress(object sender, KeyEventArgs e)
         {
-            if (IsActive) Renderer?.OnKeyPress(e.Key, Update);
+            if (IsActive)
+            {
+                Renderer?.OnKeyPress(e.Key, Update);
+            }
         }
     }
 
