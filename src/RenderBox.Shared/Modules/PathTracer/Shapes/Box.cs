@@ -13,18 +13,18 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
             scale ??= new Vector3(1, 1, 1);
             Scale = scale.Value;
 
-            double A = 0.5, B = -A;
+            double a = 0.5, b = -a;
 
             var verts = new List<Vector3>()
             {
-                new Vector3(A, B, A), // 0
-                new Vector3(A, B, B), // 1
-                new Vector3(B, B, A), // 2
-                new Vector3(B, B, B), // 3
-                new Vector3(A, A, A), // 4
-                new Vector3(A, A, B), // 5
-                new Vector3(B, A, A), // 6
-                new Vector3(B, A, B), // 7
+                new Vector3(a, b, a), // 0
+                new Vector3(a, b, b), // 1
+                new Vector3(b, b, a), // 2
+                new Vector3(b, b, b), // 3
+                new Vector3(a, a, a), // 4
+                new Vector3(a, a, b), // 5
+                new Vector3(b, a, a), // 6
+                new Vector3(b, a, b), // 7
             };
 
             var indices = new List<int>()

@@ -31,7 +31,7 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
             }
             else
             {
-                double D = (-b - MathHelpres.FastSqrt(dt)) / (a * 2);
+                var D = (-b - MathHelpres.FastSqrt(dt)) / (a * 2);
                 if (D < 0)
                 {
                     distance = 0;
