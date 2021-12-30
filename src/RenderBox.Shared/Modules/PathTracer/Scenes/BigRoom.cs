@@ -9,24 +9,24 @@ namespace RenderBox.Shared.Modules.PathTracer.Scenes
         {
             var glass1 = new Material
             {
-                Refraction = 0.6f,
-                Reflection = 0.6f,
+                Refraction = 0.5f,
+                Reflection = 0.5f,
                 RefractionEta = 1,
                 Color = Color.Red,
             };
 
             var glass2 = new Material
             {
-                Refraction = 0.6f,
-                Reflection = 0.6f,
+                Refraction = 0.5f,
+                Reflection = 0.5f,
                 RefractionEta = 1,
                 Color = Color.Green,
             };
 
             var glass3 = new Material
             {
-                Refraction = 0.6f,
-                Reflection = 0.6f,
+                Refraction = 0.5f,
+                Reflection = 0.5f,
                 RefractionEta = 1,
                 Color = Color.Blue,
             };
@@ -49,13 +49,13 @@ namespace RenderBox.Shared.Modules.PathTracer.Scenes
                 new Box(new Vector3(0, 0, 0), Color.White, new Vector3(1, 1, 1)).SetLight(new Light(Color.White, 3f)), // Lamp
 
                 //    A
-                //  ______
-                //  |    | B  C
-                //  |    |______
-                //F |          |
-                //  |          |  D
-                //  |__________|
-                //      E
+                //  _______
+                //  |     | B  C
+                //  |     |______
+                //F |           |
+                //  |           |  D
+                //  |___________|
+                //       E
 
                 new Box(new Vector3(2, 2, 2), Color.White, new Vector3(8, 0.01, 8)), // Top
                 new Box(new Vector3(2, -2, 2), Color.White, new Vector3(8, 0.01, 8)), // Floor

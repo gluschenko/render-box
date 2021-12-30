@@ -12,7 +12,7 @@ namespace RenderBox.Core
             _random = new Random(seed);
         }
 
-        public static int Int(int min, int max) => _random.Next(min, max);
+        public static int Int(int min, int max) => MathHelpres.Lerp(min, max, Double()); //_random.Next(min, max);
         public static int Int() => Int(int.MinValue, int.MaxValue);
 
         public static double Double(double min, double max) => MathHelpres.Lerp(min, max, Double());

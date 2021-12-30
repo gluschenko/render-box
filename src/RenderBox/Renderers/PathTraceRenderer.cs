@@ -6,6 +6,7 @@ using RenderBox.Core;
 using RenderBox.Rendering;
 using RenderBox.Shared.Modules.PathTracer;
 using RenderBox.Shared.Modules.PathTracer.Scenes;
+using RenderBox.Shared.Modules.PathTracer.Shapes;
 using static RenderBox.Core.VectorMath;
 
 namespace RenderBox.Renderers
@@ -249,11 +250,29 @@ namespace RenderBox.Renderers
             {
                 var color = new Color();
 
+                var posItems = new float[3];
+
                 foreach (var light in Scene.Lights)
                 {
                     for (var i = 0; i < Scene.GISamples; i++)
                     {
-                        var random = new Vector3((Rand.Float() * 2) - 1, (Rand.Float() * 2) - 1, (Rand.Float() * 2) - 1);
+                        Vector3 random;
+
+                        if (light.Shape is Box boxShape)
+                        {
+                            var side = Rand.Int(0, 6);
+                            var c = side % 3;
+                            posItems[c] = side % 2 == 0 ? 0.5f : -0.5f;
+                            posItems[(c + 1) % 3] = Rand.Float() - 0.5f;
+                            posItems[(c + 2) % 3] = Rand.Float() - 0.5f;
+
+                            random = new Vector3(posItems[0], posItems[1], posItems[2]) * boxShape.Scale;
+                        }
+                        else
+                        {
+                            random = new Vector3(Rand.Float() - 0.5f, Rand.Float() - 0.5f, Rand.Float() - 0.5f);
+                        }
+                        
                         var lightPosition = light.Shape.Position + light.Shape.GetLightEmission(random);
 
                         color += LightIntensity(hit, light, lightPosition, Scene.AmbientColor, ambientFactor);
@@ -268,6 +287,7 @@ namespace RenderBox.Renderers
 
         private Color LightIntensity(Hit hit, Light light, Vector3 lightPosition, Color ambientColor, float ambientFactor)
         {
+            var lightColor = light.Color;
             var lightDirection = lightPosition - hit.Position;
 
             var lightDistance = lightDirection.Length;
@@ -280,28 +300,26 @@ namespace RenderBox.Renderers
             var c = light.ConstantAttenuation;
             var attenuation = (float)((a + b + c) * (1 / light.Intensity));
 
-            var ndotLD = (float)Dot(hit.Normal, lightDirection);
+            var ndotLD = Dot(hit.Normal, lightDirection);
 
             if (ndotLD > 0)
             {
                 if (!IsShadow(hit.HitObject, lightPosition, lightDirection, (float)lightDistance))
                 {
-                    var linghtnessMul = (ambientColor * ambientFactor + light.Color * ndotLD) / attenuation;
-                    return light.Color * linghtnessMul;
+                    var linghtnessMul = (ambientColor * ambientFactor + lightColor * ndotLD) / attenuation;
+                    return lightColor * linghtnessMul;
                 }
             }
 
-            /*var refractedColor = Color.Black;
-
-            if (hit.HitObject.Material.Refraction > 0)
+            var refraction = hit.HitObject.Material.Refraction;
+            
+            if (refraction > 0)
             {
-                refractedColor = Color.White;
-            }*/
+                lightColor *= hit.HitObject.Material.Color;
+            }
 
-            //return new Color(hit.Normal.x, hit.Normal.y, hit.Normal.z);
-
-            var ambientMul = (ambientColor * ambientFactor) / attenuation;
-            return light.Color * ambientMul;
+            var ambientMul = (ambientColor * ambientFactor + lightColor * ndotLD * refraction) / attenuation;
+            return lightColor * ambientMul;
         }
 
         private bool IsShadow(Shape currentShape, Vector3 lightPosition, Vector3 lightDirection, float lightDistance)
@@ -313,7 +331,7 @@ namespace RenderBox.Renderers
 
             var ray = new Ray(lightPosition, -lightDirection);
 
-            foreach (var shape in Scene.Shapes.Where(x => x != currentShape && x.Light == null))
+            foreach (var shape in Scene.Shapes.Where(x => x != currentShape))
             {
                 if (shape.GetIntersection(ray, lightDistance, out var _, out var _))
                 {
