@@ -2,7 +2,7 @@
 using RenderBox.Options;
 using RenderBox.Renderers;
 
-namespace RenderBox.Pages
+namespace RenderBox.Views.Pages
 {
     public partial class PathTracePage : Page, IOptionsPage<PathTraceRenderer>
     {

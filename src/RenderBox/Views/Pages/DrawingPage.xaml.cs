@@ -5,7 +5,7 @@ using RenderBox.Options;
 using RenderBox.Renderers;
 using RenderBox.Rendering;
 
-namespace RenderBox.Pages
+namespace RenderBox.Views.Pages
 {
     public partial class DrawingPage : Page, IOptionsPage<DrawingRenderer>
     {

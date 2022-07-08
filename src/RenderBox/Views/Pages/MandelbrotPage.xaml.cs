@@ -4,7 +4,7 @@ using RenderBox.Options;
 using RenderBox.Renderers;
 using RenderBox.Shared.Modules.Mandelbrot.Filters;
 
-namespace RenderBox.Pages
+namespace RenderBox.Views.Pages
 {
     public partial class MandelbrotPage : Page, IOptionsPage<MandelbrotRenderer>
     {

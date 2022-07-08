@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace RenderBox.Pages
+namespace RenderBox.Views.Pages
 {
     /// <summary>
     /// Interaction logic for TerrainPage.xaml
