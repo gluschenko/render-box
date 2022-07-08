@@ -65,9 +65,9 @@ namespace RenderBox.Views.Pages
 
         private void ApplyButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            _source.Iterations = int.TryParse(Iterations.Text, out int a) ? a : 0;
-            _source.Extent = double.TryParse(Extent.Text, out double b) ? b : 0;
-            _source.BatchSize = int.TryParse(BatchSize.Text, out int c) ? c : 0;
+            _source.Iterations = int.TryParse(Iterations.Text, out var a) ? a : 0;
+            _source.Extent = double.TryParse(Extent.Text, out var b) ? b : 0;
+            _source.BatchSize = int.TryParse(BatchSize.Text, out var c) ? c : 0;
 
             _source.Render(Dispatcher);
         }
