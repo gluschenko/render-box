@@ -272,7 +272,7 @@ namespace RenderBox.Services.Renderers
                         {
                             random = new Vector3(Rand.Float() - 0.5f, Rand.Float() - 0.5f, Rand.Float() - 0.5f);
                         }
-                        
+
                         var lightPosition = light.Shape.Position + light.Shape.GetLightEmission(random);
 
                         color += LightIntensity(hit, light, lightPosition, Scene.AmbientColor, ambientFactor);
@@ -312,7 +312,7 @@ namespace RenderBox.Services.Renderers
             }
 
             var refraction = hit.HitObject.Material.Refraction;
-            
+
             if (refraction > 0)
             {
                 lightColor *= hit.HitObject.Material.Color;

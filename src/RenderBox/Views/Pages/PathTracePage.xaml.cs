@@ -1,7 +1,6 @@
 ﻿using System.Windows.Controls;
 using RenderBox.Services.Options;
 using RenderBox.Services.Renderers;
-using RenderBox.Services.Rendering;
 
 namespace RenderBox.Views.Pages
 {
