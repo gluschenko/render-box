@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading;
 
-namespace RenderBox.Rendering
+namespace RenderBox.Services.Rendering
 {
     public class ThreadManager : IDisposable
     {

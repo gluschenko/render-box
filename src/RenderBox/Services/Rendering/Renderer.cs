@@ -4,9 +4,9 @@ using System.Threading;
 using System.Windows.Input;
 using System.Windows.Threading;
 using RenderBox.Core;
-using RenderBox.Options;
+using RenderBox.Services.Options;
 
-namespace RenderBox.Rendering
+namespace RenderBox.Services.Rendering
 {
     public delegate void RenderStartHandler();
     public delegate void RenderCompleteHandler();

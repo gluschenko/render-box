@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Controls;
-using RenderBox.Options;
-using RenderBox.Renderers;
+using RenderBox.Services.Options;
+using RenderBox.Services.Renderers;
 using RenderBox.Shared.Modules.Mandelbrot.Filters;
 
 namespace RenderBox.Views.Pages

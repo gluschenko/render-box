@@ -2,11 +2,11 @@
 using System.Collections.Concurrent;
 using System.Windows.Input;
 using RenderBox.Core;
-using RenderBox.Rendering;
+using RenderBox.Services.Rendering;
 using RenderBox.Shared.Modules.Mandelbrot;
 using RenderBox.Shared.Modules.Mandelbrot.Filters;
 
-namespace RenderBox.Renderers
+namespace RenderBox.Services.Renderers
 {
     public class MandelbrotRenderer : Renderer
     {

@@ -1,8 +1,8 @@
 ﻿using RenderBox.Core;
-using RenderBox.Rendering;
+using RenderBox.Services.Rendering;
 using RenderBox.Shared.Modules.Perlin;
 
-namespace RenderBox.Renderers
+namespace RenderBox.Services.Renderers
 {
     public class PerlinRenderer : Renderer
     {

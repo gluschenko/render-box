@@ -1,8 +1,8 @@
 ﻿using System;
 using RenderBox.Core;
-using RenderBox.Rendering;
+using RenderBox.Services.Rendering;
 
-namespace RenderBox.Renderers
+namespace RenderBox.Services.Renderers
 {
     public class RandomRenderer : Renderer
     {

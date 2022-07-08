@@ -6,8 +6,8 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using RenderBox.Options;
-using RenderBox.Rendering;
+using RenderBox.Services.Options;
+using RenderBox.Services.Rendering;
 using RenderBox.Shared.Modules.PathTracer;
 
 namespace RenderBox

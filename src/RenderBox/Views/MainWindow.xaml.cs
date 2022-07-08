@@ -36,13 +36,13 @@ namespace RenderBox.Views
                 Content = new Frame() { Content = page }
             };
 
-            item.MouseRightButtonUp += onItemClick;
+            item.MouseRightButtonUp += OnItemClick;
 
             _pages.Add(item, page);
             Tabs.Items.Insert(idx - 1, item);
             Tabs.SelectedIndex = Tabs.Items.Count - 2;
 
-            void onItemClick(object sender, MouseButtonEventArgs e)
+            void OnItemClick(object sender, MouseButtonEventArgs e)
             {
                 if (Tabs.Items.Count > 2)
                 {

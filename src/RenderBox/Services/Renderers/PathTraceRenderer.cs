@@ -3,13 +3,13 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
 using RenderBox.Core;
-using RenderBox.Rendering;
+using RenderBox.Services.Rendering;
 using RenderBox.Shared.Modules.PathTracer;
 using RenderBox.Shared.Modules.PathTracer.Scenes;
 using RenderBox.Shared.Modules.PathTracer.Shapes;
 using static RenderBox.Core.VectorMath;
 
-namespace RenderBox.Renderers
+namespace RenderBox.Services.Renderers
 {
     public enum RenderMode
     {

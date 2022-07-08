@@ -5,7 +5,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Color = RenderBox.Core.Color;
 
-namespace RenderBox.Rendering
+namespace RenderBox.Services.Rendering
 {
     public class Paint : IDisposable
     {

@@ -1,6 +1,6 @@
-﻿using RenderBox.Rendering;
+﻿using RenderBox.Services.Rendering;
 
-namespace RenderBox.Options
+namespace RenderBox.Services.Options
 {
     public interface IOptionsPage<T> where T : Renderer
     {

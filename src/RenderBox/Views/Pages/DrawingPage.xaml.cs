@@ -1,9 +1,9 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using RenderBox.Core;
-using RenderBox.Options;
-using RenderBox.Renderers;
-using RenderBox.Rendering;
+using RenderBox.Services.Options;
+using RenderBox.Services.Renderers;
+using RenderBox.Services.Rendering;
 
 namespace RenderBox.Views.Pages
 {

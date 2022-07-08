@@ -1,6 +1,7 @@
 ﻿using System.Windows.Controls;
-using RenderBox.Options;
-using RenderBox.Renderers;
+using RenderBox.Services.Options;
+using RenderBox.Services.Renderers;
+using RenderBox.Services.Rendering;
 
 namespace RenderBox.Views.Pages
 {
@@ -59,7 +60,7 @@ namespace RenderBox.Views.Pages
                 }
             }
 
-            return Renderers.RenderMode.Light;
+            return Services.Renderers.RenderMode.Light;
         }
     }
 }

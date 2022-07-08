@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using RenderBox.Core;
 
-namespace RenderBox.Rendering
+namespace RenderBox.Services.Rendering
 {
     public static class PaintExtensions
     {
