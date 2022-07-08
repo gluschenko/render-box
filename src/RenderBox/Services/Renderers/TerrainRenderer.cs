@@ -1,4 +1,5 @@
-﻿using RenderBox.Core;
+﻿using System.Collections.Generic;
+using RenderBox.Core;
 using RenderBox.Services.Rendering;
 using RenderBox.Shared.Modules.Perlin;
 
@@ -15,6 +16,8 @@ namespace RenderBox.Services.Renderers
 
         protected override void RenderScreen(RenderContext context)
         {
+            var grassColor = Color.Green;
+
             var zoom = context.Width / 800f;
             var halfX = context.Width / 2f;
             var halfY = context.Height / 2f;
@@ -31,9 +34,17 @@ namespace RenderBox.Services.Renderers
                     {
                         var posX = (ix + x) * zoom;
 
+                        var neignbor = Perlin.FractalNoise2D(posX + 1, posY + 1, 4, 100, 1);
+
                         var n = Perlin.FractalNoise2D(posX, posY, 4, 100, 1);
 
-                        var color = ColorHelpers.FromHSV(360.0 * ((n + 1) / 2.0), 1, 1);
+
+                        ColorHelpers.ToHSV(grassColor, out var h, out var s, out var v);
+
+                        var delta = (neignbor - n) * 16f;
+                        v = MathHelpres.Clamp(delta / 2f + .5f, 0, 1);
+
+                        var color = ColorHelpers.FromHSV(h, s, v);
 
                         tile[x, y] = color;
                     }
@@ -43,6 +54,63 @@ namespace RenderBox.Services.Renderers
             }
 
             BatchScreen(context, Batch);
+        }
+
+        public class World
+        {
+            public Dictionary<Offset, Chunk> Chunks { get; set; }
+
+            public World()
+            {
+                Chunks = new Dictionary<Offset, Chunk>();
+            }
+        }
+
+        public class Chunk
+        {
+            public const int Size = 64;
+            public Block[,,] Blocks { get; set; }
+
+            public Chunk()
+            {
+                Blocks = new Block[Size, Size, Size];
+            }
+        }
+
+        public struct Offset
+        {
+            public short X { get; set; }
+            public short Y { get; set; }
+            public short Z { get; set; }
+
+            public Offset(short x, short y, short z)
+            {
+                X = x;
+                Y = y;
+                Z = z;
+            }
+        }
+
+        public struct Block
+        {
+            public const int BlocksPerMeter = 8;
+            public const float Size = 1 / (float)BlocksPerMeter;
+
+            public BlockType Type { get; set; }
+
+            public Block(BlockType type)
+            {
+                Type = type;
+            }
+        }
+
+        public enum BlockType : byte
+        {
+            Air = 0,
+            Stone = 1,
+            Grass = 2,
+            Dirt = 3,
+            Water = 4,
         }
     }
 }
