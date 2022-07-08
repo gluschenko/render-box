@@ -1,15 +1,21 @@
 ﻿using System.Windows.Controls;
+using RenderBox.Services.Options;
+using RenderBox.Services.Renderers;
 
 namespace RenderBox.Views.Pages
 {
-    /// <summary>
-    /// Interaction logic for TerrainPage.xaml
-    /// </summary>
-    public partial class TerrainPage : Page
+    public partial class TerrainPage : Page, IOptionsPage<TerrainRenderer>
     {
+        private TerrainRenderer _source;
+
         public TerrainPage()
         {
             InitializeComponent();
+        }
+
+        public void UseSource(TerrainRenderer source)
+        {
+            _source = source;
         }
     }
 }

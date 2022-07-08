@@ -5,10 +5,13 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:RenderBox.Views.Pages"
       mc:Ignorable="d" 
-      d:DesignHeight="400" d:DesignWidth="400"
-      Title="TerrainPage">
+      d:DesignHeight="400" d:DesignWidth="200"
+      Title="TerrainPage"
+      Background="#fff">
 
     <Grid>
-        
+        <StackPanel>
+            <Button Content="Test" />
+        </StackPanel>
     </Grid>
 </Page>
