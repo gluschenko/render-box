@@ -10,9 +10,9 @@ using RenderBox.Services.Options;
 using RenderBox.Services.Rendering;
 using RenderBox.Shared.Modules.PathTracer;
 
-namespace RenderBox
+namespace RenderBox.Views.Pages
 {
-    public partial class RenderPage : Page, IDisposable
+    public partial class CanvasPage : Page, IDisposable
     {
         public bool IsActive { get; set; }
         public bool IsStarted { get; private set; }
@@ -24,7 +24,7 @@ namespace RenderBox
         private readonly ObservableCollection<string> _log;
         private readonly Stopwatch _timer = new();
 
-        public RenderPage()
+        public CanvasPage()
         {
             InitializeComponent();
 

@@ -3,19 +3,20 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using RenderBox.Views.Pages;
 
 namespace RenderBox.Views
 {
     public partial class MainWindow : Window
     {
         private int _tabCounter;
-        private readonly Dictionary<TabItem, RenderPage> _pages;
+        private readonly Dictionary<TabItem, CanvasPage> _pages;
 
         public MainWindow()
         {
             InitializeComponent();
 
-            _pages = new Dictionary<TabItem, RenderPage>();
+            _pages = new Dictionary<TabItem, CanvasPage>();
 
             Tabs.SelectionChanged += OnTabsSelectionChanged;
 
@@ -26,7 +27,7 @@ namespace RenderBox.Views
 
         private void AddTab()
         {
-            var page = new RenderPage();
+            var page = new CanvasPage();
 
             int idx = Tabs.Items.Count;
             Tabs.SelectedIndex = idx - 1;
