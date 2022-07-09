@@ -19,8 +19,8 @@ Sources:
 
 ### Requirements
 
-* Visual Studio 2019
-* .NET Core SDK 5.0
+* Visual Studio 2022
+* .NET SDK 6.0
 	
 ## Renderers
 

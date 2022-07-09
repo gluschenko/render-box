@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using RenderBox.Core;
 using RenderBox.Services.Rendering;
 using RenderBox.Shared.Modules.Perlin;
@@ -7,18 +8,21 @@ namespace RenderBox.Services.Renderers
 {
     public class TerrainRenderer : Renderer
     {
-        public PerlinNoise Perlin { get; private set; }
+        public int WorldSeed { get; private set; } = 24567;
+        public WorldGenerator WorldGenerator { get; private set; }
+        public World World { get; private set; }
 
         public TerrainRenderer(Paint paint) : base(paint)
         {
-            Perlin = new PerlinNoise(Rand.Int(1, 100));
+            WorldGenerator = new WorldGenerator(WorldSeed, 4);
         }
 
         protected override void RenderScreen(RenderContext context)
         {
             var grassColor = Color.Green;
+            var waterColor = Color.Blue;
 
-            var zoom = context.Width / 800f;
+            var zoom = 0.75f;
             var halfX = context.Width / 2f;
             var halfY = context.Height / 2f;
 
@@ -28,23 +32,29 @@ namespace RenderBox.Services.Renderers
 
                 for (var y = 0; y < sizeY; y++)
                 {
-                    var posY = (iy + y) * zoom;
+                    var posY = (iy + y - halfY) * zoom;
 
                     for (var x = 0; x < sizeX; x++)
                     {
-                        var posX = (ix + x) * zoom;
+                        var posX = (ix + x - halfX) * zoom;
 
-                        var neignbor = Perlin.FractalNoise2D(posX + 1, posY + 1, 4, 100, 1);
+                        var neignbor = WorldGenerator.GetHeight(posX + 1, posY + 1);
 
-                        var n = Perlin.FractalNoise2D(posX, posY, 4, 100, 1);
+                        var n = WorldGenerator.GetHeight(posX, posY);
 
+                        var color = n > 0.5f ? grassColor : waterColor;
 
-                        ColorHelpers.ToHSV(grassColor, out var h, out var s, out var v);
+                        ColorHelpers.ToHSV(color, out var h, out var s, out var v);
 
-                        var delta = (neignbor - n) * 16f;
+                        var delta = (neignbor - n) * 24f;
                         v = MathHelpres.Clamp(delta / 2f + .5f, 0, 1);
 
-                        var color = ColorHelpers.FromHSV(h, s, v);
+                        color = ColorHelpers.FromHSV(h, s, v);
+
+                        if (Math.Abs(Math.Round(posX)) == 128 || Math.Abs(Math.Round(posY)) == 128) 
+                        {
+                            color = Color.Yellow;
+                        }
 
                         tile[x, y] = color;
                     }
@@ -55,62 +65,67 @@ namespace RenderBox.Services.Renderers
 
             BatchScreen(context, Batch);
         }
+    }
 
-        public class World
+    public class WorldGenerator
+    {
+        private int _size;
+        private PerlinNoise _perlinNoise;
+
+        public WorldGenerator(int seed, int size)
         {
-            public Dictionary<Offset, Chunk> Chunks { get; set; }
-
-            public World()
-            {
-                Chunks = new Dictionary<Offset, Chunk>();
-            }
+            _perlinNoise = new PerlinNoise(seed);
+            _size = size;
         }
 
-        public class Chunk
+        public float GetHeight(float x, float z)
         {
-            public const int Size = 64;
-            public Block[,,] Blocks { get; set; }
+            var rate1 = _perlinNoise.FractalNoise2D(x, z, 10, 250, 1);
+            var rate2 = _perlinNoise.FractalNoise2D(x, z, 7, 50, 1);
+            var rate3 = _perlinNoise.FractalNoise2D(x, z, 6, 100, 1);
 
-            public Chunk()
-            {
-                Blocks = new Block[Size, Size, Size];
-            }
+            var rock = 1f - Math.Abs(rate1 * rate1 * rate1);
+            var mountains = Math.Clamp(rate2 * rate3, 0f, 1f);
+            var hills = Math.Abs(rate3);
+
+            var result = 0.4f + (rock * 0.1f) + (mountains * 0.5f) + (hills * 0.1f);
+            return result;
         }
+    }
 
-        public struct Offset
+    public class World
+    {
+        public const int WorldHeight = 1024; 
+
+        public Dictionary<Offset, Chunk> Chunks { get; set; }
+
+        public World()
         {
-            public short X { get; set; }
-            public short Y { get; set; }
-            public short Z { get; set; }
-
-            public Offset(short x, short y, short z)
-            {
-                X = x;
-                Y = y;
-                Z = z;
-            }
+            Chunks = new Dictionary<Offset, Chunk>();
         }
+    }
 
-        public struct Block
+    public class Chunk
+    {
+        public const int Size = 64;
+        public Block[,,] Blocks { get; set; }
+
+        public Chunk()
         {
-            public const int BlocksPerMeter = 8;
-            public const float Size = 1 / (float)BlocksPerMeter;
-
-            public BlockType Type { get; set; }
-
-            public Block(BlockType type)
-            {
-                Type = type;
-            }
+            Blocks = new Block[Size, Size, Size];
         }
+    }
 
-        public enum BlockType : byte
-        {
-            Air = 0,
-            Stone = 1,
-            Grass = 2,
-            Dirt = 3,
-            Water = 4,
-        }
+    public record struct Offset(short X, short Y, short Z);
+
+    public record struct Block(BlockType Type);
+
+    public enum BlockType : byte
+    {
+        Air = 0,
+        Stone = 1,
+        Grass = 2,
+        Dirt = 3,
+        Water = 4,
     }
 }

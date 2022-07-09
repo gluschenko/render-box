@@ -1,37 +1,36 @@
-using System;
-using RenderBox.Core;
+﻿using System;
 
 namespace RenderBox.Shared.Modules.Perlin
 {
     public class PerlinNoise
     {
-        const int B = 256;
-        int[] perm = new int[B + B];
+        private const int B = 256;
+
+        private readonly Random _random;
+        private readonly int[] _perm = new int[B + B];
 
         public PerlinNoise(int seed)
         {
-            Rand.InitState(seed);
-            //UnityEngine.Random.seed = seed;
+            _random = new Random(seed);
 
             int i, j, k;
             for (i = 0; i < B; i++)
             {
-                perm[i] = i;
+                _perm[i] = i;
             }
 
             while (--i != 0)
             {
-                k = perm[i];
-                j = Rand.Int(0, B);
-                perm[i] = perm[j];
-                perm[j] = k;
+                k = _perm[i];
+                j = _random.Next(0, B);
+                _perm[i] = _perm[j];
+                _perm[j] = k;
             }
 
             for (i = 0; i < B; i++)
             {
-                perm[B + i] = perm[i];
+                _perm[B + i] = _perm[i];
             }
-
         }
 
         float FADE(float t) { return t * t * t * (t * (t * 6.0f - 15.0f) + 10.0f); }
@@ -103,8 +102,8 @@ namespace RenderBox.Shared.Modules.Perlin
 
             s = FADE(fx0);
 
-            n0 = GRAD1(perm[ix0], fx0);
-            n1 = GRAD1(perm[ix1], fx1);
+            n0 = GRAD1(_perm[ix0], fx0);
+            n1 = GRAD1(_perm[ix1], fx1);
             return 0.188f * LERP(s, n0, n1);
         }
 
@@ -128,13 +127,13 @@ namespace RenderBox.Shared.Modules.Perlin
             t = FADE(fy0);
             s = FADE(fx0);
 
-            nx0 = GRAD2(perm[ix0 + perm[iy0]], fx0, fy0);
-            nx1 = GRAD2(perm[ix0 + perm[iy1]], fx0, fy1);
+            nx0 = GRAD2(_perm[ix0 + _perm[iy0]], fx0, fy0);
+            nx1 = GRAD2(_perm[ix0 + _perm[iy1]], fx0, fy1);
 
             n0 = LERP(t, nx0, nx1);
 
-            nx0 = GRAD2(perm[ix1 + perm[iy0]], fx1, fy0);
-            nx1 = GRAD2(perm[ix1 + perm[iy1]], fx1, fy1);
+            nx0 = GRAD2(_perm[ix1 + _perm[iy0]], fx1, fy0);
+            nx1 = GRAD2(_perm[ix1 + _perm[iy1]], fx1, fy1);
 
             n1 = LERP(t, nx0, nx1);
 
@@ -169,22 +168,22 @@ namespace RenderBox.Shared.Modules.Perlin
             t = FADE(fy0);
             s = FADE(fx0);
 
-            nxy0 = GRAD3(perm[ix0 + perm[iy0 + perm[iz0]]], fx0, fy0, fz0);
-            nxy1 = GRAD3(perm[ix0 + perm[iy0 + perm[iz1]]], fx0, fy0, fz1);
+            nxy0 = GRAD3(_perm[ix0 + _perm[iy0 + _perm[iz0]]], fx0, fy0, fz0);
+            nxy1 = GRAD3(_perm[ix0 + _perm[iy0 + _perm[iz1]]], fx0, fy0, fz1);
             nx0 = LERP(r, nxy0, nxy1);
 
-            nxy0 = GRAD3(perm[ix0 + perm[iy1 + perm[iz0]]], fx0, fy1, fz0);
-            nxy1 = GRAD3(perm[ix0 + perm[iy1 + perm[iz1]]], fx0, fy1, fz1);
+            nxy0 = GRAD3(_perm[ix0 + _perm[iy1 + _perm[iz0]]], fx0, fy1, fz0);
+            nxy1 = GRAD3(_perm[ix0 + _perm[iy1 + _perm[iz1]]], fx0, fy1, fz1);
             nx1 = LERP(r, nxy0, nxy1);
 
             n0 = LERP(t, nx0, nx1);
 
-            nxy0 = GRAD3(perm[ix1 + perm[iy0 + perm[iz0]]], fx1, fy0, fz0);
-            nxy1 = GRAD3(perm[ix1 + perm[iy0 + perm[iz1]]], fx1, fy0, fz1);
+            nxy0 = GRAD3(_perm[ix1 + _perm[iy0 + _perm[iz0]]], fx1, fy0, fz0);
+            nxy1 = GRAD3(_perm[ix1 + _perm[iy0 + _perm[iz1]]], fx1, fy0, fz1);
             nx0 = LERP(r, nxy0, nxy1);
 
-            nxy0 = GRAD3(perm[ix1 + perm[iy1 + perm[iz0]]], fx1, fy1, fz0);
-            nxy1 = GRAD3(perm[ix1 + perm[iy1 + perm[iz1]]], fx1, fy1, fz1);
+            nxy0 = GRAD3(_perm[ix1 + _perm[iy1 + _perm[iz0]]], fx1, fy1, fz0);
+            nxy1 = GRAD3(_perm[ix1 + _perm[iy1 + _perm[iz1]]], fx1, fy1, fz1);
             nx1 = LERP(r, nxy0, nxy1);
 
             n1 = LERP(t, nx0, nx1);
