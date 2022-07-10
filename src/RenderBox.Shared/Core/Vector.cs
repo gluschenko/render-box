@@ -334,6 +334,26 @@ namespace RenderBox.Core
             return result;
         }
 
+        [MethodImpl(Runtime.IMPL_OPTIONS)]
+        public static Vector2 Rotate(Vector2 anchor, Vector2 point, float angle)
+        {
+            var sin = Math.Sin(angle);
+            var cos = Math.Cos(angle);
+
+            // translate point back to origin:
+            point.x -= anchor.x;
+            point.y -= anchor.y;
+
+            // rotate point
+            var x = (float)(point.x * cos - point.y * sin);
+            var y = (float)(point.x * sin + point.y * cos);
+
+            // translate point back:
+            point.x = x + anchor.x;
+            point.y = y + anchor.y;
+            return point;
+        }
+
         #endregion
 
         #region Vector3
