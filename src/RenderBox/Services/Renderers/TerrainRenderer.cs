@@ -39,7 +39,7 @@ namespace RenderBox.Services.Renderers
             var width = context.Width;
             var height = context.Height;
 
-            var zoom = 2.0f;
+            var zoom = 1f;
             var halfX = width / 2f;
             var halfY = height / 2f;
 
@@ -51,37 +51,80 @@ namespace RenderBox.Services.Renderers
             Color[,] Batch(int ix, int iy, int sizeX, int sizeY)
             {
                 var heightMap = World.GetHeightMap();
-                var heightMapSizeX = heightMap.GetLength(0);
-                var heightMapSizeZ = heightMap.GetLength(1);
+                var worldSizeX = heightMap.GetLength(0);
+                var worldSizeZ = heightMap.GetLength(1);
+                var worldHalfSizeX = worldSizeX / 2;
+                var worldHalfSizeZ = worldSizeZ / 2;
 
                 var tile = new Color[sizeX, sizeY];
 
+                var angle = (float)(Math.PI / 4);
+
+                bool IsValidWorldPos(int worldPosX, int worldPosZ)
+                {
+                    var isValidPos =
+                        worldPosX >= -worldHalfSizeX &&
+                        worldPosX < worldHalfSizeX &&
+                        worldPosZ >= -worldHalfSizeZ &&
+                        worldPosZ < worldHalfSizeZ;
+
+                    return isValidPos;
+                }
+
+                float GetHeight(int worldPosX, int worldPosZ)
+                {
+                    return heightMap[worldPosX + worldHalfSizeX, worldPosZ + worldHalfSizeZ];
+                }
+
                 for (var y = 0; y < sizeY; y++)
                 {
-                    var screenY = iy + y;
-                    var worldPosZ = (int)Math.Round((screenY - halfY) * zoom + (heightMapSizeZ / 2));
-
                     for (var x = 0; x < sizeX; x++)
                     {
                         var screenX = ix + x;
-                        var worldPosX = (int)Math.Round((screenX - halfX) * zoom + (heightMapSizeX / 2));
+                        var screenY = iy + y;
 
-                        var isValidPos = 
-                            worldPosX >= 0 && 
-                            worldPosX < heightMapSizeX && 
-                            worldPosZ >= 0 && 
-                            worldPosZ < heightMapSizeZ;
+                        var t1 = 0.75f; // scale at top of screen
+                        var t2 = 1.25f; // scale at bottom of screen
+                        screenX = (int)Math.Round((screenX - halfX) * (t1 + (screenY / height) * (t2 - t1)) + halfX);
 
-                        if (!isValidPos)
+                        var rotScreenPos = VectorMath.Rotate(
+                            new Vector2(halfX, halfY), 
+                            new Vector2(screenX, screenY), 
+                            angle
+                        );
+
+                        var worldPosX = (int)MathF.Round((rotScreenPos.x - halfX) * zoom);
+                        var worldPosZ = (int)MathF.Round((rotScreenPos.y - halfY) * zoom);
+
+                        var heightRate = IsValidWorldPos(worldPosX, worldPosZ)
+                            ? GetHeight(worldPosX, worldPosZ)
+                            : WorldGenerator.GetHeight(worldPosX, worldPosZ);
+
+                        var blockHeight = (int)MathF.Floor(heightRate * World.WorldHeight);
+
+                        rotScreenPos += VectorMath.Rotate(
+                            Vector2.Zero,
+                            new Vector2(0, blockHeight - (World.WorldHeight / 2)) * zoom * (3f / 4f), 
+                            angle
+                        );
+
+                        worldPosX = (int)MathF.Round((rotScreenPos.x - halfX) * zoom);
+                        worldPosZ = (int)MathF.Round((rotScreenPos.y - halfY) * zoom);
+
+                        if (!IsValidWorldPos(worldPosX, worldPosZ))
                         {
                             tile[x, y] = Color.Gray;
                             continue;
                         }
 
-                        var heightRate = heightMap[worldPosX, worldPosZ];
-                        var heightRateNeighbor = (worldPosX < heightMapSizeX - 1 && worldPosZ < heightMapSizeZ - 1)
-                            ? heightMap[worldPosX + 1, worldPosZ + 1]
-                            : heightRate;
+                        heightRate = GetHeight(worldPosX, worldPosZ);
+
+                        var worldPosNeighborX = worldPosX + 3;
+                        var worldPosNeighborZ = worldPosZ + 3;
+
+                        var heightRateNeighbor = IsValidWorldPos(worldPosNeighborX, worldPosNeighborZ)
+                            ? GetHeight(worldPosNeighborX, worldPosNeighborZ)
+                            : WorldGenerator.GetHeight(worldPosNeighborX, worldPosNeighborZ);
 
                         var color = heightRate > 0.5f ? grassColor : waterColor;
 
@@ -92,15 +135,20 @@ namespace RenderBox.Services.Renderers
 
                         ColorHelpers.ToHSV(color, out var h, out var s, out var v);
 
-                        var delta = (heightRateNeighbor - heightRate) * 86f;
+                        var delta = (heightRateNeighbor - heightRate) * 64f;
                         v = MathHelpres.Clamp(delta / 2f + .5f, 0, 1);
 
                         color = ColorHelpers.FromHSV(h, s, v);
 
-                        /*if (Math.Abs(Math.Round(posX)) % Chunk.Size == 0 || Math.Abs(Math.Round(posY)) % Chunk.Size == 0) 
+                        if (Math.Abs(worldPosX % Chunk.Size) == 0 || Math.Abs(worldPosZ % Chunk.Size) == 0) 
                         {
                             color = Color.Yellow;
-                        }*/
+                        }
+
+                        if (Math.Abs(blockHeight % Chunk.Size) == 0)
+                        {
+                            color = Color.Red;
+                        }
 
                         tile[x, y] = color;
                     }
@@ -124,6 +172,8 @@ namespace RenderBox.Services.Renderers
 
         public float GetHeight(float x, float z)
         {
+            return 0.6f + MathF.Sin(x * 0.02f) * MathF.Cos(z * 0.02f) * 0.2f;
+
             var rate1 = _perlinNoise.FractalNoise2D(x, z, 16, 2000, 1);
             var rate2 = _perlinNoise.FractalNoise2D(x, z, 12, 400, 1);
             var rate3 = _perlinNoise.FractalNoise2D(x, z, 8, 800, 1);
@@ -188,7 +238,7 @@ namespace RenderBox.Services.Renderers
 
     public class Chunk
     {
-        public const int Size = 64;
+        public const int Size = 32;
         public Block[,,] Blocks { get; set; }
 
         public Chunk()
