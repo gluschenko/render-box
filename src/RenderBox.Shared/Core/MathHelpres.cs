@@ -5,14 +5,15 @@ namespace RenderBox.Core
 {
     public class MathHelpres
     {
-        const double deg2rad = Math.PI / 180.0;
-        const double rad2deg = 180.0 / Math.PI;
+        public const double DEG2RAD = Math.PI / 180.0;
+        public const double RAD2DEG = 180.0 / Math.PI;
+
         /**/
         [MethodImpl(Runtime.IMPL_OPTIONS)]
-        public static double DegToRad(double deg) => deg * deg2rad;
+        public static double DegToRad(double deg) => deg * DEG2RAD;
 
         [MethodImpl(Runtime.IMPL_OPTIONS)]
-        public static double RadToDeg(double rad) => rad * rad2deg;
+        public static double RadToDeg(double rad) => rad * RAD2DEG;
         /**/
         [MethodImpl(Runtime.IMPL_OPTIONS)]
         public static double Clamp(double val, double low, double high) => Math.Clamp(val, low, high);
