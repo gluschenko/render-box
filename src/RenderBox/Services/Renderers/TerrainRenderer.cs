@@ -104,7 +104,7 @@ namespace RenderBox.Services.Renderers
 
                         rotScreenPos += VectorMath.Rotate(
                             Vector2.Zero,
-                            new Vector2(0, blockHeight - (World.WorldHeight / 2)) * zoom * (3f / 4f), 
+                            new Vector2(0, blockHeight - (World.WorldHeight / 2)) * zoom, 
                             angle
                         );
 
@@ -145,11 +145,6 @@ namespace RenderBox.Services.Renderers
                             color = Color.Yellow;
                         }
 
-                        if (Math.Abs(blockHeight % Chunk.Size) == 0)
-                        {
-                            color = Color.Red;
-                        }
-
                         tile[x, y] = color;
                     }
                 }
@@ -172,7 +167,7 @@ namespace RenderBox.Services.Renderers
 
         public float GetHeight(float x, float z)
         {
-            return 0.6f + MathF.Sin(x * 0.02f) * MathF.Cos(z * 0.02f) * 0.2f;
+            //return 0.6f + MathF.Sin(x * 0.02f) * MathF.Cos(z * 0.02f) * 0.2f;
 
             var rate1 = _perlinNoise.FractalNoise2D(x, z, 16, 2000, 1);
             var rate2 = _perlinNoise.FractalNoise2D(x, z, 12, 400, 1);
@@ -215,7 +210,7 @@ namespace RenderBox.Services.Renderers
     {
         public const int WorldSize = 32;
         public const int WorldWidth = WorldSize * Chunk.Size;
-        public const int WorldHeight = 1024;
+        public const int WorldHeight = 256;
 
         private readonly WorldGenerator _worldGenerator;
         private readonly float[,] _heightMap;
