@@ -26,7 +26,7 @@ jobs:
 
     - name: 🚀 Building RenderBox
       working-directory: ${{env.ROOT}}/RenderBox
-      run: dotnet publish -p:PublishProfile=FolderProfile -c RELEASE -o out
+      run: dotnet publish -p:PublishProfile=FolderProfile -c Release -o out
 
     - uses: actions/upload-artifact@v2
       if: github.ref == 'refs/heads/master'
