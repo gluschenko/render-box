@@ -2,7 +2,7 @@ name: .NET Core Desktop
 
 on:
   push:
-    branches: [ release ]
+    branches: [ master ]
   pull_request:
     branches: [ master ]
   workflow_dispatch:
@@ -18,7 +18,7 @@ jobs:
     - name: 📂 Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.x
+        dotnet-version: 7.0.x
 
     - name: 📂 Files
       working-directory: ${{env.ROOT}}
@@ -26,10 +26,10 @@ jobs:
 
     - name: 🚀 Building RenderBox
       working-directory: ${{env.ROOT}}/RenderBox
-      run: dotnet publish -c RELEASE -o out
+      run: dotnet publish -p:PublishProfile=FolderProfile -c RELEASE -o out
 
     - uses: actions/upload-artifact@v2
-      if: github.ref == 'refs/heads/release'
+      if: github.ref == 'refs/heads/master'
       with:
         name: builds
         path: ${{env.ROOT}}/**/out
@@ -39,7 +39,7 @@ jobs:
 
     runs-on: ubuntu-latest
     needs: build
-    if: github.ref == 'refs/heads/release'
+    if: github.ref == 'refs/heads/master'
     env:
       ROOT: ./src
       NUGET_AUTH_TOKEN: ${{secrets.token}} 
@@ -55,7 +55,7 @@ jobs:
     - name: 📂 Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.x
+        dotnet-version: 7.0.x
 
     - name: 📂 Pack RenderBox
       working-directory: ${{env.ROOT}}/RenderBox/out
