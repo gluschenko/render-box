@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Windows.Input;
-using RenderBox.Core;
 using RenderBox.Services.Rendering;
+using RenderBox.Shared.Core;
 using RenderBox.Shared.Modules.Mandelbrot;
 using RenderBox.Shared.Modules.Mandelbrot.Filters;
 

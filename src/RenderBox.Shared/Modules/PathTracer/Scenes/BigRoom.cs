@@ -1,4 +1,4 @@
-﻿using RenderBox.Core;
+﻿using RenderBox.Shared.Core;
 using RenderBox.Shared.Modules.PathTracer.Shapes;
 
 namespace RenderBox.Shared.Modules.PathTracer.Scenes

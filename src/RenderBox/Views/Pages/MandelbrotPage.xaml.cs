@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using RenderBox.Services.Options;
 using RenderBox.Services.Renderers;
 using RenderBox.Shared.Modules.Mandelbrot.Filters;

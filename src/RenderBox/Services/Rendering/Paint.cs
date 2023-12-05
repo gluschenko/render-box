@@ -1,9 +1,8 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Color = RenderBox.Core.Color;
+using Color = RenderBox.Shared.Core.Color;
 
 namespace RenderBox.Services.Rendering
 {

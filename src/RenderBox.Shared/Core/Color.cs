@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace RenderBox.Core
+namespace RenderBox.Shared.Core
 {
     public struct Color
     {

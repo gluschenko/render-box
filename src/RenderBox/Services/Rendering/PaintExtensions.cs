@@ -1,6 +1,5 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-using RenderBox.Core;
+﻿using System.Runtime.CompilerServices;
+using RenderBox.Shared.Core;
 
 namespace RenderBox.Services.Rendering
 {

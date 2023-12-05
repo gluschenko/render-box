@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows.Threading;
-using RenderBox.Core;
+﻿using System.Windows.Threading;
 using RenderBox.Services.Rendering;
+using RenderBox.Shared.Core;
 using RenderBox.Shared.Modules.Perlin;
 
 namespace RenderBox.Services.Renderers
@@ -88,8 +86,8 @@ namespace RenderBox.Services.Renderers
                         screenX = (int)Math.Round((screenX - halfX) * (t1 + (screenY / height) * (t2 - t1)) + halfX);
 
                         var rotScreenPos = VectorMath.Rotate(
-                            new Vector2(halfX, halfY), 
-                            new Vector2(screenX, screenY), 
+                            new Vector2(halfX, halfY),
+                            new Vector2(screenX, screenY),
                             angle
                         );
 
@@ -104,7 +102,7 @@ namespace RenderBox.Services.Renderers
 
                         rotScreenPos += VectorMath.Rotate(
                             Vector2.Zero,
-                            new Vector2(0, blockHeight - (World.WorldHeight / 2)) * zoom, 
+                            new Vector2(0, blockHeight - (World.WorldHeight / 2)) * zoom,
                             angle
                         );
 
@@ -140,7 +138,7 @@ namespace RenderBox.Services.Renderers
 
                         color = ColorHelpers.FromHSV(h, s, v);
 
-                        if (Math.Abs(worldPosX % Chunk.Size) == 0 || Math.Abs(worldPosZ % Chunk.Size) == 0) 
+                        if (Math.Abs(worldPosX % Chunk.Size) == 0 || Math.Abs(worldPosZ % Chunk.Size) == 0)
                         {
                             color = Color.Yellow;
                         }

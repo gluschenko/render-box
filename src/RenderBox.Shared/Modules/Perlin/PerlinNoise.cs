@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace RenderBox.Shared.Modules.Perlin
+﻿namespace RenderBox.Shared.Modules.Perlin
 {
     public class PerlinNoise
     {

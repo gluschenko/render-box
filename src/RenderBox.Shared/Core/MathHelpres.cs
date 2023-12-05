@@ -1,7 +1,6 @@
-﻿using System;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 
-namespace RenderBox.Core
+namespace RenderBox.Shared.Core
 {
     public class MathHelpres
     {
@@ -63,7 +62,7 @@ namespace RenderBox.Core
                 x0 = x1 = -0.5 * b / a;
             else
             {
-                var q = (b > 0) ?
+                var q = b > 0 ?
                     -0.5 * (b + FastSqrt(discr)) :
                     -0.5 * (b - FastSqrt(discr));
                 x0 = q / a;
@@ -106,7 +105,7 @@ namespace RenderBox.Core
         {
             var i = (int)(BitConverter.DoubleToInt64Bits(a) >> 32);
             var j = (int)(b * (i - 1072632447) + 1072632447);
-            return (float)BitConverter.Int64BitsToDouble(((long)j) << 32);
+            return (float)BitConverter.Int64BitsToDouble((long)j << 32);
         }
 
         [MethodImpl(Runtime.IMPL_OPTIONS)]
@@ -114,7 +113,7 @@ namespace RenderBox.Core
         {
             var i = (int)(BitConverter.DoubleToInt64Bits(a) >> 32);
             var j = (int)(b * (i - 1072632447) + 1072632447);
-            return BitConverter.Int64BitsToDouble(((long)j) << 32);
+            return BitConverter.Int64BitsToDouble((long)j << 32);
         }
 
         [MethodImpl(Runtime.IMPL_OPTIONS)]

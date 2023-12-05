@@ -1,13 +1,11 @@
-﻿using System;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Diagnostics;
 using System.Windows.Input;
-using RenderBox.Core;
 using RenderBox.Services.Rendering;
+using RenderBox.Shared.Core;
 using RenderBox.Shared.Modules.PathTracer;
 using RenderBox.Shared.Modules.PathTracer.Scenes;
 using RenderBox.Shared.Modules.PathTracer.Shapes;
-using static RenderBox.Core.VectorMath;
+using static RenderBox.Shared.Core.VectorMath;
 
 namespace RenderBox.Services.Renderers
 {

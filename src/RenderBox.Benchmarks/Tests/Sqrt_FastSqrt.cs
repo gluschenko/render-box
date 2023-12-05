@@ -1,6 +1,5 @@
-﻿using System;
-using BenchmarkDotNet.Attributes;
-using RenderBox.Core;
+﻿using BenchmarkDotNet.Attributes;
+using RenderBox.Shared.Core;
 
 namespace RenderBox.Benchmarks.Tests
 {

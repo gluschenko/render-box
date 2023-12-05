@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace RenderBox.Core
+﻿namespace RenderBox.Shared.Core
 {
     public static class ColorHelpers
     {
@@ -54,14 +52,14 @@ namespace RenderBox.Core
         /// </summary>
         public static Color FromHSV(double hue, double saturation, double value)
         {
-            int hi = Convert.ToInt32(Math.Floor(hue / 60)) % 6;
-            double f = hue / 60 - Math.Floor(hue / 60);
+            var hi = Convert.ToInt32(Math.Floor(hue / 60)) % 6;
+            var f = hue / 60 - Math.Floor(hue / 60);
 
             //value *= 255;
-            float v = Convert.ToSingle(value);
-            float p = Convert.ToSingle(value * (1 - saturation));
-            float q = Convert.ToSingle(value * (1 - f * saturation));
-            float t = Convert.ToSingle(value * (1 - (1 - f) * saturation));
+            var v = Convert.ToSingle(value);
+            var p = Convert.ToSingle(value * (1 - saturation));
+            var q = Convert.ToSingle(value * (1 - f * saturation));
+            var t = Convert.ToSingle(value * (1 - (1 - f) * saturation));
 
             if (hi == 0)
                 return new Color(v, t, p);

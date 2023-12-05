@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace RenderBox.Core
+﻿namespace RenderBox.Shared.Core
 {
     public static class Rand
     {
@@ -25,11 +23,11 @@ namespace RenderBox.Core
 
         private static int Next()
         {
-            var t = _x ^ (_x << 11);
+            var t = _x ^ _x << 11;
             _x = _y;
             _y = _z;
             _z = _w;
-            return (_w = (_w ^ (_w >> 19)) ^ (t ^ (t >> 8)));
+            return _w = _w ^ _w >> 19 ^ t ^ t >> 8;
         }
     }
 }

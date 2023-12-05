@@ -1,10 +1,7 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using System.Windows.Threading;
-using RenderBox.Core;
 using RenderBox.Services.Options;
+using RenderBox.Shared.Core;
 
 namespace RenderBox.Services.Rendering
 {

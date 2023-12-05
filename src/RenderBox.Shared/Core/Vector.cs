@@ -1,7 +1,6 @@
-﻿using System;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 
-namespace RenderBox.Core
+namespace RenderBox.Shared.Core
 {
     public class Runtime
     {

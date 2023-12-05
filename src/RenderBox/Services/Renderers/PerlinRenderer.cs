@@ -1,5 +1,5 @@
-﻿using RenderBox.Core;
-using RenderBox.Services.Rendering;
+﻿using RenderBox.Services.Rendering;
+using RenderBox.Shared.Core;
 using RenderBox.Shared.Modules.Perlin;
 
 namespace RenderBox.Services.Renderers
