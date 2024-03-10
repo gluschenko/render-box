@@ -11,8 +11,6 @@ namespace RenderBox.Services.Renderers
         public WorldGenerator WorldGenerator { get; private set; }
         public World World { get; private set; }
 
-        private Dispatcher _dispatcher;
-
         public TerrainRenderer(Paint paint) : base(paint)
         {
             WorldGenerator = new WorldGenerator(WorldSeed);
@@ -23,12 +21,12 @@ namespace RenderBox.Services.Renderers
 
         private void TerrainRenderer_OnRenderComplete()
         {
-            //Render(_dispatcher);
+
         }
 
         protected override void RenderScreen(RenderContext context)
         {
-            _dispatcher = context.Dispatcher;
+            var dispatcher = context.Dispatcher;
 
             var grassColor = Color.Green;
             var waterColor = Color.Blue;
@@ -56,8 +54,6 @@ namespace RenderBox.Services.Renderers
 
                 var tile = new Color[sizeX, sizeY];
 
-                var angle = (float)(Math.PI / 4);
-
                 bool IsValidWorldPos(int worldPosX, int worldPosZ)
                 {
                     var isValidPos =
@@ -81,18 +77,8 @@ namespace RenderBox.Services.Renderers
                         var screenX = ix + x;
                         var screenY = iy + y;
 
-                        var t1 = 0.75f; // scale at top of screen
-                        var t2 = 1.25f; // scale at bottom of screen
-                        screenX = (int)Math.Round((screenX - halfX) * (t1 + (screenY / height) * (t2 - t1)) + halfX);
-
-                        var rotScreenPos = VectorMath.Rotate(
-                            new Vector2(halfX, halfY),
-                            new Vector2(screenX, screenY),
-                            angle
-                        );
-
-                        var worldPosX = (int)MathF.Round((rotScreenPos.x - halfX) * zoom);
-                        var worldPosZ = (int)MathF.Round((rotScreenPos.y - halfY) * zoom);
+                        var worldPosX = (int)MathF.Round((screenX - halfX) * zoom);
+                        var worldPosZ = (int)MathF.Round((screenY - halfY) * zoom);
 
                         var heightRate = IsValidWorldPos(worldPosX, worldPosZ)
                             ? GetHeight(worldPosX, worldPosZ)
@@ -100,14 +86,8 @@ namespace RenderBox.Services.Renderers
 
                         var blockHeight = (int)MathF.Floor(heightRate * World.WorldHeight);
 
-                        rotScreenPos += VectorMath.Rotate(
-                            Vector2.Zero,
-                            new Vector2(0, blockHeight - (World.WorldHeight / 2)) * zoom,
-                            angle
-                        );
-
-                        worldPosX = (int)MathF.Round((rotScreenPos.x - halfX) * zoom);
-                        worldPosZ = (int)MathF.Round((rotScreenPos.y - halfY) * zoom);
+                        worldPosX = (int)MathF.Round((screenX - halfX) * zoom);
+                        worldPosZ = (int)MathF.Round((screenY - halfY) * zoom);
 
                         if (!IsValidWorldPos(worldPosX, worldPosZ))
                         {
@@ -140,7 +120,9 @@ namespace RenderBox.Services.Renderers
 
                         if (Math.Abs(worldPosX % Chunk.Size) == 0 || Math.Abs(worldPosZ % Chunk.Size) == 0)
                         {
-                            color = Color.Yellow;
+                            ColorHelpers.ToHSV(color, out var hh, out var ss, out var vv);
+
+                            color = ColorHelpers.FromHSV(hh, ss, vv * 0.8);
                         }
 
                         tile[x, y] = color;
