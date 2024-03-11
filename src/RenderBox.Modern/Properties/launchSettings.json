@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "RenderBox.Modern (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "RenderBox.Modern (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
