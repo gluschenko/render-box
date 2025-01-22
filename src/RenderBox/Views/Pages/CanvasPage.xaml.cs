@@ -15,9 +15,9 @@ namespace RenderBox.Views.Pages
         public bool IsActive { get; set; }
         public bool IsStarted { get; private set; }
 
-        public Renderer Renderer { get; set; }
-        public Camera MainCamera { get; set; }
-        public Scene Scene { get; set; }
+        public Renderer? Renderer { get; set; }
+        public Camera? MainCamera { get; set; }
+        public Scene? Scene { get; set; }
 
         private readonly ObservableCollection<string> _log;
         private readonly Stopwatch _timer = new();
@@ -71,15 +71,15 @@ namespace RenderBox.Views.Pages
             SizeChanged += OnSizeChanged;
         }
 
-        private void SetupRender(Type type)
+        private void SetupRender(Type? type)
         {
             var scale = Resolution.Value;
             var w = (int)(ActualWidth * scale);
             var h = (int)(ActualHeight * scale);
 
-            if (Renderer == null)
+            if (Renderer == null && type is not null)
             {
-                Renderer = (Renderer)Activator.CreateInstance(type, new Paint(Image, w, h, scale));
+                Renderer = (Renderer)Activator.CreateInstance(type, new Paint(Image, w, h, scale))!;
                 Renderer.OnRenderStarted += () => _timer.Restart();
                 Renderer.OnRenderComplete += () => _log.Add($"Render frame: {_timer.ElapsedMilliseconds} ms");
 
@@ -88,7 +88,7 @@ namespace RenderBox.Views.Pages
                 if (pageType is not null)
                 {
                     var page = Activator.CreateInstance(pageType);
-                    var useSource = pageType.GetMethod(nameof(IOptionsPage<Renderer>.UseSource));
+                    var useSource = pageType.GetMethod(nameof(IOptionsPage<Renderer>.UseSource))!;
                     _ = useSource.Invoke(page, new[] { Renderer });
 
                     _ = OptionsFrame.Navigate(page);
@@ -96,13 +96,13 @@ namespace RenderBox.Views.Pages
             }
             else
             {
-                Renderer.Reset(new Paint(Image, w, h, scale));
+                Renderer?.Reset(new Paint(Image, w, h, scale));
             }
         }
 
         private void Render()
         {
-            Renderer.Render(Dispatcher);
+            Renderer?.Render(Dispatcher);
         }
 
         private void Start(Type type)

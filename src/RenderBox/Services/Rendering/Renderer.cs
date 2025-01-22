@@ -13,18 +13,18 @@ namespace RenderBox.Services.Rendering
         public int BatchSize { get; set; } = 32;
         public Paint Paint { get; private set; }
 
-        public event RenderStartHandler OnRenderStarted;
-        public event RenderCompleteHandler OnRenderComplete;
+        public event RenderStartHandler? OnRenderStarted;
+        public event RenderCompleteHandler? OnRenderComplete;
 
 
-        private Thread _renderThread;
+        private Thread? _renderThread;
 
         public Renderer(Paint paint)
         {
             Paint = paint;
         }
 
-        public Type GetOptionPageType()
+        public Type? GetOptionPageType()
         {
             var type = GetType();
             var optionsType = typeof(IOptionsPage<>);
@@ -112,9 +112,11 @@ namespace RenderBox.Services.Rendering
 
         protected abstract void RenderScreen(RenderContext context);
 
-        protected virtual void BatchScreen(RenderContext context,
-                                           RenderScreenBatch renderScreenBatch,
-                                           GetRenderPriority getRenderPriority = null)
+        protected virtual void BatchScreen(
+            RenderContext context,
+            RenderScreenBatch renderScreenBatch,
+            GetRenderPriority? getRenderPriority = null
+        )
         {
             using var threadManager = new ThreadManager();
 
