@@ -15,7 +15,7 @@ namespace RenderBox.Shared.Modules.PathTracer
     {
         public Vector3 Position { get; set; }
         public Material Material { get; set; }
-        public Light Light { get; private set; }
+        public Light? Light { get; private set; }
 
         public Shape(Vector3 pos, Color diffuse)
         {

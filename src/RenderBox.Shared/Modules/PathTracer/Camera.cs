@@ -22,7 +22,11 @@ namespace RenderBox.Shared.Modules.PathTracer
             Target = new Vector3(0.0, 0.0, 0.0);
             Position = position;
 
+            ViewMatrix = new Quaternion(true);
+            PosMatrix = new Quaternion(true);
             BiasMatrix = GetBiasMatrixInverse();
+            ViewPosMatrix = new Quaternion(true);
+            RayMatrix = new Quaternion(true);
         }
 
         public void LookAt(Vector3 position, Vector3 target, bool rotateAround)

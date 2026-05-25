@@ -85,12 +85,8 @@ namespace RenderBox.Shared.Core
         public float Length => MathHelpres.FastSqrt(x * x + y * y);
 
         [MethodImpl(Runtime.IMPL_OPTIONS)]
-        public override bool Equals(object obj)
-            => EqualsInternal(obj as Vector2?);
-
-        [MethodImpl(Runtime.IMPL_OPTIONS)]
-        private bool EqualsInternal(Vector2? vector)
-            => vector.HasValue && vector.Value == this;
+        public override bool Equals(object? obj)
+            => obj is Vector2 vector && vector == this;
 
 
         public override int GetHashCode() => HashCode.Combine(x, y);
@@ -177,12 +173,8 @@ namespace RenderBox.Shared.Core
         public float Length => MathHelpres.FastSqrt(x * x + y * y + z * z);
 
         [MethodImpl(Runtime.IMPL_OPTIONS)]
-        public override bool Equals(object obj)
-            => EqualsInternal(obj as Vector3?);
-
-        [MethodImpl(Runtime.IMPL_OPTIONS)]
-        private bool EqualsInternal(Vector3? vector)
-            => vector.HasValue && vector.Value == this;
+        public override bool Equals(object? obj)
+            => obj is Vector3 vector && vector == this;
 
         public override int GetHashCode() => HashCode.Combine(x, y, z);
     }
@@ -289,11 +281,8 @@ namespace RenderBox.Shared.Core
         public static bool operator !=(Quaternion a, Quaternion b) => !(a == b);
 
 
-        public override bool Equals(object obj)
-            => EqualsInternal(obj as Quaternion?);
-
-        private bool EqualsInternal(Quaternion? vector)
-            => vector.HasValue && vector.Value == this;
+        public override bool Equals(object? obj)
+            => obj is Quaternion vector && vector == this;
 
         public override int GetHashCode() => HashCode.Combine(M);
     }

@@ -9,7 +9,7 @@ namespace RenderBox.Views.Pages
 {
     public partial class DrawingPage : Page, IOptionsPage<DrawingRenderer>
     {
-        private DrawingRenderer _source;
+        private DrawingRenderer _source = null!;
 
         public DrawingPage()
         {

@@ -7,7 +7,7 @@ namespace RenderBox.Views.Pages
 {
     public partial class MandelbrotPage : Page, IOptionsPage<MandelbrotRenderer>
     {
-        private MandelbrotRenderer _source;
+        private MandelbrotRenderer _source = null!;
 
         public MandelbrotPage()
         {
@@ -36,6 +36,10 @@ namespace RenderBox.Views.Pages
             foreach (var filter in filters)
             {
                 var instance = Activator.CreateInstance(filter);
+                if (instance is not IPaletteFilter paletteFilter)
+                {
+                    continue;
+                }
 
                 var button = new Button
                 {
@@ -45,7 +49,7 @@ namespace RenderBox.Views.Pages
 
                 button.Click += (s, e) =>
                 {
-                    _source.Filter = (IPaletteFilter)instance;
+                    _source.Filter = paletteFilter;
                     _source.Render(Dispatcher);
                 };
 

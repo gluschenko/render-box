@@ -6,7 +6,7 @@ namespace RenderBox.Views.Pages
 {
     public partial class PathTracePage : Page, IOptionsPage<PathTraceRenderer>
     {
-        private PathTraceRenderer _source;
+        private PathTraceRenderer _source = null!;
 
         public PathTracePage()
         {
