@@ -87,7 +87,7 @@ namespace RenderBox.Services.Renderers
                         var posX = (2 * (x + 0.5f) / width - 1) * aspectRatio * fovScale;
                         var posY = (1 - 2 * (y + 0.5f) / height) * fovScale;
                         //
-                        var dir = Normalize(new Vector3(posX, posY, -1));
+                        var dir = Normalize(camera.TransformDirection(new Vector3(posX, posY, -1)));
                         var ray = new Ray(orig, dir);
                         //
                         var color = TracePath(context, camera, ray, Scene.BackgroundColor);
@@ -417,7 +417,17 @@ namespace RenderBox.Services.Renderers
             if (key == Key.W) MainCamera.Position += Vector3.Back * 0.5f;
             if (key == Key.S) MainCamera.Position += Vector3.Forward * 0.5f;
 
-            if (origPos != MainCamera.Position)
+            var origRotation = MainCamera.Rotation;
+            var rotationStep = (float)MathHelpres.DegToRad(5);
+
+            if (key == Key.Left) MainCamera.Rotation += Vector3.Up * rotationStep;
+            if (key == Key.Right) MainCamera.Rotation += Vector3.Down * rotationStep;
+            if (key == Key.Up) MainCamera.Rotation += Vector3.Left * rotationStep;
+            if (key == Key.Down) MainCamera.Rotation += Vector3.Right * rotationStep;
+            if (key == Key.Z) MainCamera.Rotation += Vector3.Forward * rotationStep;
+            if (key == Key.X) MainCamera.Rotation += Vector3.Back * rotationStep;
+
+            if (origPos != MainCamera.Position || origRotation != MainCamera.Rotation)
             {
                 onRender();
             }
