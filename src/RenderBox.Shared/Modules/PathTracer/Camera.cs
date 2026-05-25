@@ -5,6 +5,7 @@ namespace RenderBox.Shared.Modules.PathTracer
     public class Camera
     {
         public Vector3 Position { get; set; }
+        public Vector3 Rotation { get; set; }
         public Vector3 Target { get; set; }
         public int MaxBounceDepth { get; set; } = 3;
         public float FOV { get; set; } = 90;
@@ -21,8 +22,13 @@ namespace RenderBox.Shared.Modules.PathTracer
 
             Target = new Vector3(0.0, 0.0, 0.0);
             Position = position;
+            Rotation = Vector3.Zero;
 
+            ViewMatrix = new Quaternion(true);
+            PosMatrix = new Quaternion(true);
             BiasMatrix = GetBiasMatrixInverse();
+            ViewPosMatrix = new Quaternion(true);
+            RayMatrix = new Quaternion(true);
         }
 
         public void LookAt(Vector3 position, Vector3 target, bool rotateAround)
@@ -50,6 +56,27 @@ namespace RenderBox.Shared.Modules.PathTracer
             ViewMatrix[2] = NormalX.z; ViewMatrix[6] = NormalY.z; ViewMatrix[10] = NormalZ.z;
 
             RayMatrix = ViewMatrix * PosMatrix * BiasMatrix * ViewPosMatrix;
+        }
+
+        public Vector3 TransformDirection(Vector3 direction)
+        {
+            return Matrix4x4.CreateRotation(Rotation).TransformDirection(direction);
+        }
+
+        public Camera SetRotation(Vector3 rotation)
+        {
+            Rotation = rotation;
+            return this;
+        }
+
+        public Camera SetRotationDegrees(Vector3 rotation)
+        {
+            Rotation = new Vector3(
+                MathHelpres.DegToRad(rotation.x),
+                MathHelpres.DegToRad(rotation.y),
+                MathHelpres.DegToRad(rotation.z));
+
+            return this;
         }
 
         private Quaternion GetBiasMatrix()

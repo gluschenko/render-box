@@ -18,7 +18,7 @@ namespace RenderBox.Services.Renderers
         public int Iterations { get; set; } = 100;
         public double Extent { get; set; } = 2;
 
-        public IPaletteFilter Filter { get; set; }
+        public IPaletteFilter? Filter { get; set; }
 
         public MandelbrotRenderer(Paint paint) : base(paint)
         {

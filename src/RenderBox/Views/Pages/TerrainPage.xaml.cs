@@ -6,8 +6,6 @@ namespace RenderBox.Views.Pages
 {
     public partial class TerrainPage : Page, IOptionsPage<TerrainRenderer>
     {
-        private TerrainRenderer _source;
-
         public TerrainPage()
         {
             InitializeComponent();
@@ -15,7 +13,6 @@ namespace RenderBox.Views.Pages
 
         public void UseSource(TerrainRenderer source)
         {
-            _source = source;
         }
     }
 }

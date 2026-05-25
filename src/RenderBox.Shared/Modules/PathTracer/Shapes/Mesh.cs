@@ -18,6 +18,9 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
         public override bool GetIntersection(Ray ray, double maxDistance, out Hit hit, out double distance)
         {
             hit = new Hit();
+            distance = double.PositiveInfinity;
+
+            var localRay = new Ray(WorldToLocalPoint(ray.Origin), WorldToLocalDirection(ray.Direction));
 
             for (int k = 0; k < TrianglesCount; ++k)
             {
@@ -25,33 +28,39 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
                 var v1 = Vertices[Indices[k * 3 + 1]];
                 var v2 = Vertices[Indices[k * 3 + 2]];
 
-                if (RayTriangleIntersect(v0, v1, v2, ray, out var localHit))
+                if (RayTriangleIntersect(v0, v1, v2, localRay, out var localHit))
                 {
                     if (localHit.IsHitting)
                     {
-                        var dist = (localHit.Position - ray.Origin).Length;
+                        var worldPosition = LocalToWorldPoint(localHit.Position);
+                        var dist = (worldPosition - ray.Origin).Length;
                         if (dist > maxDistance)
                         {
                             continue;
                         }
 
-                        hit = localHit;
+                        if (dist < distance)
+                        {
+                            localHit.Position = worldPosition;
+                            localHit.Normal = Normalize(LocalToWorldDirection(localHit.Normal));
+                            hit = localHit;
+                            distance = dist;
+                        }
                     }
                 }
             }
 
-            distance = (hit.Position - ray.Origin).Length;
             return hit.IsHitting;
         }
 
         public override Vector3 CalcNormal(Vector3 pos)
         {
-            return Normalize(pos - Position);
+            return Normalize(LocalToWorldDirection(Normalize(WorldToLocalPoint(pos))));
         }
 
         public void SetData(IEnumerable<Vector3> verts, List<int> indices)
         {
-            Vertices = verts.Select(x => Position + x).ToList();
+            Vertices = verts.ToList();
             Indices = indices;
             TrianglesCount = indices.Count / 3;
         }

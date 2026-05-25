@@ -67,7 +67,7 @@ namespace RenderBox.Views
             }
         }
 
-        private void OnClosing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void OnClosing(object? sender, System.ComponentModel.CancelEventArgs e)
         {
             var renderers = _pages.Select(x => x.Value).Select(x => x.Renderer).ToArray();
 

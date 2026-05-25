@@ -85,12 +85,8 @@ namespace RenderBox.Shared.Core
         public float Length => MathHelpres.FastSqrt(x * x + y * y);
 
         [MethodImpl(Runtime.IMPL_OPTIONS)]
-        public override bool Equals(object obj)
-            => EqualsInternal(obj as Vector2?);
-
-        [MethodImpl(Runtime.IMPL_OPTIONS)]
-        private bool EqualsInternal(Vector2? vector)
-            => vector.HasValue && vector.Value == this;
+        public override bool Equals(object? obj)
+            => obj is Vector2 vector && vector == this;
 
 
         public override int GetHashCode() => HashCode.Combine(x, y);
@@ -177,12 +173,8 @@ namespace RenderBox.Shared.Core
         public float Length => MathHelpres.FastSqrt(x * x + y * y + z * z);
 
         [MethodImpl(Runtime.IMPL_OPTIONS)]
-        public override bool Equals(object obj)
-            => EqualsInternal(obj as Vector3?);
-
-        [MethodImpl(Runtime.IMPL_OPTIONS)]
-        private bool EqualsInternal(Vector3? vector)
-            => vector.HasValue && vector.Value == this;
+        public override bool Equals(object? obj)
+            => obj is Vector3 vector && vector == this;
 
         public override int GetHashCode() => HashCode.Combine(x, y, z);
     }
@@ -289,13 +281,136 @@ namespace RenderBox.Shared.Core
         public static bool operator !=(Quaternion a, Quaternion b) => !(a == b);
 
 
-        public override bool Equals(object obj)
-            => EqualsInternal(obj as Quaternion?);
-
-        private bool EqualsInternal(Quaternion? vector)
-            => vector.HasValue && vector.Value == this;
+        public override bool Equals(object? obj)
+            => obj is Quaternion vector && vector == this;
 
         public override int GetHashCode() => HashCode.Combine(M);
+    }
+
+    public struct Matrix4x4
+    {
+        private readonly float[] M;
+
+        public static Matrix4x4 Identity => new(true);
+
+        public Matrix4x4(bool identity) : this()
+        {
+            M = new float[16];
+
+            if (!identity) return;
+
+            M[0] = 1.0f;
+            M[5] = 1.0f;
+            M[10] = 1.0f;
+            M[15] = 1.0f;
+        }
+
+        public float this[int i]
+        {
+            get => M[i];
+            set => M[i] = value;
+        }
+
+        public static Matrix4x4 CreateRotation(Vector3 rotation)
+        {
+            return CreateRotationZ(rotation.z) * CreateRotationY(rotation.y) * CreateRotationX(rotation.x);
+        }
+
+        public static Matrix4x4 CreateRotationX(float angle)
+        {
+            var result = Identity;
+            var sin = MathF.Sin(angle);
+            var cos = MathF.Cos(angle);
+
+            result[5] = cos;
+            result[6] = sin;
+            result[9] = -sin;
+            result[10] = cos;
+
+            return result;
+        }
+
+        public static Matrix4x4 CreateRotationY(float angle)
+        {
+            var result = Identity;
+            var sin = MathF.Sin(angle);
+            var cos = MathF.Cos(angle);
+
+            result[0] = cos;
+            result[2] = -sin;
+            result[8] = sin;
+            result[10] = cos;
+
+            return result;
+        }
+
+        public static Matrix4x4 CreateRotationZ(float angle)
+        {
+            var result = Identity;
+            var sin = MathF.Sin(angle);
+            var cos = MathF.Cos(angle);
+
+            result[0] = cos;
+            result[1] = sin;
+            result[4] = -sin;
+            result[5] = cos;
+
+            return result;
+        }
+
+        public static Matrix4x4 operator *(Matrix4x4 a, Matrix4x4 b)
+        {
+            var result = new Matrix4x4(false);
+
+            for (var row = 0; row < 4; row++)
+            {
+                for (var column = 0; column < 4; column++)
+                {
+                    var value = 0f;
+                    for (var i = 0; i < 4; i++)
+                    {
+                        value += a[row + i * 4] * b[i + column * 4];
+                    }
+
+                    result[row + column * 4] = value;
+                }
+            }
+
+            return result;
+        }
+
+        public Matrix4x4 Transpose()
+        {
+            var result = new Matrix4x4(false);
+
+            for (var row = 0; row < 4; row++)
+            {
+                for (var column = 0; column < 4; column++)
+                {
+                    result[row + column * 4] = M[column + row * 4];
+                }
+            }
+
+            return result;
+        }
+
+        public Vector3 TransformPoint(Vector3 point)
+        {
+            return Transform(point, 1);
+        }
+
+        public Vector3 TransformDirection(Vector3 direction)
+        {
+            return Transform(direction, 0);
+        }
+
+        private Vector3 Transform(Vector3 vector, float w)
+        {
+            return new Vector3(
+                M[0] * vector.x + M[4] * vector.y + M[8] * vector.z + M[12] * w,
+                M[1] * vector.x + M[5] * vector.y + M[9] * vector.z + M[13] * w,
+                M[2] * vector.x + M[6] * vector.y + M[10] * vector.z + M[14] * w);
+        }
     }
 
     public static class VectorMath

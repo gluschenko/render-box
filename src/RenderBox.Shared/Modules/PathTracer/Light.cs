@@ -11,7 +11,7 @@ namespace RenderBox.Shared.Modules.PathTracer
         public float LinearAttenuation { get; set; }
         public float QuadraticAttenuation { get; set; }
 
-        public IShape Shape { get; set; }
+        public Shape? Shape { get; set; }
 
         public Light(Color color, double intensity)
         {

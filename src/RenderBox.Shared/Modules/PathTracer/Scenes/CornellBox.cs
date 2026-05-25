@@ -50,11 +50,11 @@ namespace RenderBox.Shared.Modules.PathTracer.Scenes
 
                 new Sphere(new Vector3(1.8, 0, 0), .2f, Color.White),
 
-                new Box(new Vector3(0, -1.5, -1), Color.Yellow),
-                new Box(new Vector3(1, -1.5, -1), Color.Red),
-                new Box(new Vector3(-1, -1.5, -1), Color.Blue),
+                new Box(new Vector3(0, -1.5, -1), Color.Yellow).SetRotationDegrees(new Vector3(0, 35, 0)),
+                new Box(new Vector3(1, -1.5, -1), Color.Red).SetRotationDegrees(new Vector3(0, -25, 0)),
+                new Box(new Vector3(-1, -1.5, -1), Color.Blue).SetRotationDegrees(new Vector3(0, 0, 25)),
 
-                new Box(new Vector3(-1.6, -1.9, 1.4), Color.White, new Vector3(0.24f, 0.24f, 0.24f)) { Material = metal },
+                new Box(new Vector3(-1.6, -1.9, 1.4), Color.White, new Vector3(0.24f, 0.24f, 0.24f)) { Material = metal }.SetRotationDegrees(new Vector3(0, 45, 0)),
             });
 
             UpdateLights();
