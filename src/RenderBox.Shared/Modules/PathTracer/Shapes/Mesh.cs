@@ -43,6 +43,7 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
                         {
                             localHit.Position = worldPosition;
                             localHit.Normal = Normalize(LocalToWorldDirection(localHit.Normal));
+                            localHit.FromInside = Dot(ray.Direction, localHit.Normal) > 0;
                             hit = localHit;
                             distance = dist;
                         }
@@ -74,7 +75,7 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
             var p = Cross(ray.Direction, e2);
 
             var det = Dot(e1, p);
-            if (det == 0 || det < 0)
+            if (Math.Abs(det) < 0.000001f)
             {
                 return false; // parallel to the plane
             }

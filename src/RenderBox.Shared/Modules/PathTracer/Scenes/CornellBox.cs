@@ -11,6 +11,7 @@ namespace RenderBox.Shared.Modules.PathTracer.Scenes
             {
                 Refraction = 0.6f,
                 Reflection = 0.6f,
+                ChromaticAberration = 0.025f,
             };
 
             var mirror = new Material

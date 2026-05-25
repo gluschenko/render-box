@@ -19,6 +19,10 @@ namespace RenderBox.Services.Renderers
 
     public class PathTraceRenderer : Renderer
     {
+        private const float RayBias = 0.001f;
+        private static readonly Color Black = new(0, 0, 0);
+        private static readonly Color White = Color.White;
+
         public Camera MainCamera { get; set; }
         public Scene Scene { get; set; }
 
@@ -153,7 +157,7 @@ namespace RenderBox.Services.Renderers
             var emittance = material.Color; //material.emittance;
 
             var position = hit.Position;
-            var normal = hit.Normal;
+            var normal = hit.FromInside ? -hit.Normal : hit.Normal;
 
             if (Mode == RenderMode.Depth)
             {
@@ -190,10 +194,7 @@ namespace RenderBox.Services.Renderers
 
             if (material.Refraction > 0)
             {
-                var newRayDirection = Refract(ray.Direction, normal, material.RefractionEta);
-                var newRay = new Ray(position, newRayDirection);
-
-                var incoming = TracePath(context, camera, newRay, back, depth + 1, hitObject);
+                var incoming = TraceRefraction(context, camera, ray, hit, back, depth);
 
                 var refractedColor = incoming; //emittance * incoming;
 
@@ -240,7 +241,8 @@ namespace RenderBox.Services.Renderers
 
                 foreach (var light in Scene.Lights)
                 {
-                    color += LightIntensity(hit, light, light.Shape.Position, Scene.AmbientColor, ambientFactor);
+                    var lightShape = light.Shape ?? throw new InvalidOperationException("Scene lights must be attached to a shape.");
+                    color += LightIntensity(hit, light, lightShape.Position, Scene.AmbientColor, ambientFactor);
                 }
 
                 emittance *= color;
@@ -253,11 +255,13 @@ namespace RenderBox.Services.Renderers
 
                 foreach (var light in Scene.Lights)
                 {
+                    var lightShape = light.Shape ?? throw new InvalidOperationException("Scene lights must be attached to a shape.");
+
                     for (var i = 0; i < Scene.GISamples; i++)
                     {
                         Vector3 random;
 
-                        if (light.Shape is Box boxShape)
+                        if (lightShape is Box boxShape)
                         {
                             var side = Rand.Int(0, 6);
                             var c = side % 3;
@@ -272,7 +276,7 @@ namespace RenderBox.Services.Renderers
                             random = new Vector3(Rand.Float() - 0.5f, Rand.Float() - 0.5f, Rand.Float() - 0.5f);
                         }
 
-                        var lightPosition = light.Shape.Position + light.Shape.GetLightEmission(random);
+                        var lightPosition = lightShape.Position + lightShape.GetLightEmission(random);
 
                         color += LightIntensity(hit, light, lightPosition, Scene.AmbientColor, ambientFactor);
                     }
@@ -288,58 +292,160 @@ namespace RenderBox.Services.Renderers
         {
             var hitObject = hit.HitObject ?? throw new InvalidOperationException("A hit must include the shape it intersected.");
             var lightColor = light.Color;
-            var lightDirection = lightPosition - hit.Position;
+            var directLightDirection = lightPosition - hit.Position;
 
-            var lightDistance = lightDirection.Length;
+            var lightDistance = directLightDirection.Length;
             var lightDistance2 = lightDistance * lightDistance;
 
-            lightDirection *= 1f / lightDistance;
+            directLightDirection *= 1f / lightDistance;
 
             var a = lightDistance * light.QuadraticAttenuation;
             var b = lightDistance2 * light.LinearAttenuation;
             var c = light.ConstantAttenuation;
             var attenuation = (float)((a + b + c) * (1 / light.Intensity));
 
-            var ndotLD = Dot(hit.Normal, lightDirection);
+            var transmission = TraceLightTransmission(hitObject, hit.Position, light, lightPosition, (float)lightDistance);
+            var ndotLD = Dot(hit.Normal, directLightDirection);
 
             if (ndotLD > 0)
             {
-                if (!IsShadow(hitObject, lightPosition, lightDirection, (float)lightDistance))
+                if (transmission != Black)
                 {
                     var linghtnessMul = (ambientColor * ambientFactor + lightColor * ndotLD) / attenuation;
-                    return lightColor * linghtnessMul;
+                    return transmission * lightColor * linghtnessMul;
                 }
             }
 
-            var refraction = hitObject.Material.Refraction;
-
-            if (refraction > 0)
-            {
-                lightColor *= hitObject.Material.Color;
-            }
-
-            var ambientMul = (ambientColor * ambientFactor + lightColor * ndotLD * refraction) / attenuation;
+            var ambientMul = ambientColor * ambientFactor / attenuation;
             return lightColor * ambientMul;
         }
 
-        private bool IsShadow(Shape? currentShape, Vector3 lightPosition, Vector3 lightDirection, float lightDistance)
+        private Color TraceRefraction(RenderContext context, Camera camera, Ray ray, Hit entryHit, Color back, int depth)
+        {
+            var shape = entryHit.HitObject ?? throw new InvalidOperationException("A hit must include the shape it intersected.");
+            var material = shape.Material;
+            var ior = GetRefractionIor(material);
+            var normal = entryHit.FromInside ? -entryHit.Normal : entryHit.Normal;
+            var fromIor = entryHit.FromInside ? ior : 1;
+            var toIor = entryHit.FromInside ? 1 : ior;
+
+            if (!TryRefract(ray.Direction, normal, fromIor, toIor, out var refractedDirection))
+            {
+                var reflectedDirection = Reflect(ray.Direction, normal);
+                return TracePath(context, camera, new Ray(Offset(entryHit.Position, reflectedDirection), reflectedDirection), back, depth + 1);
+            }
+
+            var refractedRay = new Ray(Offset(entryHit.Position, refractedDirection), refractedDirection);
+            var incoming = TracePath(context, camera, refractedRay, back, depth + 1);
+            return Color.Lerp(incoming * material.Color, incoming, 1 - material.Refraction);
+        }
+
+        private Color TraceLightTransmission(Shape targetShape, Vector3 targetPosition, Light light, Vector3 lightPosition, float lightDistance)
         {
             if (!Scene.ShadowsEnabled)
             {
-                return false;
+                return White;
             }
 
-            var ray = new Ray(lightPosition, -lightDirection);
+            var lightShape = light.Shape ?? throw new InvalidOperationException("Scene lights must be attached to a shape.");
+            var direction = Normalize(targetPosition - lightPosition);
+            var ray = new Ray(Offset(lightPosition, direction), direction);
+            var throughput = White;
 
-            foreach (var shape in Scene.Shapes.Where(x => x != currentShape))
+            for (var depth = 0; depth < MainCamera.MaxBounceDepth + 2; depth++)
             {
-                if (shape.GetIntersection(ray, lightDistance, out var _, out var _))
+                var hit = FindClosestHit(ray, lightDistance, lightShape, targetShape);
+
+                if (!hit.IsHitting)
                 {
-                    return true;
+                    return throughput;
+                }
+
+                var shape = hit.HitObject ?? throw new InvalidOperationException("A hit must include the shape it intersected.");
+                var material = shape.Material;
+                if (material.Refraction <= 0)
+                {
+                    return Black;
+                }
+
+                throughput *= Color.Lerp(White, material.Color, material.Refraction);
+
+                // Keep direct lighting stable: refractive objects tint/attenuate shadow rays,
+                // while visible lensing is handled by TraceRefraction on camera paths.
+                ray = new Ray(Offset(hit.Position, ray.Direction), ray.Direction);
+            }
+
+            return Black;
+        }
+
+        private Hit FindClosestHit(Ray ray, float maxDistance, Shape? ignoredShape1, Shape? ignoredShape2)
+        {
+            var closestHit = new Hit();
+            var minDist = double.PositiveInfinity;
+
+            foreach (var shape in Scene.Shapes)
+            {
+                if (shape == ignoredShape1 || shape == ignoredShape2)
+                {
+                    continue;
+                }
+
+                shape.GetIntersection(ray, maxDistance, out var hit, out var distance);
+
+                if (!hit.IsHitting || distance <= RayBias)
+                {
+                    continue;
+                }
+
+                if (distance < minDist)
+                {
+                    minDist = distance;
+                    closestHit = hit;
                 }
             }
 
-            return false;
+            return closestHit;
+        }
+
+        private static bool TryRefract(Vector3 incident, Vector3 normal, float fromIor, float toIor, out Vector3 refracted)
+        {
+            var i = Normalize(incident);
+            var n = Normalize(normal);
+            var cosi = MathHelpres.Clamp(Dot(i, n), -1, 1);
+
+            if (cosi > 0)
+            {
+                n = -n;
+            }
+            else
+            {
+                cosi = -cosi;
+            }
+
+            var eta = fromIor / toIor;
+            var k = 1 - eta * eta * (1 - cosi * cosi);
+            if (k < 0)
+            {
+                refracted = Vector3.Zero;
+                return false;
+            }
+
+            refracted = Normalize(eta * i + (eta * cosi - MathHelpres.FastSqrt(k)) * n);
+            return true;
+        }
+
+        private static float GetRefractionIor(Material material, float spectralOffset = 0)
+        {
+            var ior = material.RefractionEta <= 0
+                ? 1 - material.RefractionEta
+                : material.RefractionEta;
+
+            return Math.Max(1.01f, ior + material.ChromaticAberration * spectralOffset);
+        }
+
+        private static Vector3 Offset(Vector3 position, Vector3 direction)
+        {
+            return position + Normalize(direction) * RayBias;
         }
 
         private float CalcAmbientOcclusion(Hit hit)
@@ -362,7 +468,7 @@ namespace RenderBox.Services.Renderers
 
                 var dist = 1000f;
 
-                foreach (var shape in Scene.Shapes.Where(x => x.Light == null))
+                foreach (var shape in Scene.Shapes.Where(x => x.Light == null && x.Material.Refraction <= 0))
                 {
                     if (shape.GetIntersection(ray, dist, out var _, out var testDist))
                     {

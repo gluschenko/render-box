@@ -32,7 +32,12 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
             }
             else
             {
-                var D = (-b - MathHelpres.FastSqrt(dt)) / (a * 2);
+                var sqrtDt = MathHelpres.FastSqrt(dt);
+                var near = (-b - sqrtDt) / (a * 2);
+                var far = (-b + sqrtDt) / (a * 2);
+                var fromInside = near <= 0;
+                var D = fromInside ? far : near;
+
                 if (D < 0)
                 {
                     distance = 0;
@@ -52,6 +57,7 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
                 hit.Position = position;
                 hit.Normal = CalcNormal(position);
                 hit.HitObject = this;
+                hit.FromInside = fromInside;
                 distance = dist;
 
                 return hit.IsHitting;

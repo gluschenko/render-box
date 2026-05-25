@@ -19,6 +19,7 @@ namespace RenderBox.Shared.Modules.PathTracer
         public float Reflection { get; set; }
         public float Refraction { get; set; }
         public float RefractionEta { get; set; }
+        public float ChromaticAberration { get; set; }
 
         public bool IsMetallic { get; set; }
 
@@ -31,6 +32,7 @@ namespace RenderBox.Shared.Modules.PathTracer
             Reflection = 0;
             Refraction = 0;
             RefractionEta = -0.5f;
+            ChromaticAberration = 0.015f;
 
             IsMetallic = false;
         }

@@ -24,6 +24,7 @@ namespace RenderBox.Shared.Modules.PathTracer
         public Vector3 Position { get; set; }
         public Vector3 Normal { get; set; }
         public Shape? HitObject { get; set; }
+        public bool FromInside { get; set; }
 
         public bool IsHitting => HitObject != null;
     }
