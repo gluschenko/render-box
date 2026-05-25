@@ -9,7 +9,8 @@ namespace RenderBox.Views.Pages
 {
     public partial class DrawingPage : Page, IOptionsPage<DrawingRenderer>
     {
-        private DrawingRenderer _source = null!;
+        private DrawingRenderer? _source;
+        private DrawingRenderer Source => _source ?? throw new InvalidOperationException($"{nameof(UseSource)} must be called before using this page.");
 
         public DrawingPage()
         {
@@ -23,11 +24,11 @@ namespace RenderBox.Views.Pages
 
         private void BlitButton_Click(object sender, RoutedEventArgs e)
         {
-            _source.SetRender((context) =>
+            Source.SetRender((context) =>
             {
-                _source.Paint.FillRect(0, 0, context.Width, context.Height, Color.Green);
+                Source.Paint.FillRect(0, 0, context.Width, context.Height, Color.Green);
             });
-            _source.Render(Dispatcher);
+            Source.Render(Dispatcher);
         }
     }
 }

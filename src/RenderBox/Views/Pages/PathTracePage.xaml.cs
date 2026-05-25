@@ -6,7 +6,8 @@ namespace RenderBox.Views.Pages
 {
     public partial class PathTracePage : Page, IOptionsPage<PathTraceRenderer>
     {
-        private PathTraceRenderer _source = null!;
+        private PathTraceRenderer? _source;
+        private PathTraceRenderer Source => _source ?? throw new InvalidOperationException($"{nameof(UseSource)} must be called before using this page.");
 
         public PathTracePage()
         {
@@ -17,31 +18,31 @@ namespace RenderBox.Views.Pages
         {
             _source = source;
 
-            Lighting.IsChecked = _source.Scene.LightingEnabled;
-            Shadows.IsChecked = _source.Scene.ShadowsEnabled;
-            SoftShadows.IsChecked = _source.Scene.SoftShadows;
-            AmbientOcclusion.IsChecked = _source.Scene.AmbientOcclusion;
-            GISamples.Text = _source.Scene.GISamples.ToString();
-            FOV.Text = _source.MainCamera.FOV.ToString();
-            CameraDistance.Text = _source.MainCamera.MaxDistance.ToString();
+            Lighting.IsChecked = Source.Scene.LightingEnabled;
+            Shadows.IsChecked = Source.Scene.ShadowsEnabled;
+            SoftShadows.IsChecked = Source.Scene.SoftShadows;
+            AmbientOcclusion.IsChecked = Source.Scene.AmbientOcclusion;
+            GISamples.Text = Source.Scene.GISamples.ToString();
+            FOV.Text = Source.MainCamera.FOV.ToString();
+            CameraDistance.Text = Source.MainCamera.MaxDistance.ToString();
 
-            BatchSize.Text = _source.BatchSize.ToString();
+            BatchSize.Text = Source.BatchSize.ToString();
         }
 
         private void ApplyButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            _source.Mode = GetRenderMode();
-            _source.BatchSize = int.TryParse(BatchSize.Text, out int num) ? num : 0;
+            Source.Mode = GetRenderMode();
+            Source.BatchSize = int.TryParse(BatchSize.Text, out int num) ? num : 0;
 
-            _source.Scene.LightingEnabled = Lighting.IsChecked ?? false;
-            _source.Scene.ShadowsEnabled = Shadows.IsChecked ?? false;
-            _source.Scene.SoftShadows = SoftShadows.IsChecked ?? false;
-            _source.Scene.AmbientOcclusion = AmbientOcclusion.IsChecked ?? false;
-            _source.Scene.GISamples = int.TryParse(GISamples.Text, out num) ? num : 0;
-            _source.MainCamera.FOV = float.TryParse(FOV.Text, out var f) ? f : 0;
-            _source.MainCamera.MaxDistance = float.TryParse(CameraDistance.Text, out f) ? f : 0;
+            Source.Scene.LightingEnabled = Lighting.IsChecked ?? false;
+            Source.Scene.ShadowsEnabled = Shadows.IsChecked ?? false;
+            Source.Scene.SoftShadows = SoftShadows.IsChecked ?? false;
+            Source.Scene.AmbientOcclusion = AmbientOcclusion.IsChecked ?? false;
+            Source.Scene.GISamples = int.TryParse(GISamples.Text, out num) ? num : 0;
+            Source.MainCamera.FOV = float.TryParse(FOV.Text, out var f) ? f : 0;
+            Source.MainCamera.MaxDistance = float.TryParse(CameraDistance.Text, out f) ? f : 0;
 
-            _source.Render(Dispatcher);
+            Source.Render(Dispatcher);
         }
 
         private RenderMode GetRenderMode()

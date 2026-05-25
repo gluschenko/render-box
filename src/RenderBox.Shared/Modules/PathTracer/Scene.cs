@@ -22,7 +22,7 @@ namespace RenderBox.Shared.Modules.PathTracer
 
         public void UpdateLights()
         {
-            Lights = Shapes.Select(x => x.Light).Where(x => x is not null).Cast<Light>().ToArray();
+            Lights = Shapes.Select(x => x.Light).Where(x => x?.Shape is not null).Cast<Light>().ToArray();
         }
     }
 }
