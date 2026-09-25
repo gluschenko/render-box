@@ -7,8 +7,8 @@ namespace RenderBox.Services.Rendering
         public ThreadManagerState State { get; private set; } = ThreadManagerState.Created;
 
         private ConcurrentQueue<Routine> _queue = new ConcurrentQueue<Routine>();
-        private Thread[] _pool;
-        private Action _onDone;
+        private Thread[] _pool = Array.Empty<Thread>();
+        private Action? _onDone;
         private int _endedThreads = 0;
 
         private struct Routine
@@ -70,18 +70,12 @@ namespace RenderBox.Services.Rendering
 
         private void Kill()
         {
-            if (_pool is null) return;
-
             _queue.Clear();
             _onDone = null;
 
             for (var i = 0; i < _pool.Length; i++)
             {
-                if (_pool[i] != null)
-                {
-                    _pool[i].Interrupt();
-                    _pool[i] = null;
-                }
+                _pool[i].Interrupt();
             }
         }
 
@@ -95,7 +89,7 @@ namespace RenderBox.Services.Rendering
                     {
                         if (_queue.TryDequeue(out var routine))
                         {
-                            routine.Action?.Invoke();
+                            routine.Action.Invoke();
                         }
 
                         if (_queue.IsEmpty)

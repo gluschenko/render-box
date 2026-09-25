@@ -6,7 +6,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using RenderBox.Services.Options;
 using RenderBox.Services.Rendering;
-using RenderBox.Shared.Modules.PathTracer;
 
 namespace RenderBox.Views.Pages
 {
@@ -15,9 +14,7 @@ namespace RenderBox.Views.Pages
         public bool IsActive { get; set; }
         public bool IsStarted { get; private set; }
 
-        public Renderer Renderer { get; set; }
-        public Camera MainCamera { get; set; }
-        public Scene Scene { get; set; }
+        public Renderer? Renderer { get; private set; }
 
         private readonly ObservableCollection<string> _log;
         private readonly Stopwatch _timer = new();
@@ -64,6 +61,11 @@ namespace RenderBox.Views.Pages
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
             var window = Window.GetWindow(this);
+            if (window is null)
+            {
+                return;
+            }
+
             window.KeyUp += OnKeyPress;
             //
             SidePanel.Visibility = Visibility.Hidden;
@@ -71,7 +73,7 @@ namespace RenderBox.Views.Pages
             SizeChanged += OnSizeChanged;
         }
 
-        private void SetupRender(Type type)
+        private void SetupRender(Type? type)
         {
             var scale = Resolution.Value;
             var w = (int)(ActualWidth * scale);
@@ -79,7 +81,17 @@ namespace RenderBox.Views.Pages
 
             if (Renderer == null)
             {
-                Renderer = (Renderer)Activator.CreateInstance(type, new Paint(Image, w, h, scale));
+                if (type is null)
+                {
+                    throw new InvalidOperationException("A renderer type is required before the first render.");
+                }
+
+                if (Activator.CreateInstance(type, new Paint(Image, w, h, scale)) is not Renderer renderer)
+                {
+                    throw new InvalidOperationException($"Could not create renderer '{type.FullName}'.");
+                }
+
+                Renderer = renderer;
                 Renderer.OnRenderStarted += () => _timer.Restart();
                 Renderer.OnRenderComplete += () => _log.Add($"Render frame: {_timer.ElapsedMilliseconds} ms");
 
@@ -89,7 +101,12 @@ namespace RenderBox.Views.Pages
                 {
                     var page = Activator.CreateInstance(pageType);
                     var useSource = pageType.GetMethod(nameof(IOptionsPage<Renderer>.UseSource));
-                    _ = useSource.Invoke(page, new[] { Renderer });
+                    if (page is null || useSource is null)
+                    {
+                        throw new InvalidOperationException($"Could not create options page '{pageType.FullName}'.");
+                    }
+
+                    _ = useSource.Invoke(page, new object[] { Renderer });
 
                     _ = OptionsFrame.Navigate(page);
                 }
@@ -102,6 +119,11 @@ namespace RenderBox.Views.Pages
 
         private void Render()
         {
+            if (Renderer is null)
+            {
+                return;
+            }
+
             Renderer.Render(Dispatcher);
         }
 
@@ -166,7 +188,7 @@ namespace RenderBox.Views.Pages
             }
         }
 
-        private void OnKeyPress(object sender, KeyEventArgs e)
+        private void OnKeyPress(object? sender, KeyEventArgs e)
         {
             if (IsActive)
             {

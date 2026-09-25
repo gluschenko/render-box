@@ -57,7 +57,7 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
 
         public override Vector3 GetLightEmission(Vector3 random)
         {
-            return Scale * random;
+            return LocalToWorldDirection(Scale * random);
         }
     }
 }

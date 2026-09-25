@@ -7,7 +7,7 @@ namespace RenderBox.Shared.Modules.PathTracer
         public Color BackgroundColor { get; set; } = new Color(.2f, .2f, .2f);
         public Color AmbientColor { get; set; } = new Color(.1f, .1f, .1f);
         public List<Shape> Shapes { get; set; } = new List<Shape>();
-        public IEnumerable<Light> Lights { get; private set; }
+        public IEnumerable<Light> Lights { get; private set; } = Array.Empty<Light>();
 
         public bool LightingEnabled { get; set; } = true;
         public bool ShadowsEnabled { get; set; } = true;
@@ -22,7 +22,7 @@ namespace RenderBox.Shared.Modules.PathTracer
 
         public void UpdateLights()
         {
-            Lights = Shapes.Where(x => x.Light != null).Select(x => x.Light).ToArray();
+            Lights = Shapes.Select(x => x.Light).Where(x => x?.Shape is not null).Cast<Light>().ToArray();
         }
     }
 }

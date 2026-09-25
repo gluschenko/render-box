@@ -11,7 +11,7 @@ namespace RenderBox.Services.Rendering
         public const int DPI = 96;
 
         public Image Image { get; private set; }
-        public WriteableBitmap Bitmap { get; private set; }
+        public WriteableBitmap? Bitmap { get; private set; }
         public int Width => Bitmap?.PixelWidth ?? 0;
         public int Height => Bitmap?.PixelHeight ?? 0;
         public double Scale { get; private set; }
@@ -45,7 +45,6 @@ namespace RenderBox.Services.Rendering
             var bitmap = new WriteableBitmap(width, height, DPI, DPI, PixelFormats.Bgr32, null);
             img.Source = bitmap;
 
-            Bitmap = null;
             Bitmap = bitmap;
         }
 

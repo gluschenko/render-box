@@ -7,7 +7,8 @@ namespace RenderBox.Views.Pages
 {
     public partial class MandelbrotPage : Page, IOptionsPage<MandelbrotRenderer>
     {
-        private MandelbrotRenderer _source;
+        private MandelbrotRenderer? _source;
+        private MandelbrotRenderer Source => _source ?? throw new InvalidOperationException($"{nameof(UseSource)} must be called before using this page.");
 
         public MandelbrotPage()
         {
@@ -27,8 +28,8 @@ namespace RenderBox.Views.Pages
 
             noFilterButton.Click += (s, e) =>
             {
-                _source.Filter = null;
-                _source.Render(Dispatcher);
+                Source.Filter = null;
+                Source.Render(Dispatcher);
             };
 
             EffectsPanel.Children.Add(noFilterButton);
@@ -36,6 +37,10 @@ namespace RenderBox.Views.Pages
             foreach (var filter in filters)
             {
                 var instance = Activator.CreateInstance(filter);
+                if (instance is not IPaletteFilter paletteFilter)
+                {
+                    continue;
+                }
 
                 var button = new Button
                 {
@@ -45,8 +50,8 @@ namespace RenderBox.Views.Pages
 
                 button.Click += (s, e) =>
                 {
-                    _source.Filter = (IPaletteFilter)instance;
-                    _source.Render(Dispatcher);
+                    Source.Filter = paletteFilter;
+                    Source.Render(Dispatcher);
                 };
 
                 EffectsPanel.Children.Add(button);
@@ -57,18 +62,18 @@ namespace RenderBox.Views.Pages
         {
             _source = source;
 
-            Iterations.Text = _source.Iterations.ToString();
-            Extent.Text = _source.Extent.ToString();
-            BatchSize.Text = _source.BatchSize.ToString();
+            Iterations.Text = Source.Iterations.ToString();
+            Extent.Text = Source.Extent.ToString();
+            BatchSize.Text = Source.BatchSize.ToString();
         }
 
         private void ApplyButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            _source.Iterations = int.TryParse(Iterations.Text, out var a) ? a : 0;
-            _source.Extent = double.TryParse(Extent.Text, out var b) ? b : 0;
-            _source.BatchSize = int.TryParse(BatchSize.Text, out var c) ? c : 0;
+            Source.Iterations = int.TryParse(Iterations.Text, out var a) ? a : 0;
+            Source.Extent = double.TryParse(Extent.Text, out var b) ? b : 0;
+            Source.BatchSize = int.TryParse(BatchSize.Text, out var c) ? c : 0;
 
-            _source.Render(Dispatcher);
+            Source.Render(Dispatcher);
         }
 
     }

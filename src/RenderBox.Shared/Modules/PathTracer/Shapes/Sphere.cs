@@ -16,10 +16,11 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
         {
             hit = new Hit();
 
-            var delta = ray.Origin - Position;
+            var localRay = new Ray(WorldToLocalPoint(ray.Origin), WorldToLocalDirection(ray.Direction));
+            var delta = localRay.Origin;
 
-            var a = Dot(ray.Direction, ray.Direction);
-            var b = 2 * Dot(ray.Direction, delta);
+            var a = Dot(localRay.Direction, localRay.Direction);
+            var b = 2 * Dot(localRay.Direction, delta);
             var c = Dot(delta, delta) - Radius * Radius;
 
             double dt = b * b - 4 * a * c;
@@ -38,7 +39,8 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
                     return false;
                 }
 
-                var position = ray.Origin + ray.Direction * (float)D;
+                var localPosition = localRay.Origin + localRay.Direction * (float)D;
+                var position = LocalToWorldPoint(localPosition);
                 var dist = Distance(position, ray.Origin);
 
                 if (dist > maxDistance)
@@ -48,7 +50,7 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
                 }
 
                 hit.Position = position;
-                hit.Normal = CalcNormal(hit.Position);
+                hit.Normal = CalcNormal(position);
                 hit.HitObject = this;
                 distance = dist;
 
@@ -58,12 +60,12 @@ namespace RenderBox.Shared.Modules.PathTracer.Shapes
 
         public override Vector3 CalcNormal(Vector3 pos)
         {
-            return Normalize(pos - Position);
+            return Normalize(LocalToWorldDirection(Normalize(WorldToLocalPoint(pos))));
         }
 
         public override Vector3 GetLightEmission(Vector3 random)
         {
-            return Normalize(random) * Radius;
+            return LocalToWorldDirection(Normalize(random) * Radius);
         }
     }
 }

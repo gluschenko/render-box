@@ -87,7 +87,7 @@ namespace RenderBox.Services.Renderers
                         var posX = (2 * (x + 0.5f) / width - 1) * aspectRatio * fovScale;
                         var posY = (1 - 2 * (y + 0.5f) / height) * fovScale;
                         //
-                        var dir = Normalize(new Vector3(posX, posY, -1));
+                        var dir = Normalize(camera.TransformDirection(new Vector3(posX, posY, -1)));
                         var ray = new Ray(orig, dir);
                         //
                         var color = TracePath(context, camera, ray, Scene.BackgroundColor);
@@ -127,7 +127,7 @@ namespace RenderBox.Services.Renderers
             }
         }
 
-        private Color TracePath(RenderContext context, Camera camera, Ray ray, Color back, int depth = 0, Shape currentShape = null)
+        private Color TracePath(RenderContext context, Camera camera, Ray ray, Color back, int depth = 0, Shape? currentShape = null)
         {
             if (Mode == RenderMode.Time)
             {
@@ -148,7 +148,8 @@ namespace RenderBox.Services.Renderers
                 return back; // Nothing was hit
             }
 
-            var material = hit.HitObject.Material;
+            var hitObject = hit.HitObject ?? throw new InvalidOperationException("A hit must include the shape it intersected.");
+            var material = hitObject.Material;
             var emittance = material.Color; //material.emittance;
 
             var position = hit.Position;
@@ -177,7 +178,7 @@ namespace RenderBox.Services.Renderers
                 return new Color(x, y, z);
             }
 
-            if (hit.HitObject.Light != null)
+            if (hitObject.Light != null)
             {
                 return emittance;
             }
@@ -192,7 +193,7 @@ namespace RenderBox.Services.Renderers
                 var newRayDirection = Refract(ray.Direction, normal, material.RefractionEta);
                 var newRay = new Ray(position, newRayDirection);
 
-                var incoming = TracePath(context, camera, newRay, back, depth + 1, hit.HitObject);
+                var incoming = TracePath(context, camera, newRay, back, depth + 1, hitObject);
 
                 var refractedColor = incoming; //emittance * incoming;
 
@@ -285,6 +286,7 @@ namespace RenderBox.Services.Renderers
 
         private Color LightIntensity(Hit hit, Light light, Vector3 lightPosition, Color ambientColor, float ambientFactor)
         {
+            var hitObject = hit.HitObject ?? throw new InvalidOperationException("A hit must include the shape it intersected.");
             var lightColor = light.Color;
             var lightDirection = lightPosition - hit.Position;
 
@@ -302,25 +304,25 @@ namespace RenderBox.Services.Renderers
 
             if (ndotLD > 0)
             {
-                if (!IsShadow(hit.HitObject, lightPosition, lightDirection, (float)lightDistance))
+                if (!IsShadow(hitObject, lightPosition, lightDirection, (float)lightDistance))
                 {
                     var linghtnessMul = (ambientColor * ambientFactor + lightColor * ndotLD) / attenuation;
                     return lightColor * linghtnessMul;
                 }
             }
 
-            var refraction = hit.HitObject.Material.Refraction;
+            var refraction = hitObject.Material.Refraction;
 
             if (refraction > 0)
             {
-                lightColor *= hit.HitObject.Material.Color;
+                lightColor *= hitObject.Material.Color;
             }
 
             var ambientMul = (ambientColor * ambientFactor + lightColor * ndotLD * refraction) / attenuation;
             return lightColor * ambientMul;
         }
 
-        private bool IsShadow(Shape currentShape, Vector3 lightPosition, Vector3 lightDirection, float lightDistance)
+        private bool IsShadow(Shape? currentShape, Vector3 lightPosition, Vector3 lightDirection, float lightDistance)
         {
             if (!Scene.ShadowsEnabled)
             {
@@ -374,7 +376,7 @@ namespace RenderBox.Services.Renderers
             return 1f - (factor / Scene.GISamples) * 4f;
         }
 
-        private Hit FindClosestHit(Ray ray, float maxDistance, Shape currentShape = null)
+        private Hit FindClosestHit(Ray ray, float maxDistance, Shape? currentShape = null)
         {
             var closestHit = new Hit();
 
@@ -415,7 +417,17 @@ namespace RenderBox.Services.Renderers
             if (key == Key.W) MainCamera.Position += Vector3.Back * 0.5f;
             if (key == Key.S) MainCamera.Position += Vector3.Forward * 0.5f;
 
-            if (origPos != MainCamera.Position)
+            var origRotation = MainCamera.Rotation;
+            var rotationStep = (float)MathHelpres.DegToRad(5);
+
+            if (key == Key.Left) MainCamera.Rotation += Vector3.Up * rotationStep;
+            if (key == Key.Right) MainCamera.Rotation += Vector3.Down * rotationStep;
+            if (key == Key.Up) MainCamera.Rotation += Vector3.Left * rotationStep;
+            if (key == Key.Down) MainCamera.Rotation += Vector3.Right * rotationStep;
+            if (key == Key.Z) MainCamera.Rotation += Vector3.Forward * rotationStep;
+            if (key == Key.X) MainCamera.Rotation += Vector3.Back * rotationStep;
+
+            if (origPos != MainCamera.Position || origRotation != MainCamera.Rotation)
             {
                 onRender();
             }

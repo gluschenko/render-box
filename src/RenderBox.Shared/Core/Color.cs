@@ -76,7 +76,7 @@ namespace RenderBox.Shared.Core
         public override int GetHashCode() => GetRaw();
 
         [MethodImpl(Runtime.IMPL_OPTIONS)]
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj is Color color)
             {
